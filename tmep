@@ -1,0 +1,209 @@
+import React, {type PropsWithChildren} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+import {
+  Text,
+  View,
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  Alert,
+  LogBox,
+} from 'react-native';
+import {
+  Colors,
+  DebugInstructions,
+  Header,
+  LearnMoreLinks,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
+
+import LayerTest from './LayerTest';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+type RootStackParamList = {
+  Home: undefined;
+  Details: {itemId: number; otherParam?: string};
+};
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type DetailsScreenProps = NativeStackScreenProps<RootStackParamList, 'Details'>;
+
+const Tab = createBottomTabNavigator;
+const Section: React.FC<
+  PropsWithChildren<{
+    title: string;
+  }>
+> = ({children, title}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+  return (
+    <View style={styles.sectionContainer}>
+      <Text
+        style={[
+          styles.sectionTitle,
+          {
+            color: isDarkMode ? Colors.white : Colors.black,
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={[
+          styles.sectionDescription,
+          {
+            color: isDarkMode ? Colors.light : Colors.dark,
+          },
+        ]}>
+        {children}
+      </Text>
+    </View>
+  );
+};
+
+function HomeScreen({navigation}: HomeScreenProps) {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+
+  return (
+    <SafeAreaView style={backgroundStyle}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={backgroundStyle}>
+        <Header
+          centerComponent={{text: 'MY TITLE', style: {color: '#fff'}}}
+          rightComponent={{icon: 'home', color: '#fff'}}
+        />
+        <View
+          style={{
+            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          }}>
+          <Button
+            title="Go to Details"
+            onPress={() => {
+              /* 1. Navigate to the Details route with params */
+              navigation.navigate('Details', {
+                itemId: 86,
+                otherParam: 'anything you want here',
+              });
+            }}
+          />
+          <Section title="Step One">
+            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+            screen and then come back to see your edits.
+          </Section>
+          <Section title="See Your Changes">
+            <ReloadInstructions />
+          </Section>
+          <Section title="Debug">
+            <DebugInstructions />
+          </Section>
+          <Section title="Learn More">
+            Read the docs to discover what to do next:
+          </Section>
+          <LearnMoreLinks />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function DetailsScreen({route, navigation}: DetailsScreenProps) {
+  /* 2. Get the param */
+  const {itemId, otherParam} = route.params;
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <LayerTest />
+      <Text>Details Screen</Text>
+      <Text>itemId: {JSON.stringify(itemId)}</Text>
+      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <Button
+        title="Go to Details... again"
+        onPress={() =>
+          navigation.push('Details', {
+            itemId: Math.floor(Math.random() * 100),
+          })
+        }
+      />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
+
+const Stack = createNativeStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            // headerTitle: props => <Text {...props} />,
+            headerRight: () => (
+              <Button
+                onPress={() => Alert.alert('This is a button!')}
+                title="Info"
+                color="#000"
+              />
+            ),
+          }}
+        />
+        {/* <GoogleLogin
+        clientId="client_id_goes_here"
+        render={(renderProps) => (
+          <button onClick={renderProps.onClick} disabled={renderProps.disabled}>
+            This is my custom Google button
+          </button>
+        )}
+        buttonText="Login"
+        onSuccess={onSuccessGoogleSignIn}
+        onFailure={onFailureGoogleSignIn}
+        cookiePolicy={"single_host_origin"}
+      />
+        <GoogleSigninButton
+          style={{width: 192, height: 48}}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={this._signIn}
+          disabled={this.state.isSigninInProgress}
+        /> */}
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        {/*<Stack.Screen name="Details">*/}
+        {/*  {props => <DetailsScreen {...props} />}*/}
+        {/*</Stack.Screen>*/}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+});
+
+export default App;
