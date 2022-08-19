@@ -1,10 +1,31 @@
 package com.example.demo.vo;
 
-import lombok.Data;
+import java.time.LocalDateTime;
 
-@Data
-public class Admin {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-	private String name;
+
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Admin extends BaseVO{ 
+
+	private int anum;
+	
+	private String adminID;
+	
+	private String nickName;
+	
+	private String adminPW;
+	
+	private String role;
+	
+	private String phonNumber;
+	
+	private LocalDateTime LastAccess;
 	
 }
