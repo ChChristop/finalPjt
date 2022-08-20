@@ -35,15 +35,17 @@ public class SecurityConfig {
 		//세션 사용 안함, Stateless 무상태
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		//cors 허가해주는 필터
-		//기존 login 양식 안씀
+		//기존 login 양식 안씀 일시적 잠금
 		.formLogin().disable()
 		//기본 httpBasic 안씀
 		.httpBasic().disable()
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
+//	    	.antMatchers("/api/admin")
+//	    	.hasAnyRole("MEMBER","ADMIN")
 		    .anyRequest().permitAll();
+		
 
 		return http.build();
 	}

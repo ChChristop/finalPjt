@@ -1,17 +1,20 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminDTO {
 
-	private int anum;
+	private Long anum;
 	
 	private String adminID;
 	
@@ -19,11 +22,11 @@ public class AdminDTO {
 	
 	private String adminPW;
 	
-	private String role;
+	private Set<String> role;
 	
 	private String phonNumber;
 	
-	private LocalDateTime LastAccess;
+	private LocalDateTime lastAccess;
 	
 	private LocalDateTime date;
 	

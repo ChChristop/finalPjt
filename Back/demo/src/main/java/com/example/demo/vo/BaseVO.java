@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
+
 abstract class BaseVO {
 
 	private LocalDateTime date;
