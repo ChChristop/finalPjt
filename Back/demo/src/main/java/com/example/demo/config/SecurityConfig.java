@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class SecurityConfig {
 	
-	private final CorsConfig corsConfig;
+	private final CorsConfig corsConfig = new CorsConfig();
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

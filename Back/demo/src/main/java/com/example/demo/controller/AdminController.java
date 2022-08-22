@@ -10,8 +10,8 @@ public class AdminController {
 	
 	@GetMapping()
 	public String test() {
-
-
+	
+		
 		return "TEST";
 	}
 
