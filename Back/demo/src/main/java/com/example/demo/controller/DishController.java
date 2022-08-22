@@ -29,6 +29,8 @@ public class DishController {
 	@PostMapping("/add")
 	public String add(@RequestBody Dish dish) {
 
+		
+		
 		dishService.add(dish);
 
 		return dish.getTitle() + "이 등록되었습니다.";
