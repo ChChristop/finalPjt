@@ -11,7 +11,6 @@ public class CorsConfig {
 
 	@Bean
 	public CorsFilter corsFilter() {
-		System.out.println("cors 확인 중");
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);

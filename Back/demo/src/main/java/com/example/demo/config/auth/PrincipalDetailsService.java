@@ -25,8 +25,9 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		System.out.println("PrincipalDetailsService : 진입");
+		log.info("PrincipalDetailsService : 진입");
 		
+		//DB 접속
 		Optional<Admin> result = adminDAO.findByAdminId(username);
 		
 		if(result.isEmpty()) {

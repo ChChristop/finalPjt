@@ -10,6 +10,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.demo.config.jwt.JwtAuthenticationFilter;
+import com.example.demo.config.jwt.JwtAuthorizationFilter;
+import com.example.demo.dao.AdminDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +26,8 @@ import lombok.extern.log4j.Log4j2;
 public class SecurityConfig {
 	
 	private final CorsConfig corsConfig;
+	
+	private final AdminDAO adminDAO;
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -42,8 +49,10 @@ public class SecurityConfig {
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
-//	    	.antMatchers("/api/admin")
-//	    	.hasAnyRole("MEMBER","ADMIN")
+	        .antMatchers("/api/logout/**")
+	      	.hasAnyRole("MEMBER","ADMIN")
+	    	.antMatchers("/api/admin")
+	    	.hasAnyRole("MEMBER","ADMIN")
 		    .anyRequest().permitAll();
 		
 
@@ -53,14 +62,13 @@ public class SecurityConfig {
 	public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			
+			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					//cors 실패를 방지해주는 필터
-					.addFilter(corsConfig.corsFilter());
-//					.addFilterBefore(new JwtAuthenticationFilter("/api/login",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-//					.addFilter(new JwtAuthorizationFilter(authenticationManager,userMapper));
-
+					.addFilter(corsConfig.corsFilter())
+					.addFilterBefore(new JwtAuthenticationFilter("/api/login",authenticationManager),UsernamePasswordAuthenticationFilter.class)
+					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO));
 		}
 	}
 	

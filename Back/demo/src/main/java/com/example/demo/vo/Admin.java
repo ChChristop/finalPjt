@@ -39,8 +39,10 @@ public class Admin extends BaseVO{
 			return new HashSet<>();
 		}
 		
-		return Stream.of(this.role.split(",")).collect(Collectors.toSet());
+		return Stream.of(this.role.split(",")).map(
+				r->"ROLE_"+r
+		).collect(Collectors.toSet());
+		}
 
 	}
 	
-}

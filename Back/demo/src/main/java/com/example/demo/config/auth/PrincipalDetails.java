@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.demo.dto.AdminDTO;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class PrincipalDetails implements UserDetails {
 
 	private AdminDTO adminDTO;
@@ -19,6 +22,7 @@ public class PrincipalDetails implements UserDetails {
 	private boolean check = false;
 
 	public PrincipalDetails(AdminDTO adminDTO, boolean check) {
+		log.info("PrincipalDetails 객체 생성");
 		this.adminDTO = adminDTO;
 		this.check = check;
 	}

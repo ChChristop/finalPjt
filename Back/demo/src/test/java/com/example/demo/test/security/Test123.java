@@ -1,6 +1,6 @@
 package com.example.demo.test.security;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +13,28 @@ import com.example.demo.vo.Admin;
 import lombok.AllArgsConstructor;
 
 @SpringBootTest
-@AllArgsConstructor
 public class Test123 {
 
-	private final PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
-	private final AdminDAO adminDAO;
+	@Autowired
+	private AdminDAO adminDAO;
+	
+//	@Test
+//	public void testEncode1() {
+//		
+//		List<Admin> result = adminDAO.getAllAdminList();
+//		
+//		System.out.println("==========================================");
+//		result.stream().forEach(admin->{
+//			System.out.println(admin.getAdminID());
+//			System.out.println(admin.getNickName());
+//			System.out.println(admin.getPhonNumber());
+//		});
+//		System.out.println("==========================================");
+//
+//	}
 	
 	@Test
 	public void testEncode() {
@@ -29,7 +45,7 @@ public class Test123 {
 				.adminID("kimwpdyd3")
 				.nickName("김제용")
 				.adminPW(passwordEncoder.encode("1234"))
-				.role("USER,MEMBER")
+				.role("ADMIN,MEMBER")
 				.phonNumber("01028415580")
 				.build();
 		

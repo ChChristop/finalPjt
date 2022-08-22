@@ -16,21 +16,36 @@ import com.example.demo.vo.Admin;
 @Mapper
 public interface AdminDAO {
 	
-	@Insert("INSERT INTO ADMIN(ADMINID, NICKNAME, ADMINPW, ROLE, phonNumber) "
+	//관리자 등록 쿼리
+	@Insert("INSERT INTO ADMIN(ADMINID, NICKNAME, ADMINPW, ROLE, PHONNUMBER) "
 			+ "VALUES(#{adminID},#{nickName},#{adminPW},#{role},#{phonNumber})")
 	@Options(useGeneratedKeys = true, keyProperty = "anum")
 	Long addAdmin(Admin admin);
 	
-	@Select("")
+	//관리자 전체 리스트 조회
+	@Select("SELECT ANUM, ADMINID, NICKNAME, PHONNUMBER, DATE, LASTACCESSDATE FROM ADMIN")
 	List<Admin> getAllAdminList();
 	
 	@Select("select adminID from admin where adminID = #{adminID}")
 	Optional<String> CheckByAdminId(String adminID);
 	
-	@Select("select * from admin where adminID = #{adminID}")
+	@Select("select ANUM, ADMINID, ADMINPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE from admin where adminID = #{adminID}")
 	Optional<Admin> findByAdminId(String adminID);
 	
-	@Update("")
-	Long updateAdmin(AdminDTO admin);
+	@Delete("delete from admin where ADMINID=#{adminID}")
+	Long removeAdminbyAnum(String adminID);
+	
+	@Update("UPDATE ADMIN "
+			+ "SET  ADMINPW=#{adminPW}, NICKNAME=#{nickname}, PHONNUMBER=#{phonNumber},Role=#{role} "
+			+ "WHERE ANUM=#{anum} ")
+	Long updateAdmin(Admin admin);
+	
+	
+	@Update("UPDATE ADMIN "
+			+ "SET lastAccessDate=current_timestamp " 
+			+ "WHERE ADMINID=#{adminID}")
+	void updateLastAceesDATEByAdmin(String adminID);
+	
+	
 
 }

@@ -18,40 +18,85 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-	
 	private final PasswordEncoder passwordEncoder;
-	
-	
+
 	private final AdminDAO adminDAO;
-	
+
+	// 등록 메서드
 	@Override
 	public Long register(AdminDTO adminDTO) {
-		
+
 		adminDTO.setAdminPW(passwordEncoder.encode(adminDTO.getAdminPW()));
-		
+
 		Admin admin = dtoTOvo(adminDTO);
-		
-		log.info("관리자 추가 중");
-		
+
+		log.info("관리자 추가 중 : " + adminDTO);
+
 		adminDAO.addAdmin(admin);
-		
+
 		return (long) admin.getAnum();
 	}
-
+	
+	
 	@Override
-	public boolean CheckadminID(String adminId) {
+	public AdminDTO findAmindByID(String adminId) {
+		log.info("관리자 조회 확인 : " + adminId);
 		
-		log.info("회원 아이디 중복 확인");
+		Optional<Admin> result = adminDAO.findByAdminId(adminId);
 		
-		Optional<String> result =  adminDAO.CheckByAdminId(adminId);
+		AdminDTO adminDTO;
 		
 		if(result.isPresent()) {
-			return true;
+			
+			Admin admin = result.get();
+			
+			adminDTO = voTOdto(admin);
+			
+			return adminDTO;
+			
 		}else {
-			return false;
+			
+			return null;
 		}
-		
-	}
 	
+	}
+
+	// 중복확인 메서드
+	@Override
+	public boolean CheckadminID(String adminId) {
+
+		log.info("관리자 아이디 중복 확인 : " + adminId);
+
+		Optional<String> result = adminDAO.CheckByAdminId(adminId);
+
+		return (result.isPresent()) ? true : false;
+	}
+
+	// 관리자 삭제 메서드
+	@Override
+	public String remove(String adminID) {
+
+		log.info("관리자 삭제 중 :" + adminID);
+
+		Long result = adminDAO.removeAdminbyAnum(adminID);
+
+		return (result == 1) ? adminID : null;
+	}
+
+	//관리자 수정 메서드
+	@Override
+	public Long update(AdminDTO adminDTO) {
+
+		adminDTO.setAdminPW(passwordEncoder.encode(adminDTO.getAdminPW()));
+
+		Admin admin = dtoTOvo(adminDTO);
+
+		log.info("관리자 수정 중 : " + adminDTO);
+
+		adminDAO.updateAdmin(admin);
+
+		return (long) admin.getAnum();
+
+	}
 
 }
