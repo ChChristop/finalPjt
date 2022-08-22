@@ -2,6 +2,7 @@ package com.example.demo.vo;
 
 public class Dish {
 
+	private int ddnum;
 	private int dnum; 				// 고유 번호
 	private String writer;			// 작성자
 	private String title;			// 음식명
