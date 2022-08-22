@@ -1,5 +1,5 @@
 mybatis:
-  type-aliases-package: com.finalPjt.project.dto
+  type-aliases-package: com.example.demo.vo
 server:
   port: 8080
 spring:
@@ -8,4 +8,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/final?useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 'computer'
+    password: 'computer' 
+  servlet:
+    multipart:
+      file-size-threshold: 1MB
+      location: C:/Image
+      max-file-size: 200MB
+      max-request-size: 215MB
