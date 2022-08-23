@@ -26,7 +26,7 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
     
-    @PostMapping("/uploadFile")
+   @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
 
@@ -39,9 +39,14 @@ public class FileController {
                 file.getContentType(), file.getSize());
     }
 
-    @PostMapping("/uploadMultipleFiles")
+   @PostMapping("/uploadMultipleFiles")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return Arrays.asList(files)
+        
+	   //C:\Image
+	   //name=test.png, StoreLocation=null, size=61357 bytes, isFormField=false, FieldName=files
+	   //filename
+	   
+	   return Arrays.asList(files)
                 .stream()
                 .map(file -> uploadFile(file))
                 .collect(Collectors.toList());

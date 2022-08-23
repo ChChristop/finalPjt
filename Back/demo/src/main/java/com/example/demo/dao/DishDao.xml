@@ -7,9 +7,16 @@
 		keyProperty="dnum">
 		insert into dish 
 		set writer=#{writer}, title=#{title}, ingredient=#{ingredient}, recipe=#{recipe},
-		url=#{url}, date = NOW(), picture=#{picture},
+		url=#{url}, date = NOW(),
 		t_time=#{t_time}, m_ingredient=#{m_ingredient}, cookery=#{cookery}, t_weather=#{t_weather}
 	</insert>
+	
+	<insert id="addPicture" parameterType="map" useGeneratedKeys="true"
+		keyProperty="pnum">
+		insert into dish_picture 
+		set pname=#{pname}, dnum=(select max(dnum) from dish)
+	</insert>
+
 
 	<select id="getOne" parameterType="Integer" resultType="Dish">
 		SELECT * FROM dish where dnum=#{dnum}

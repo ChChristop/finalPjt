@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.demo.vo.Dish;
 
@@ -30,6 +31,9 @@ public interface DishService {
 	 * 음식 정보 삭제하기 
 	 */
 	public void delete(int id);
+	
+	
+	public void addPicture(Map<String, Object> param);
 	
 	
 	

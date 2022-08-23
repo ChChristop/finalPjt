@@ -1,5 +1,7 @@
 package com.example.demo.vo;
 
+import java.util.ArrayList;
+
 public class Dish {
 
 	private int dnum; 				// 고유 번호
@@ -17,7 +19,7 @@ public class Dish {
 	private String m_ingredient;	// 주재료 → 육류, 채소, 해산물, 기타
 	private String cookery;			// 조리방법 → 끓이기,굽기,데치기(삶기), 튀김, 무침, 회
 	private String t_weather;		// 날씨 → 맑음, 비, 눈, 흐림
-	private String picture;			// 음식 사진
+	private ArrayList<String> pictures;			// 음식 사진
 	
 	
 	public int getDnum() {
@@ -110,11 +112,12 @@ public class Dish {
 	public void setT_weather(String t_weather) {
 		this.t_weather = t_weather;
 	}
-	public String getPicture() {
-		return picture;
+	public ArrayList<String> getPictures() {
+		return pictures;
 	}
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void setPictures(ArrayList<String> pictures) {
+		this.pictures = pictures;
 	}
+	
 	
 }

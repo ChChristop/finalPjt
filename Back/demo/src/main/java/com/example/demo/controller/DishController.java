@@ -1,6 +1,13 @@
 package com.example.demo.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demo.Service.DishService;
+import com.example.demo.payload.UploadFileResponse;
 import com.example.demo.vo.Dish;
 
 @RestController
@@ -29,12 +38,61 @@ public class DishController {
 	@PostMapping("/add")
 	public String add(@RequestBody Dish dish) {
 
-		
-		
+		//사진 추가
+		//pictureTest(file);
 		dishService.add(dish);
+		
+		for(int i = 0 ; i < dish.getPictures().size(); i++) {
+			System.out.println("dish.getPictures()::: " + dish.getPictures().get(i));
+			//dish.getPictures().get(i);
+			Map<String, Object> param = new HashMap<>();
+			//param.put("dnum", param);
+			String pname = dish.getPictures().get(i);
+			param.put("pname", pname);
+			dishService.addPicture(param);
+			String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+	                .path("/downloadFile/")
+	                .path(pname)
+	                .toUriString();
+			
+			//Path targetLocation = this.fileStorageLocation.resolve(pname);
+            //Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            //Files.copy(file.getInputStream(), "C:\\Temp\\엘라스틱 서치.PNG", StandardCopyOption.REPLACE_EXISTING);
+            
+			//UploadFileResponse uploadFileResponse = new UploadFileResponse(pname, fileDownloadUri, fileDownloadUri, i);
+			
+			//이미지 주소 		
+			//String imagePath = fileDownloadUri;// C:/upload/test.png
+			String imagePath = "C:\\upload\\"+pname;
+			//버퍼이미지 변수 정의		BufferedImage image = null;				
+			try {			
+				//버퍼이미지에 경로에 이미지를 읽어서 넣음			
+				BufferedImage image = ImageIO.read(new URL(imagePath));			
+				//이미지주소의 맨끝부분에 파일이름을 자름			
+				String fileNm = pname;			
+				//저장할 디렉터리와파일명 생성			
+				File file = new File("C:/Temp/"+fileNm);			
+				//해당경로로 gif형식의 이미지파일을 저장			
+				ImageIO.write(image, "png", file);
+				
+				//System.out.println("fileDownloadUri::: " + fileDownloadUri);
+				//fileDownloadUri::: http://localhost:8080/downloadFile/test.png
+				new UploadFileResponse(pname, fileDownloadUri,"image/png", 87314);
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+		}
+		
+		
 
 		return dish.getTitle() + "이 등록되었습니다.";
 	}
+
+	
 
 	/*
 	 * 음식 전체 리스트 불러오기

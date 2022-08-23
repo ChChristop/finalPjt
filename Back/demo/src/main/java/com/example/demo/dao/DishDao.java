@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,4 +21,8 @@ public interface DishDao {
 	public void upHit(int id);
 
 	public void delete(int id);
+
+	public void addPicture(Map<String, Object> param);
+	
+	
 }
