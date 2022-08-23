@@ -24,13 +24,16 @@ public class AdminDTO {
 	
 	private Set<String> role;
 	
-	private String phonNumber;
+	private String phoneNumber;
 	
 	private LocalDateTime lastAccess;
 	
 	private LocalDateTime date;
 	
 	private LocalDateTime modDate;
+	
+	//게시물 리스트
+//	private List<게시물> 게시물;
 	
 	
 }

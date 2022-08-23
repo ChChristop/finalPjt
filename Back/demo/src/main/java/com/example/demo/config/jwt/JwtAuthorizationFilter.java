@@ -1,6 +1,7 @@
 package com.example.demo.config.jwt;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -16,9 +17,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.example.demo.config.auth.PrincipalDetails;
 import com.example.demo.dao.AdminDAO;
+import com.example.demo.dao.JwtTokkenDAO;
 import com.example.demo.dto.AdminDTO;
-import com.example.demo.service.adminService.AdminService;
-import com.example.demo.vo.Admin;
+import com.example.demo.vo.AdminVO;
+import com.example.demo.vo.JwtVO;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -27,11 +29,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 	private AdminDAO adminDAO;
 
-	private AdminService adminService;
+	private JwtTokkenDAO jwtTokkenDAO;
 
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, AdminDAO adminDAO) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, AdminDAO adminDAO,
+			JwtTokkenDAO jwtTokkenDAO) {
 		super(authenticationManager);
 		this.adminDAO = adminDAO;
+		this.jwtTokkenDAO = jwtTokkenDAO;
 	}
 
 	@Override
@@ -42,10 +46,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		String jwtHeader = request.getHeader(SECRETKEY_HEADER_STRING);
 
-		String jwtRefreshHeader = request.getHeader(REFRESHKEY_HEADER_STRING);
+		log.info("jwtHeader : 확인 중 " + jwtHeader);
+
+		String jwtRefreshHeader = request.getHeader(REFRESHKEY_HEADER_STRING) != null
+				? request.getHeader(REFRESHKEY_HEADER_STRING)
+				: "";
 
 		// Header가 있는지 확인
-		if (jwtHeader == null || jwtRefreshHeader == null || !((String) jwtHeader).startsWith(TOKEN_PREFIX)) {
+		if (jwtHeader == null || !((String) jwtHeader).startsWith(TOKEN_PREFIX)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -54,43 +62,54 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		String jwtRefreahToken = jwtRefreshHeader.replace("Bearer ", "");
 
-		log.info("jwtToken 확인중 : " + jwtToken);
-
-
-
 		String[] checkJWTToken, checkRefreshToken = new String[2];
 
+		String ip = (String) request.getHeader("X-FORWARDED-FOR");
+
+		if (ip == null)
+			ip = request.getRemoteAddr();
+
 		try {
+			// jwtToken이 유효하지 않을 경우 checkJWTToken 길이는 0
 			checkJWTToken = vaildateJwtToken(jwtToken, true);
+
+			// jwtRefreahToken이 유효하지 않을 경우 checkRefreshToken 길이는 0
 			checkRefreshToken = vaildateJwtToken(jwtRefreahToken, false);
+			
+			System.out.println(Arrays.toString(checkJWTToken));
 
 			if (checkJWTToken.length != 0) {
 
-				if (check(checkJWTToken) == null) {
+				log.info("jwtToken 확인중 : " + jwtToken);
 
-					throw new Exception();
-
-				};
-
-				chain.doFilter(request, response);
-
-				return;
-			}
-			
-			log.info("jwtRefreahToken 확인중 : " + jwtRefreahToken);
-			
-			if (checkRefreshToken.length != 0) {
-
-				PrincipalDetails principalDetails = check(checkRefreshToken);
+				PrincipalDetails principalDetails = check(checkJWTToken, ip, false);
 				
 				if (principalDetails == null) {
 
 					throw new Exception();
+				}
+				;
 
-				};
+				chain.doFilter(request, response);
+
+				return;
+
+				// Access 토근의 유효시간이 끝났다면 refreshToken 조회
+			} else if (checkRefreshToken.length != 0) {
+
+				log.info("jwtRefreahToken 확인중 : " + jwtRefreahToken);
+
+				PrincipalDetails principalDetails = check(checkRefreshToken, ip, true);
+
+				if (principalDetails == null) {
+
+					throw new Exception();
+
+				}
+				;
 
 				String newJWTToken = CreateJWTToken(principalDetails);
-				
+
 				log.info("newJWTToken : " + newJWTToken);
 
 				response.addHeader(SECRETKEY_HEADER_STRING, newJWTToken);
@@ -104,17 +123,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 			e.printStackTrace();
 			log.error(e.getMessage());
+			
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 	}
 
-	public PrincipalDetails check(String[] jwt) {
+	public PrincipalDetails check(String[] jwt, String ip, boolean check) {
 
-		Optional<Admin> result = adminDAO.findByAdminId(jwt[1]);
+		Optional<AdminVO> result = adminDAO.findAdminIdByID(jwt[1]);
 
-		Admin admin = null;
-		
-		System.out.println(result.toString());
+		AdminVO admin = null;
+
+		log.info("result.isPresent() ");
 
 		if (!(result.isPresent())) {
 			return null;
@@ -122,20 +145,31 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		admin = result.get();
 
-		AdminDTO adminDTO = AdminDTO.builder()
-				.anum(admin.getAnum())
-				.adminID(admin.getAdminID())
-				.adminPW(admin.getAdminPW())
-				.role(admin.getRoleList())
-				.build();
+		if (check == true) {
+
+			System.out.println(jwt[1] + "  " + ip);
+
+			Optional<JwtVO> result1 = jwtTokkenDAO.findJWTByIdandIp(jwt[1], ip);
+
+			JwtVO jwtCheck = null;
+
+			jwtCheck = result1.get();
+
+			if (jwtCheck.getJwt() != jwt[0]) {
+				return null;
+			}
+		}
+
+		AdminDTO adminDTO = AdminDTO.builder().anum(admin.getAnum()).adminID(admin.getAdminID())
+				.adminPW(admin.getAdminPW()).role(admin.getRoleList()).build();
 
 		PrincipalDetails principalDetails = new PrincipalDetails(adminDTO, false);
 
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
-		
+
 		System.out.println(principalDetails.getAuthorities());
-		
+
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		return principalDetails;

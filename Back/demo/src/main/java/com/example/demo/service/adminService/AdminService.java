@@ -1,28 +1,34 @@
 package com.example.demo.service.adminService;
 
 import com.example.demo.dto.AdminDTO;
-import com.example.demo.vo.Admin;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultDTO;
+import com.example.demo.vo.AdminVO;
 
 
 public interface AdminService {
 	
-	AdminDTO findAmindByID(String id);
+	AdminDTO findAdmin(long anum);
+	
+	AdminDTO findAdmin(String adminId);
 	
 	Long register(AdminDTO adminDTO);
 	
 	boolean CheckadminID(String id);
 	
-	String remove(String adminID);
+	long remove(long anum);
 	
 	Long update(AdminDTO adminDTO);
 	
-	default Admin dtoTOvo(AdminDTO adminDTO) {
+	PageResultDTO<AdminVO, AdminDTO> getAmindList(PageRequestDTO pageRequestDTO);
+	
+	default AdminVO dtoTOvo(AdminDTO adminDTO) {
 		
-		Admin admin = Admin.builder()
+		AdminVO admin = AdminVO.builder()
 				.adminID(adminDTO.getAdminID())
 				.adminPW(adminDTO.getAdminPW())
 				.nickName(adminDTO.getNickName())
-				.phonNumber(adminDTO.getPhonNumber())
+				.phoneNumber(adminDTO.getPhoneNumber())
 				.role("MEMBER,ADMIN")
 				.build();
 		
@@ -30,15 +36,15 @@ public interface AdminService {
 		
 	}
 	
-	default AdminDTO voTOdto(Admin admin) {
+	default AdminDTO voTOdto(AdminVO admin) {
 
 		AdminDTO adminDTO = AdminDTO.builder()
 				.anum(admin.getAnum())
 				.adminID(admin.getAdminID())
 				.nickName(admin.getNickName())
-				.phonNumber(admin.getPhonNumber())
+				.phoneNumber(admin.getPhoneNumber())
 				.role(admin.getRoleList())
-				.lastAccess(admin.getLastAccess())
+				.lastAccess(admin.getLastAccessDate())
 				.date(admin.getDate())
 				.modDate(admin.getModDate())
 				.build();

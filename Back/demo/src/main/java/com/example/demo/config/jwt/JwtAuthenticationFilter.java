@@ -1,13 +1,16 @@
 package com.example.demo.config.jwt;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,9 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import com.example.demo.config.auth.PrincipalDetails;
-import com.example.demo.dao.JwtTokkenDAO;
 import com.example.demo.dto.AdminDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -26,6 +27,7 @@ import lombok.extern.log4j.Log4j2;
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter implements JwtProperties {
 
 	private AuthenticationManager authenticationManager;
+	
 	
 	public JwtAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
 		super(defaultFilterProcessesUrl, authenticationManager);
@@ -38,26 +40,75 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		
 		log.info("JwtAuthneticationFilter : 로그인 시도 중 ");
 		
-		ObjectMapper om = new ObjectMapper();
+		// 관리자 또는 회원으로 나누어져 로그인 진행으로 파라미터를 읽을 필요가 있음 
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader((ServletInputStream)request.getInputStream(),"utf-8"
+				));
 		
-		AdminDTO adminDTO = null;
+		StringBuffer sb = new StringBuffer("");
 		
-		try {
-			adminDTO = om.readValue(request.getInputStream(), AdminDTO.class);
-		}catch(Exception e) {
-			e.printStackTrace();
+		String temp;
+		
+		while((temp = br.readLine()) != null) {
+			sb.append(temp);	
 		}
 		
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-				adminDTO.getAdminID(), adminDTO.getAdminPW());
+		br.close();
 		
-		//세션 생성
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
+		//postman Json 데이터와 html 에서 읽은 Json 데이터와 양식이 다름
+		String[] params = sb.toString().split("&");
+		
+		String[] param = new String[3];
+		
+		//postman으로 받을 시
+		if(params.length == 1) {
+			
+			params = params[0].replaceAll("[{}\" ]+","").split(",");
+	
+			param[0] = params[0].substring(params[0].lastIndexOf(":")+1);
+			param[1] = params[1].substring(params[1].lastIndexOf(":")+1);
+			param[2] = params[2].substring(params[2].lastIndexOf(":")+1);
+		}else {
+			param[0] = params[0].substring(params[0].lastIndexOf("=")+1);
+			param[1] = params[1].substring(params[1].lastIndexOf("=")+1);
+			param[2] = params[2].substring(params[2].lastIndexOf("=")+1);
+		
+		}
+	
+			
+		//html로 받을 시	
 
+	
 		
-//		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 		
-		return authentication;
+		System.out.println(Arrays.toString(param));
+//		ObjectMapper om = new ObjectMapper();
+		
+		if(param[2].equals("true")) {
+	
+			System.out.println("==========================================");
+			System.out.println("확인 중");
+			AdminDTO adminDTO = AdminDTO.builder()
+					.adminID(param[0])
+					.adminPW(param[1])
+					.build();
+			
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+					adminDTO.getAdminID(), adminDTO.getAdminPW());
+			
+			//세션 생성
+			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+			
+			System.out.println("authentication123 " + authentication.toString());
+			
+//			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+			
+			return authentication;
+		}else {
+			return null;
+		}
+		
+
 	}
 
 	@Override
@@ -81,8 +132,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		response.addHeader(REFRESHKEY_HEADER_STRING, TOKEN_PREFIX + jwtRefreshToken);
 		
 		chain.doFilter(request, response);
-
-		
+	
 
 	}
 

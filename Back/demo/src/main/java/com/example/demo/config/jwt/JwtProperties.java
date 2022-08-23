@@ -50,6 +50,12 @@ public interface JwtProperties {
 
 	default String[] vaildateJwtToken(String jwtToken, boolean check) throws Exception {
 		
+		if(jwtToken == "") {
+			return new String[0];
+		}
+		
+		Log.info("vaildateJwtToken 처리 중");
+		
 		String key = (check)?SECRETKEY:REFRESHKEY;
 		
 		String[] result = new String[2];
@@ -68,15 +74,14 @@ public interface JwtProperties {
 			
 			String expireDateByJwtTokenToString = expireLocalDateTimeByJwtToken.format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
 			
-			String getId = JWT.require(Algorithm.HMAC512(key))
+			String getID = JWT.require(Algorithm.HMAC512(key))
 					.build()
 					.verify(jwtToken)
 					.getClaim("adminID")
 					.asString();
-			
-			
+
 			result[0] = expireDateByJwtTokenToString;
-			result[1] = getId;
+			result[1] = getID;
 			
 			return result;
 			

@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.example.demo.config.jwt.JwtAuthenticationFilter;
 import com.example.demo.config.jwt.JwtAuthorizationFilter;
 import com.example.demo.dao.AdminDAO;
+import com.example.demo.dao.JwtTokkenDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,6 +29,8 @@ public class SecurityConfig {
 	private final CorsConfig corsConfig;
 	
 	private final AdminDAO adminDAO;
+	
+	private final JwtTokkenDAO jwtTokkenDAO;
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
@@ -51,8 +54,8 @@ public class SecurityConfig {
 	    .authorizeRequests()
 	        .antMatchers("/api/logout/**")
 	      	.hasAnyRole("MEMBER","ADMIN")
-	    	.antMatchers("/api/admin")
-	    	.hasAnyRole("MEMBER","ADMIN")
+	    	.antMatchers("/api/admin/**")
+	    	.hasAnyRole("ADMIN")
 		    .anyRequest().permitAll();
 		
 
@@ -63,12 +66,13 @@ public class SecurityConfig {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 			
+			
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					//cors 실패를 방지해주는 필터
 					.addFilter(corsConfig.corsFilter())
 					.addFilterBefore(new JwtAuthenticationFilter("/api/login",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO));
+					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,jwtTokkenDAO));
 		}
 	}
 	

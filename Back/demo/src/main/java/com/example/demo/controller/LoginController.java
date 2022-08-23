@@ -28,15 +28,28 @@ public class LoginController {
 	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@PostMapping("/api/login")
 	public ResponseEntity<String> login (HttpServletRequest request) {
+		
 		log.info("/api/login RestController 접근");
 		
 		String refreshToken = (String) request.getAttribute("refreshToken");
 		
 		String id = (String) request.getAttribute("id");
 		
-		jwtTokkenDAO.createJWTTokenInDB(id,refreshToken);
+		String ip = (String) request.getHeader("X-FORWARDED-FOR");
 		
-		adminDAO.updateLastAceesDATEByAdmin(id);
+		if (ip == null)
+			ip = request.getRemoteAddr();
+		
+		
+		boolean checkToken = jwtTokkenDAO.updateJWTByAdminIdAndIp(refreshToken, id, ip);
+		
+		if(!checkToken) {
+			
+			jwtTokkenDAO.createJWTTokenInDB(id,refreshToken,ip);
+		
+		}
+		
+		adminDAO.updateLastAceesDateByAdminID(id);
 		
 		return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
 		
@@ -48,7 +61,7 @@ public class LoginController {
 
 		jwtTokkenDAO.refreshTokenRemove(id);
 		
-		adminDAO.updateLastAceesDATEByAdmin(id);
+		adminDAO.updateLastAceesDateByAdminID(id);
 		
 		log.info("Logout Success");
 		

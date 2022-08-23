@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dto.AdminDTO;
-import com.example.demo.vo.Admin;
+import com.example.demo.vo.AdminVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,21 +28,21 @@ public class PrincipalDetailsService implements UserDetailsService{
 		log.info("PrincipalDetailsService : 진입");
 		
 		//DB 접속
-		Optional<Admin> result = adminDAO.findByAdminId(username);
+		Optional<AdminVO> result = adminDAO.findAdminIdByID(username);
 		
 		if(result.isEmpty()) {
 			throw new UsernameNotFoundException("Check ID");
 		}
 		
-		Admin admin = result.get();
+		AdminVO admin = result.get();
 		
 		AdminDTO adminDTO = AdminDTO.builder()
 				.anum(admin.getAnum())
 				.adminID(admin.getAdminID())
 				.nickName(admin.getNickName())
 				.adminPW(admin.getAdminPW())
-				.phonNumber(admin.getPhonNumber())
-				.lastAccess(admin.getLastAccess())
+				.phoneNumber(admin.getPhoneNumber())
+				.lastAccess(admin.getLastAccessDate())
 				.date(admin.getDate())
 				.modDate(admin.getModDate())
 				.role(admin.getRoleList())

@@ -1,16 +1,14 @@
 package com.example.demo.test.security;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.dao.AdminDAO;
-import com.example.demo.vo.Admin;
-
-import lombok.AllArgsConstructor;
+import com.example.demo.dao.MemberDAO;
+import com.example.demo.vo.AdminVO;
 
 @SpringBootTest
 public class Test123 {
@@ -21,37 +19,46 @@ public class Test123 {
 	@Autowired
 	private AdminDAO adminDAO;
 	
+	@Autowired
+	private MemberDAO memberDAO;
+
+//	@Test
+//	public void testMemerDAO() {
+//		
+//		MemberVO member = MemberVO.builder()
+//				.memberID("abc@abc.com")
+//				.pw(passwordEncoder.encode("1111"))
+//				.nickname("abc")
+//				.role("MEMBER")
+//				.phoneNumber("01012341234")
+//				.build();
+//		
+//		memberDAO.addMember(member);
+//	}
+	
 //	@Test
 //	public void testEncode1() {
 //		
-//		List<Admin> result = adminDAO.getAllAdminList();
+//		adminDAO.findByAdminId("kimwpdyd2");
 //		
-//		System.out.println("==========================================");
-//		result.stream().forEach(admin->{
-//			System.out.println(admin.getAdminID());
-//			System.out.println(admin.getNickName());
-//			System.out.println(admin.getPhonNumber());
-//		});
-//		System.out.println("==========================================");
-//
+//		
 //	}
 	
-	@Test
-	public void testEncode() {
-		
-		
-	
-		Admin admin = Admin.builder()
-				.adminID("kimwpdyd3")
-				.nickName("김제용")
-				.adminPW(passwordEncoder.encode("1234"))
-				.role("ADMIN,MEMBER")
-				.phonNumber("01028415580")
-				.build();
-		
-		
-		adminDAO.addAdmin(admin);
-		
-	}
+//	@Test
+//	public void testEncode() {
+//		
+//	
+//			
+//			AdminVO admin = AdminVO.builder()
+//					.adminID("abc@abc.com")
+//					.nickName("abc")
+//					.adminPW(passwordEncoder.encode("1234"))
+//					.role("ADMIN,MEMBER")
+//					.phonNumber("01012344568")
+//					.build();
+//			
+//			adminDAO.addAdmin(admin);
+//
+//	}
 	
 }
