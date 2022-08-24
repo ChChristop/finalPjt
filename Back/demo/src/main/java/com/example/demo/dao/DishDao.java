@@ -29,6 +29,8 @@ public interface DishDao {
 	public void delPicture(int dnum);
 
 	public void editPicture(Map<String, Object> param);
+
+	public int dishLike(String mnum, int dnum);
 	
 	
 }

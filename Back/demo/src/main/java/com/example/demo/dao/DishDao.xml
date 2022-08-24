@@ -60,7 +60,11 @@
 	<select id="get" parameterType="Integer" resultMap="Dish">
 		select d.*, dp.pictures 
 		from dish d left outer join (select dnum, group_concat(pname) pictures
-		from dish_picture group by dnum) dp on d.dnum = dp.dnum;
+		from dish_picture group by dnum) dp on d.dnum = dp.dnum
+	</select>
+	
+	<select id="dishLike" parameterType="String" resultType="Integer">
+		select count(*) from ate where dnum=#{dnum} and mnum=#{mnum};
 	</select>
 	
 	<update id="edit" parameterType="map">

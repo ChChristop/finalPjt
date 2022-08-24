@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,18 +103,30 @@ public class DishController {
 	}
 	
 	@GetMapping("/get/{dnum}")
-	public List<Dish> getOne(@PathVariable int dnum) {
+	public Map<String,Object> getOne(@PathVariable int dnum, String mnum ) {
+		Map<String,Object> param = new HashMap<>();
 		/*
 		 * 조회수 +1 
 		 */
 		dishService.upHit(dnum);
-		
 		/*
-		 * 아직 테이블 완성 안해서 못함 
-		 * 			: 좋아요 테이블 조회해서 로그인한 사람 -> 본 글에 대한 좋아요 눌렀는지 안눌렀는지 체크 
+		 * 프론트에서 회원 아이디 받기
+		 * 이건 게시물, 회원번호 받아와서 좋아요 체크했나 확인하는 메소드
+		 * 상의 : 좋아요 어떻게 구현할 것인가?
+		 * 		-> 회원테이블 없어서 조회 못해
 		 */
-		
-		return dishService.getOne(dnum);
+		/*int check = dishService.dishLike(mnum,dnum);
+		String str = "";
+			if(check == 1) { //본 게시물 좋아요 눌렀음
+				str = "liked";
+			}
+		*/
+		//프론트에서 받을때 주의!
+		List<Dish> getOne = dishService.getOne(dnum);
+		param.put("getOne",getOne);
+		//param.put("liked", str);
+
+		return param;
 	}
 	
 
@@ -131,6 +142,12 @@ public class DishController {
 		
 		return "글이 삭제되었습니다.";
 	}
+	
+	/*
+	 * 좋아요  
+	 */
+	
+	
 	
 	
 	

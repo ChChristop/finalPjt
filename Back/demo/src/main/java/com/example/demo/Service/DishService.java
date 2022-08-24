@@ -41,6 +41,11 @@ public interface DishService {
 	public void delPicture(int dnum);
 	
 	public void editPicture(Map<String, Object> param);
+	
+	/*
+	 * 본 게시물 좋아요 눌렀나 확인
+	 */
+	public int dishLike(String mnum, int dnum);
 
 	
 	
