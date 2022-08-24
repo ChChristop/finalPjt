@@ -32,7 +32,7 @@ public class DishServiceImpl implements DishService {
 	}
 	
 	@Override
-	public Dish getOne(int id) {
+	public List<Dish> getOne(int id) {
 		
 		return dishDao.getOne(id);
 	}  
@@ -60,8 +60,17 @@ public class DishServiceImpl implements DishService {
 		dishDao.addPicture(param);
 	}
 
-	
-	
-	
+	@Override
+	public void delPicture(int dnum) {
+		dishDao.delPicture(dnum);
+		
+	}
+
+	@Override
+	public void editPicture(Map<String, Object> param) {
+		dishDao.editPicture(param);
+		
+	}
+
 	
 }

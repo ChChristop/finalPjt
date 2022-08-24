@@ -18,7 +18,7 @@ public interface DishService {
 	/*
 	 * 음식 정보 한개 불러오기
 	 */
-	public Dish getOne(int id);
+	public List<Dish> getOne(int id);
 	/*
 	 * 음식 정보 수정하기
 	 */
@@ -31,10 +31,17 @@ public interface DishService {
 	 * 음식 정보 삭제하기 
 	 */
 	public void delete(int id);
-	
-	
+	/*
+	 * 사진들
+	 */
 	public void addPicture(Map<String, Object> param);
+	/*
+	 * 사진 수정하려면 그냥 기존 사진 삭제하기
+	 */
+	public void delPicture(int dnum);
 	
+	public void editPicture(Map<String, Object> param);
+
 	
 	
 }

@@ -14,7 +14,7 @@ public interface DishDao {
 
 	public void add(Dish dish);
 
-	public Dish getOne(int id);
+	public List<Dish> getOne(int id);
 
 	public void edit(Dish dish);
 
@@ -23,6 +23,12 @@ public interface DishDao {
 	public void delete(int id);
 
 	public void addPicture(Map<String, Object> param);
+
+	public void pictures(int dnum);
+
+	public void delPicture(int dnum);
+
+	public void editPicture(Map<String, Object> param);
 	
 	
 }
