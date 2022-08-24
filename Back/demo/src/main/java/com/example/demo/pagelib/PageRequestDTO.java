@@ -27,7 +27,6 @@ public class PageRequestDTO {
 		this.size = 10;
 		this.align = false;
 		this.basis = "pk";
-		
 	} 
 
 }

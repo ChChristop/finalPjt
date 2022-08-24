@@ -27,7 +27,7 @@ public interface AdminDAO {
 	List<AdminVO> getAdminList(String basis, String align, int page, int size);
 	
 	//관리자 아이디 중복체크
-	@Select("SEELCT ADMINID FROM ADMIN WHERE ADMINID = #{adminID}")
+	@Select("SELECT ADMINID FROM ADMIN WHERE ADMINID = #{adminID}")
 	Optional<String> CheckByAdminId(String adminID);
 	
 	//관리자 식별자로 관리자 정보 조회
@@ -39,12 +39,12 @@ public interface AdminDAO {
 	Optional<AdminVO> findAdminIdByID(String adminID);
 	
 	//관리자 식별자로 관리자 정보 삭제
-	@Delete("DELETE FROM MEMBER WHERE ANUM=#{anum}")
+	@Delete("DELETE FROM ADMIN WHERE ANUM=#{anum}")
 	Long removeAdminByAnum(long anum);
 	
 	//관리자 식별자로 관리자 정보 수정
 	@Update("UPDATE ADMIN "
-			+ "SET  ADMINPW=#{adminPW}, NICKNAME=#{nickname}, PHONENUMBER=#{phoneNumber}, Role=#{role} "
+			+ "SET  ADMINPW=#{adminPW}, NICKNAME=#{nickName}, PHONENUMBER=#{phoneNumber} "
 			+ "WHERE ANUM=#{anum} ")
 	Long updateAdminByAnum(AdminVO admin);	
 	
@@ -60,6 +60,11 @@ public interface AdminDAO {
 			+ "WHERE ADMINID=#{adminID}")
 	void updateLastAceesDateByAdminID(String adminID);
 	
+	@Update("UPDATE ADMIN "
+			+ "SET modDate=current_timestamp " 
+			+ "WHERE ANUM=#{anum}")
+	void updateModDateByAnum(long anum);
+
 	//관리자 총 숫자(조건 지정 가능하게 해야함)
 	@Select("SELECT COUNT(*) FROM ADMIN")
 	int countAdminAllList();

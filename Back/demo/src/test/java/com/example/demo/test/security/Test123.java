@@ -2,13 +2,14 @@ package com.example.demo.test.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Commit;
 
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.MemberDAO;
 import com.example.demo.vo.AdminVO;
+import com.example.demo.vo.MemberVO;
 
 @SpringBootTest
 public class Test123 {
@@ -18,10 +19,13 @@ public class Test123 {
 	
 	@Autowired
 	private AdminDAO adminDAO;
+//	
+//	@Autowired
+//	private MemberDAO memberDAO;
+//	
 	
-	@Autowired
-	private MemberDAO memberDAO;
-
+	
+//
 //	@Test
 //	public void testMemerDAO() {
 //		
@@ -35,7 +39,6 @@ public class Test123 {
 //		
 //		memberDAO.addMember(member);
 //	}
-	
 //	@Test
 //	public void testEncode1() {
 //		
@@ -44,21 +47,19 @@ public class Test123 {
 //		
 //	}
 	
-//	@Test
-//	public void testEncode() {
-//		
-//	
-//			
-//			AdminVO admin = AdminVO.builder()
-//					.adminID("abc@abc.com")
-//					.nickName("abc")
-//					.adminPW(passwordEncoder.encode("1234"))
-//					.role("ADMIN,MEMBER")
-//					.phonNumber("01012344568")
-//					.build();
-//			
-//			adminDAO.addAdmin(admin);
-//
-//	}
+	@Test
+	public void testEncode() {
+
+			AdminVO admin = AdminVO.builder()
+					.adminID("final")
+					.nickName("final")
+					.adminPW(passwordEncoder.encode("1234"))
+					.role("ADMIN,MEMBER")
+					.phoneNumber("01012345678")
+					.build();
+			
+			adminDAO.addAdmin(admin);
+
+	}
 	
 }

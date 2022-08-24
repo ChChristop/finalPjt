@@ -2,11 +2,14 @@ package com.example.demo.vo;
 
 import java.time.LocalDateTime;
 
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Component
 @Builder
 @Getter
 @NoArgsConstructor
@@ -14,13 +17,13 @@ import lombok.NoArgsConstructor;
 public class MemberVO extends BaseVO{
 	
 	//회원식별자
-	private int mnum;
+	private long mnum;
 	
 	//아이디이자 이메일
 	private String memberID;
 	
 	//비밀번호
-	private String pw;
+	private String memberPW;
 	
 	//닉네임
 	private String nickname;

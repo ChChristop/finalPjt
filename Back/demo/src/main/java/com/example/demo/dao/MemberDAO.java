@@ -17,8 +17,8 @@ import com.example.demo.vo.MemberVO;
 public interface MemberDAO {
 
 	//회원 등록 쿼리
-	@Insert("INSERT INTO MEMBER(MEMBERID, PW, NICKNAME, PHONENUMBER, ROLE) "
-			+ "VALUES(#{memberID},#{pw},#{nickname},#{phoneNumber},#{role})")
+	@Insert("INSERT INTO MEMBER(MEMBERID, MEMBERPW, NICKNAME, PHONENUMBER, ROLE) "
+			+ "VALUES(#{memberID},#{memberPW},#{nickname},#{phoneNumber},#{role})")
 	@Options(useGeneratedKeys = true, keyProperty = "mnum")
 	Long addMember(MemberVO member);
 	
@@ -27,27 +27,48 @@ public interface MemberDAO {
 	
 	//회원 아이디 중복 체크
 	@Select("SELECT MEMBERID FROM MEMBER WHERE MEMBERID = #{memberID}")
-	Optional<String> CheckByMemberId(String memberID);
+	Optional<String> checkByMemberId(String memberID);
+	
+	//식별자로로 회원 정보 조회
+	@Select("SELECT MNUM, MEMBERID, MEMBERPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE "
+			+ "FROM MEMBER "
+			+ "WHERE mnum = #{mnum}")
+	Optional<MemberVO> findMemberbyMnum(long mnum);
 	
 	//아이디로 회원 정보 조회
-	@Select("SELECT MNUM, MEMBERID, PW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE FROM MEMBER WHERE mnum = #{mnum}")
-	Optional<AdminVO> findByMemberId(int mnum);
+	@Select("SELECT MNUM, MEMBERID, MEMBERPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE, PHONENUMBER, MODDATE "
+			+ "FROM MEMBER "
+			+ "WHERE MEMBERID = #{memberID}")
+	Optional<MemberVO> findMemberbyMemberID(String memberID);
+	
 	
 	//회원 탈퇴
 	@Delete("DELETE FROM MEMBER WHERE mnum=#{munm}")
-	Long removeMemberbyMemberId(int mnum);
+	Long removeMemberbyMnum(long mnum);
 	
 	//회원 정보 수정
 	@Update("UPDATE MEMBER "
-			+ "SET  PW=#{pw}, NICKNAME=#{nickname}, PHONENUMBER=#{phoneNumber} "
+			+ "SET  MEMBERPW=#{memberPW}, NICKNAME=#{nickname}, PHONENUMBER=#{phoneNumber} "
 			+ "WHERE MNUM=#{mnum} ")
 	Long updateAdminByMnum(MemberVO member);
 	
-	//회원 최종 접속시간 업데이트
+	//식별자로 회원 최종 접속시간 업데이트
 	@Update("UPDATE MEMBER "
 			+ "SET LASTACCESSDATE=current_timestamp " 
-			+ "WHERE MNUM=#{MNUM}")
-	void updateLastAceesDATEByAdmin(int mnum);
+			+ "WHERE MNUM=#{mnum}")
+	void updateLastAceesDATEByMnum(long mnum);
+	
+	//아이디로 회원 최종 접속시간 업데이트
+	@Update("UPDATE MEMBER "
+			+ "SET LASTACCESSDATE=current_timestamp " 
+			+ "WHERE MEMBERID=#{memberID}")
+	void updateLastAceesDATEByMemberID(String memberID);
+	
+	
+	@Update("UPDATE MEMBER "
+			+ "SET modDate=current_timestamp " 
+			+ "WHERE MNUM=#{mnum}")
+	void updateModDateByMnum(long mnum);
 	
 	
 	//회원 총 숫자

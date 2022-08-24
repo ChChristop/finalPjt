@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,7 +31,7 @@ public class AdminController {
 	private final AdminService adminService;
 
 	// 관리자 아이디 중복 체크 URI
-	@GetMapping("/adminID/check/{adminID}")
+	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
 		// 관리자 아이디 중복 체크 true or false 사용
@@ -77,7 +78,7 @@ public class AdminController {
 
 	public ResponseEntity<Long> addAdmin(@RequestBody AdminDTO adminDTO) {
 
-		Log.info("Controller /register 접근");
+		log.info("Controller /register 접근");
 
 		// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
 		Long result = adminService.register(adminDTO);
@@ -100,6 +101,7 @@ public class AdminController {
 
 	// 관리자 수정 URI
 	@PostMapping("/update")
+
 	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
 		log.info("Update admin : " + adminDTO);

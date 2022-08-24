@@ -39,7 +39,7 @@ public class PageResultDTO<VO,DTO> {
 		
 		this.size = pageRequestDTO.getSize();
 		
-		this.totalPage = totalpage;
+		this.totalPage = (int)Math.ceil(totalpage / (double)this.size);
 		
 		makePageList();
 	}

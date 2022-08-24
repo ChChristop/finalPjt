@@ -15,26 +15,34 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.example.demo.config.auth.AdminCheck;
 import com.example.demo.config.auth.PrincipalDetails;
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.JwtTokkenDAO;
+import com.example.demo.dao.MemberDAO;
 import com.example.demo.dto.AdminDTO;
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.vo.AdminVO;
 import com.example.demo.vo.JwtVO;
+import com.example.demo.vo.MemberVO;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements JwtProperties {
 
 	private AdminDAO adminDAO;
+	
+	private MemberDAO memberDAO;
 
 	private JwtTokkenDAO jwtTokkenDAO;
 
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, AdminDAO adminDAO,
-			JwtTokkenDAO jwtTokkenDAO) {
+			MemberDAO memberDAO, JwtTokkenDAO jwtTokkenDAO) {
 		super(authenticationManager);
 		this.adminDAO = adminDAO;
+		this.memberDAO = memberDAO;
 		this.jwtTokkenDAO = jwtTokkenDAO;
 	}
 
@@ -62,10 +70,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		String jwtRefreahToken = jwtRefreshHeader.replace("Bearer ", "");
 
-		String[] checkJWTToken, checkRefreshToken = new String[2];
+		String[] checkJWTToken, checkRefreshToken = new String[3];
 
 		String ip = (String) request.getHeader("X-FORWARDED-FOR");
 
+		PrincipalDetails principalDetails = null;
+
+		
 		if (ip == null)
 			ip = request.getRemoteAddr();
 
@@ -76,38 +87,33 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			// jwtRefreahToken이 유효하지 않을 경우 checkRefreshToken 길이는 0
 			checkRefreshToken = vaildateJwtToken(jwtRefreahToken, false);
 			
-			System.out.println(Arrays.toString(checkJWTToken));
-
 			if (checkJWTToken.length != 0) {
 
 				log.info("jwtToken 확인중 : " + jwtToken);
 
-				PrincipalDetails principalDetails = check(checkJWTToken, ip, false);
+				principalDetails = check(checkJWTToken, ip, false);
 				
-				if (principalDetails == null) {
-
-					throw new Exception();
-				}
-				;
+//				if (principalDetails == null) {
+//
+//					return;
+//				};
 
 				chain.doFilter(request, response);
 
-				return;
 
-				// Access 토근의 유효시간이 끝났다면 refreshToken 조회
+				// Access 토근이 유효하지 않다면 refreshToken 조회
 			} else if (checkRefreshToken.length != 0) {
 
 				log.info("jwtRefreahToken 확인중 : " + jwtRefreahToken);
 
-				PrincipalDetails principalDetails = check(checkRefreshToken, ip, true);
-
+				principalDetails = check(checkRefreshToken, ip, true);				
+				
 				if (principalDetails == null) {
-
+					
 					throw new Exception();
 
-				}
-				;
-
+				};
+				
 				String newJWTToken = CreateJWTToken(principalDetails);
 
 				log.info("newJWTToken : " + newJWTToken);
@@ -131,45 +137,84 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 	}
 
+	
 	public PrincipalDetails check(String[] jwt, String ip, boolean check) {
 
-		Optional<AdminVO> result = adminDAO.findAdminIdByID(jwt[1]);
+		log.info("jwt 체크 확인 중");
+		
+		boolean adminCheck = AdminCheck.check;
+		
+		PrincipalDetails principalDetails = null;
+		
+		if(adminCheck) {
+			
+			Optional<AdminVO> result = adminDAO.findAdminIdByID(jwt[1]);
 
-		AdminVO admin = null;
+			AdminVO admin = null;
 
-		log.info("result.isPresent() ");
 
-		if (!(result.isPresent())) {
-			return null;
-		}
+			if (!(result.isPresent())) {
+				return null;
+			}
 
-		admin = result.get();
+			admin = result.get();
+			
+			AdminDTO adminDTO = AdminDTO.builder()
+					.anum(admin.getAnum())
+					.adminID(admin.getAdminID())
+					.adminPW(admin.getAdminPW())
+					.role(admin.getRoleList())
+					.build();
+			
+			principalDetails = new PrincipalDetails(adminDTO);
+			
+		}else {
 
+			Optional<MemberVO> result = memberDAO.findMemberbyMemberID(jwt[1]);
+
+			MemberVO member = null;
+
+
+			if (!(result.isPresent())) {
+				return null;
+			}
+
+			member = result.get();
+			
+			MemberDTO memberDTO = MemberDTO.builder()
+					.mnum(member.getMnum())
+					.memberID(member.getMemberID())
+					.memberPW(member.getMemberPW())
+					.role("ROLE_"+member.getRole())
+					.build();
+
+			principalDetails = new PrincipalDetails(memberDTO);
+
+		}	
+
+		
 		if (check == true) {
-
-			System.out.println(jwt[1] + "  " + ip);
 
 			Optional<JwtVO> result1 = jwtTokkenDAO.findJWTByIdandIp(jwt[1], ip);
 
 			JwtVO jwtCheck = null;
 
 			jwtCheck = result1.get();
+			
+			
 
-			if (jwtCheck.getJwt() != jwt[0]) {
+			if ((!jwtCheck.getJwt().equals(jwt[2])) ) {
+				
+				System.out.println("jwt[2] = jwtCheck.getJwt() " + jwt[2].equals(jwtCheck.getJwt()));
+				
 				return null;
 			}
 		}
-
-		AdminDTO adminDTO = AdminDTO.builder().anum(admin.getAnum()).adminID(admin.getAdminID())
-				.adminPW(admin.getAdminPW()).role(admin.getRoleList()).build();
-
-		PrincipalDetails principalDetails = new PrincipalDetails(adminDTO, false);
-
+	
+		
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
-
-		System.out.println(principalDetails.getAuthorities());
-
+		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		return principalDetails;

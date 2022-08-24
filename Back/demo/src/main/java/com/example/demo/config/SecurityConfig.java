@@ -16,6 +16,7 @@ import com.example.demo.config.jwt.JwtAuthenticationFilter;
 import com.example.demo.config.jwt.JwtAuthorizationFilter;
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.JwtTokkenDAO;
+import com.example.demo.dao.MemberDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,6 +30,8 @@ public class SecurityConfig {
 	private final CorsConfig corsConfig;
 	
 	private final AdminDAO adminDAO;
+	
+	private final MemberDAO memberDAO;
 	
 	private final JwtTokkenDAO jwtTokkenDAO;
 	
@@ -54,6 +57,10 @@ public class SecurityConfig {
 	    .authorizeRequests()
 	        .antMatchers("/api/logout/**")
 	      	.hasAnyRole("MEMBER","ADMIN")
+	      	.antMatchers("/api/member/member-list")
+	     	.hasAnyRole("ADMIN")
+	      	.antMatchers("/api/member/**")
+	     	.hasAnyRole("MEMBER","ADMIN")
 	    	.antMatchers("/api/admin/**")
 	    	.hasAnyRole("ADMIN")
 		    .anyRequest().permitAll();
@@ -71,8 +78,8 @@ public class SecurityConfig {
 			http
 					//cors 실패를 방지해주는 필터
 					.addFilter(corsConfig.corsFilter())
-					.addFilterBefore(new JwtAuthenticationFilter("/api/login",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,jwtTokkenDAO));
+					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
+					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
 		}
 	}
 	

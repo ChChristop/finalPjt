@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 public class MemberDTO {
 	
 	//회원식별자
-		private int mnum;
+		private long mnum;
 		
 		//아이디이자 이메일
 		private String memberID;
 		
 		//비밀번호
-		private String pw;
+		private String memberPW;
 		
 		//닉네임
 		private String nickname;

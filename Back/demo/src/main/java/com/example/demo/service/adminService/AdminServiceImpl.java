@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dto.AdminDTO;
@@ -41,8 +42,6 @@ public class AdminServiceImpl implements AdminService {
 
 		// 정렬
 		String align = pageRequestDTO.isAlign() ? "asc" : "desc";
-
-		System.out.println(align);
 
 		int page = (pageRequestDTO.getPage() - 1) * 10;
 
@@ -141,6 +140,7 @@ public class AdminServiceImpl implements AdminService {
 
 	// 관리자 수정 메서드
 	@Override
+	@Transactional
 	public Long update(AdminDTO adminDTO) {
 
 		adminDTO.setAdminPW(passwordEncoder.encode(adminDTO.getAdminPW()));
@@ -150,6 +150,8 @@ public class AdminServiceImpl implements AdminService {
 		log.info("관리자 수정 중 : " + adminDTO);
 
 		adminDAO.updateAdminByAnum(admin);
+		
+		adminDAO.updateModDateByAnum(adminDTO.getAnum());
 
 		return (long) admin.getAnum();
 	}

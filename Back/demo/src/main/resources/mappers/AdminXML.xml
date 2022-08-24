@@ -5,6 +5,6 @@
         
 <mapper namespace="com.example.demo.dao.AdminDAO">
     <select id="getAdminList" resultType="AdminVO">
-   		  SELECT ANUM, ADMINID, NICKNAME, PHONNUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN ORDER BY ${basis} ${align} LIMIT #{page},#{size}
+   		  SELECT ANUM, ADMINID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN ORDER BY ${basis} ${align} LIMIT #{page},#{size}
     </select>
 </mapper>

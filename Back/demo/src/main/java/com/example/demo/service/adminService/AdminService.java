@@ -25,6 +25,7 @@ public interface AdminService {
 	default AdminVO dtoTOvo(AdminDTO adminDTO) {
 		
 		AdminVO admin = AdminVO.builder()
+				.anum(adminDTO.getAnum())
 				.adminID(adminDTO.getAdminID())
 				.adminPW(adminDTO.getAdminPW())
 				.nickName(adminDTO.getNickName())
