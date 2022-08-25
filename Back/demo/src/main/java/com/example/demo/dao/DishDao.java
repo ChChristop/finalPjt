@@ -30,7 +30,9 @@ public interface DishDao {
 
 	public void editPicture(Map<String, Object> param);
 
-	public int dishLike(String mnum, int dnum);
+	public int dishLike(int mnum, int dnum);
+
+	public void goDishLike(int dnum, int mnum);
 	
 	
 }

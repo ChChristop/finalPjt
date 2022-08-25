@@ -73,10 +73,16 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public int dishLike(String mnum, int dnum) {
+	public int dishLike(int mnum, int dnum) {
 		
 		return dishDao.dishLike(mnum,dnum);
 		
+	}
+
+	@Override
+	public void goDishLike(int mnum, int dnum) {
+	
+		dishDao.goDishLike(dnum,mnum);
 	}
 
 	

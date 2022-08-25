@@ -40,7 +40,7 @@
 	<insert id="addPicture" parameterType="map" useGeneratedKeys="true"
 		keyProperty="pnum">
 		insert into dish_picture 
-		set pname=#{pname}, dnum=(select max(dnum)+1 from dish)
+		set pname=#{pname}, dnum= (select if(dnum=null, 1, max(dnum)) from dish)
 	</insert>
 	
 	<insert id="editPicture" parameterType="map" useGeneratedKeys="true"
@@ -63,7 +63,7 @@
 		from dish_picture group by dnum) dp on d.dnum = dp.dnum
 	</select>
 	
-	<select id="dishLike" parameterType="String" resultType="Integer">
+	<select id="dishLike" parameterType="int" resultType="int">
 		select count(*) from ate where dnum=#{dnum} and mnum=#{mnum};
 	</select>
 	
@@ -89,6 +89,11 @@
 		DELETE FROM dish_picture
 		WHERE dnum = #{dnum}
 	</delete>
+	
+	<insert id="goDishLike" parameterType="Integer">
+		insert into dish_like
+		set dnum=#{dnum}, mnum=#{mnum} 
+	</insert>
 	
 	
 	

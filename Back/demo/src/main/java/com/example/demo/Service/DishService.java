@@ -45,7 +45,11 @@ public interface DishService {
 	/*
 	 * 본 게시물 좋아요 눌렀나 확인
 	 */
-	public int dishLike(String mnum, int dnum);
+	public int dishLike(int mnum, int dnum);
+	/*
+	 * 좋아요 등록하러 가기
+	 */
+	public void goDishLike(int dnum, int mnum);
 
 	
 	

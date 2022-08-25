@@ -31,7 +31,7 @@ public class DishController {
 	@Autowired
 	DishService dishService;
 	
-	@Value("${dish.imgdir}")
+	@Value("${a.imgdir}")
 	String fdir;
 
 	
@@ -42,17 +42,21 @@ public class DishController {
 	public String add(@ModelAttribute Dish dish,
 			@RequestParam("files") MultipartFile[] files) throws Exception {
 	
+		dishService.add(dish);
+		Map<String, Object> param = new HashMap<>();
+
 		for(MultipartFile file : files) {
-			Map<String, Object> param = new HashMap<>();
+			if(file.getSize() > 0) {
 			
 			String pname = file.getOriginalFilename();
 			File dest = new File(fdir + "/" + file.getOriginalFilename());
 			file.transferTo(dest);
 			param.put("pname", "/img/"+pname);
+			}
 			dishService.addPicture(param);
 		}
 		//pictureTest(file);
-		dishService.add(dish);
+	
 
 		return dish.getTitle() + "이 등록되었습니다.";
 	}
@@ -102,8 +106,8 @@ public class DishController {
 		return dishService.get();
 	}
 	
-	@GetMapping("/get/{dnum}")
-	public Map<String,Object> getOne(@PathVariable int dnum, String mnum ) {
+	@GetMapping("/get/{dnum}/{mnum}")
+	public Map<String,Object> getOne(@PathVariable int dnum, @PathVariable int mnum) {
 		Map<String,Object> param = new HashMap<>();
 		/*
 		 * 조회수 +1 
@@ -113,14 +117,16 @@ public class DishController {
 		 * 프론트에서 회원 아이디 받기
 		 * 이건 게시물, 회원번호 받아와서 좋아요 체크했나 확인하는 메소드
 		 * 상의 : 좋아요 어떻게 구현할 것인가?
-		 * 		-> 회원테이블 없어서 조회 못해
 		 */
-		/*int check = dishService.dishLike(mnum,dnum);
+
+		int check = dishService.dishLike(mnum,dnum);
+		
 		String str = "";
 			if(check == 1) { //본 게시물 좋아요 눌렀음
 				str = "liked";
-			}
-		*/
+			}	
+			
+		
 		//프론트에서 받을때 주의!
 		List<Dish> getOne = dishService.getOne(dnum);
 		param.put("getOne",getOne);
@@ -144,9 +150,13 @@ public class DishController {
 	}
 	
 	/*
-	 * 좋아요  
+	 * 좋아요 등록
+	 * 유저 번호도 같이 받아야해! 
 	 */
-	
+	@PostMapping("/like/{dnum}/{mnum}")
+	public void goDishLike(@PathVariable int dnum, @PathVariable int mnum) {
+		dishService.goDishLike(dnum, mnum);
+	}
 	
 	
 	

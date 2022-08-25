@@ -51,6 +51,7 @@ public class AteController {
 
 		return  ate.getAte_num() + "이 등록되었습니다.";
 	}
+	
 	/*
 	 * 먹음 게시글 전체 불러오기
 	 */
