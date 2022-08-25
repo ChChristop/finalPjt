@@ -101,7 +101,7 @@ public class MemberServiceImpl implements MemberService {
 
 		MemberVO member = dtoTOvo(memberDTO);
 
-		log.info("관리자 수정 중 : " + memberDTO);
+		log.info("회원 수정 중 : " + memberDTO);
 
 		memberDAO.updateAdminByMnum(member);
 		

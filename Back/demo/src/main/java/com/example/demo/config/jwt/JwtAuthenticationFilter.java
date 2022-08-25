@@ -3,6 +3,7 @@ package com.example.demo.config.jwt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import javax.servlet.FilterChain;
@@ -50,10 +51,12 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		String temp;
 
 		while ((temp = br.readLine()) != null) {
-			sb.append(temp);
+			String decodeTemp = java.net.URLDecoder.decode(temp, StandardCharsets.UTF_8.name());
+			sb.append(decodeTemp);
 		}
 
 		br.close();
+
 
 		// postman Json 데이터와 html 에서 읽은 Json 데이터와 양식이 다름
 		String[] params = sb.toString().split("&");
@@ -66,10 +69,22 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			params = params[0].replaceAll("[{}\" ]+", "").replace("=", ":").split(",");
 
 		}
+		
+		param = params;
+	
+		System.out.println(Arrays.toString(param));
+		
+		if(param[0].contains("=")) {
+			for(int i = 0; i<param.length;i++ ) {
+				param[i] =  params[i].substring(params[0].lastIndexOf("=") + 1);
+			}
+			
+		}else {
+			for(int i = 0; i<param.length;i++ ) {
+				param[i] =  params[i].substring(params[0].lastIndexOf(":") + 1);
+			}
+		}
 
-		param[0] = params[0].substring(params[0].lastIndexOf(":") + 1);
-		param[1] = params[1].substring(params[1].lastIndexOf(":") + 1);
-		param[2] = params[2].substring(params[2].lastIndexOf(":") + 1);
 
 		// html로 받을 시
 

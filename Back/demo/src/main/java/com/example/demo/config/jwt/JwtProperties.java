@@ -5,13 +5,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.config.auth.AdminCheck;
 import com.example.demo.config.auth.PrincipalDetails;
-import com.github.javaparser.utils.Log;
-
-import lombok.extern.log4j.Log4j2;
 
 public interface JwtProperties {
 
@@ -19,7 +18,7 @@ public interface JwtProperties {
 
 	public final String SECRETKEY = "final";
 
-	public final int SECRETKEY_EXPIRATION_TIME = 600000; //5초; //600000;// 10분 
+	public final int SECRETKEY_EXPIRATION_TIME = 600000; // 5초; //600000;// 10분
 
 	public final String SECRETKEY_HEADER_STRING = "Authorization";
 
@@ -29,7 +28,6 @@ public interface JwtProperties {
 	public final int REFRESHKEY_EXPIRATION_TIME = 864000000; // 10일
 
 	public final String REFRESHKEY_HEADER_STRING = "Refresh-Token";
-
 
 	
 	default String CreateJWTToken(PrincipalDetails principalDetails) {
