@@ -17,4 +17,6 @@ spring:
       max-request-size: 215MB
 file:
   upload-dir: C:/Dev/MyWorkspace/demo2/src/main/webapp/img/
-news.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/img/
+a.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/img/
+dish.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/dish/img/
+ate.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/ate/img/

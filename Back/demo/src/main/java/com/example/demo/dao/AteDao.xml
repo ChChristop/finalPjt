@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.AteDao">
+	
+	<insert id="add" parameterType="map" useGeneratedKeys="true"
+		keyProperty="ate_num">
+		insert into ate 
+		set dnum=#{dnum}, mnum=#{mnum}, ate_date=now(),
+		ate_picture=#{ate_picture}, ate_content=#{ate_content}
+	</insert>
+
+	<select id="get" parameterType="Integer" resultType="Ate">
+		select * from ate
+	</select>
+	
+	<select id="getOne" parameterType="Integer" resultType="Ate">
+		select * from ate where ate_num=#{ate_num}
+	</select>
+	
+	
+	<update id="editAte" parameterType="map">
+		UPDATE ate
+		set ate_editdate=now(),
+		ate_picture=#{ate_picture}, ate_content=#{ate_content}
+		WHERE ate_num = #{ate_num}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM ate WHERE ate_num = #{ate_num};
+	</delete>
+	
+	<update id="upHit" parameterType="Integer">
+		UPDATE ate
+		SET ate_hit = ate_hit + 1
+		WHERE ate_num = #{ate_num}
+	</update>
+	
+</mapper>

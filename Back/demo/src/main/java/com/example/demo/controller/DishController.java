@@ -31,7 +31,7 @@ public class DishController {
 	@Autowired
 	DishService dishService;
 	
-	@Value("${news.imgdir}")
+	@Value("${dish.imgdir}")
 	String fdir;
 
 	
