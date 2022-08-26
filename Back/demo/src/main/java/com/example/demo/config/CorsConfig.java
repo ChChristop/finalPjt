@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -13,12 +15,14 @@ public class CorsConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		
-		config.setAllowCredentials(true);
-		config.addAllowedHeader("*");
+		config.addAllowedOriginPattern("*");
+	    config.setAllowedHeaders(Arrays.asList("*"));
 		config.addAllowedMethod("*");
-		source.registerCorsConfiguration("/api/**", config);
-		
+		config.addExposedHeader("Authorization");
+		config.addExposedHeader("Refresh-Token");
+		config.setAllowCredentials(true);
+
+		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
 	}
 }

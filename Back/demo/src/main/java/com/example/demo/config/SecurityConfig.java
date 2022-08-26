@@ -2,12 +2,24 @@ package com.example.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
+
+import com.example.demo.config.jwt.JwtAuthenticationFilter;
+import com.example.demo.config.jwt.JwtAuthorizationFilter;
+import com.example.demo.dao.AdminDAO;
+import com.example.demo.dao.JwtTokkenDAO;
+import com.example.demo.dao.MemberDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,22 +32,41 @@ public class SecurityConfig {
 	
 	private final CorsConfig corsConfig;
 	
+	private final AdminDAO adminDAO;
+	
+	private final MemberDAO memberDAO;
+	
+	private final JwtTokkenDAO jwtTokkenDAO;
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
 		//csrf 비활성화
-		http.csrf().disable();
+		http.csrf().disable()
 		//세션 사용 안함, Stateless 무상태
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		//cors 허가해주는 필터
-		//기존 login 양식 안씀
+		//기존 login 양식 안씀 일시적 잠금
 		.formLogin().disable()
 		//기본 httpBasic 안씀
 		.httpBasic().disable()
+		.addFilter(corsConfig.corsFilter())
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
+	        .antMatchers("/api/logout/**")
+	      	.hasAnyRole("MEMBER","ADMIN")
+	      	.antMatchers("/api/member/member-list")
+	     	.hasAnyRole("ADMIN")
+	      	.antMatchers("/api/member/**")
+	     	.hasAnyRole("MEMBER","ADMIN")
+	    	.antMatchers("/api/admin/**")
+	    	.hasAnyRole("ADMIN")
 		    .anyRequest().permitAll();
 
 		return http.build();
@@ -44,15 +75,14 @@ public class SecurityConfig {
 	public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-			
-			http
-					//cors 실패를 방지해주는 필터
-					.addFilter(corsConfig.corsFilter());
-//					.addFilterBefore(new JwtAuthenticationFilter("/api/login",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-//					.addFilter(new JwtAuthorizationFilter(authenticationManager,userMapper));
 
+			//비회원이 게시물 읽을 때는 jwt 확인 하지 않게 하기
+			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+			http
+					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO),UsernamePasswordAuthenticationFilter.class);
 		}
 	}
+
 	
 }
