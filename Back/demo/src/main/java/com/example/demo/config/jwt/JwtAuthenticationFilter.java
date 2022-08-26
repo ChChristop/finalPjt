@@ -76,12 +76,12 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		
 		if(param[0].contains("=")) {
 			for(int i = 0; i<param.length;i++ ) {
-				param[i] =  params[i].substring(params[0].lastIndexOf("=") + 1);
+				param[i] =  params[i].substring(params[i].lastIndexOf("=") + 1);
 			}
 			
 		}else {
 			for(int i = 0; i<param.length;i++ ) {
-				param[i] =  params[i].substring(params[0].lastIndexOf(":") + 1);
+				param[i] =  params[i].substring(params[i].lastIndexOf(":") + 1);
 			}
 		}
 
@@ -105,6 +105,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			AdminCheck.check = false;
 			
 			MemberDTO memberDTO = MemberDTO.builder().memberID(param[0]).memberPW(param[1]).build();
+			
+			System.out.println(memberDTO.getMemberID()+" "+ memberDTO.getMemberPW());
 
 			authenticationToken = new UsernamePasswordAuthenticationToken(memberDTO.getMemberID(), memberDTO.getMemberPW());
 
@@ -113,6 +115,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		// 세션 생성
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 	
+		System.out.println("authentication.getAuthorities().toString()" + authentication.getAuthorities().toString());
 
 		return authentication;
 

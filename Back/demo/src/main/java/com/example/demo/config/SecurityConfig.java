@@ -80,7 +80,7 @@ public class SecurityConfig {
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-					.addFilterBefore(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO),UsernamePasswordAuthenticationFilter.class);
+					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
 		}
 	}
 

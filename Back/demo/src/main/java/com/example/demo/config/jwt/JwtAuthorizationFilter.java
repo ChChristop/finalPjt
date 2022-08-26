@@ -50,11 +50,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		boolean requestURI = request.getRequestURI().matches("/api/member+|/api/admin+");
+		boolean requestURI = request.getRequestURI().matches("(/api/member.+)|(/api/admin.+)|(/api/logout/.+)");
 
+	
 		// 권한 필요 없는 요청이면 jwt 확인 필요 없음.
 		if (!(requestURI)) {
-
+			log.info("???/");
 			chain.doFilter(request, response);
 
 			return;
@@ -63,6 +64,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 		log.info("JwtAuthorizationFilter : 진입");
 
 		String jwtHeader = request.getHeader(SECRETKEY_HEADER_STRING);
+		
+		System.out.println(request.getRequestURI()+" requestURI " + requestURI);
 
 		log.info("jwtHeader : 확인 중 " + jwtHeader);
 
@@ -204,6 +207,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			if ((!jwtCheck.getJwt().equals(jwt[2]))) {
 
 				System.out.println("jwt[2] = jwtCheck.getJwt() " + jwt[2].equals(jwtCheck.getJwt()));
+				
+				System.out.println(jwt[2]);
+				System.out.println(jwtCheck.getJwt());
 
 				return null;
 			}

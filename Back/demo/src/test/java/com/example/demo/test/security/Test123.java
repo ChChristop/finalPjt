@@ -15,9 +15,9 @@ import com.example.demo.vo.MemberVO;
 @SpringBootTest
 public class Test123 {
 
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
-//	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@Autowired
 	private AdminDAO adminDAO;
 
@@ -43,27 +43,27 @@ public class Test123 {
 //		
 //		memberDAO.addMember(member);
 //	}
-	@Test
-	public void testEncode1() {
-		
-		adminDAO.CheckByAdminId("kimwpdyd2");
-		
-		
-	}
-	
 //	@Test
-//	public void testEncode() {
-//
-//			AdminVO admin = AdminVO.builder()
-//					.adminID("final")
-//					.nickName("final")
-//					.adminPW(passwordEncoder.encode("1234"))
-//					.role("ADMIN,MEMBER")
-//					.phoneNumber("01012345678")
-//					.build();
-//			
-//			adminDAO.addAdmin(admin);
-//
+//	public void testEncode1() {
+//		
+//		adminDAO.CheckByAdminId("kimwpdyd2");
+//		
+//		
 //	}
+	
+	@Test
+	public void testEncode() {
+
+			AdminVO admin = AdminVO.builder()
+					.adminID("final")
+					.nickName("final")
+					.adminPW(passwordEncoder.encode("1234"))
+					.role("ADMIN,MEMBER")
+					.phoneNumber("01012345678")
+					.build();
+			
+			adminDAO.addAdmin(admin);
+
+	}
 	
 }
