@@ -64,7 +64,7 @@
 	</select>
 	
 	<select id="dishLike" parameterType="int" resultType="int">
-		select count(*) from ate where dnum=#{dnum} and mnum=#{mnum};
+		select count(*) from dish_like where dnum=#{dnum} and mnum=#{mnum};
 	</select>
 	
 	<update id="edit" parameterType="map">
@@ -94,6 +94,12 @@
 		insert into dish_like
 		set dnum=#{dnum}, mnum=#{mnum} 
 	</insert>
+	
+	<delete id="goDishDislike" parameterType="Integer">
+		DELETE FROM dish_like
+		WHERE dnum=#{dnum} and mnum=#{mnum} 
+		
+	</delete>
 	
 	
 	

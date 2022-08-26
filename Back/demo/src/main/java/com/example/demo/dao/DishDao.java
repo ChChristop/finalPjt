@@ -33,6 +33,8 @@ public interface DishDao {
 	public int dishLike(int mnum, int dnum);
 
 	public void goDishLike(int dnum, int mnum);
+
+	public void goDishDislike(int dnum, int mnum);
 	
 	
 }

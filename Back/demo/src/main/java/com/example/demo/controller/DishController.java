@@ -35,6 +35,7 @@ public class DishController {
 	String fdir;
 
 	
+	
 	/*
 	 * 음식 추가
 	 */
@@ -130,7 +131,7 @@ public class DishController {
 		//프론트에서 받을때 주의!
 		List<Dish> getOne = dishService.getOne(dnum);
 		param.put("getOne",getOne);
-		//param.put("liked", str);
+		param.put("liked", str);
 
 		return param;
 	}
@@ -145,21 +146,35 @@ public class DishController {
 		
 		dishService.delete(dnum);
 		
-		
 		return "글이 삭제되었습니다.";
 	}
 	
 	/*
-	 * 좋아요 등록
+	 * 좋아요 등록 / 취소 이부분 어떻게 받을지 프론트랑 상의하기 
+	 * 좋아요 등록 / 취소
 	 * 유저 번호도 같이 받아야해! 
 	 */
 	@PostMapping("/like/{dnum}/{mnum}")
-	public void goDishLike(@PathVariable int dnum, @PathVariable int mnum) {
-		dishService.goDishLike(dnum, mnum);
+	public String goDishLike(@PathVariable int dnum, @PathVariable int mnum) {
+
+		String str ="";
+			//좋아요 안누른 상태면, 좋아요 등록
+		if (dishService.dishLike(mnum, dnum) == 0) {
+			
+			dishService.goDishLike(dnum, mnum);
+			
+			str = "좋아요 등록!";
+			//좋아요 누른 상태면, 좋아요 해제 
+		}else if(dishService.dishLike(mnum, dnum) == 1){
+			
+			dishService.goDishDislike(dnum, mnum);
+			
+			str = "좋아요 해제!";
+
+		}
+		
+		return str;
 	}
-	
-	
-	
 	
 
 }

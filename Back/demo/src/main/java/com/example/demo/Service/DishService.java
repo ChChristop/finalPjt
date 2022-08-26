@@ -50,6 +50,10 @@ public interface DishService {
 	 * 좋아요 등록하러 가기
 	 */
 	public void goDishLike(int dnum, int mnum);
+	/*
+	 * 좋아요 해제하러 가기 
+	 */
+	public void goDishDislike(int dnum, int mnum);
 
 	
 	

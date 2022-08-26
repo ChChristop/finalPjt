@@ -85,5 +85,11 @@ public class DishServiceImpl implements DishService {
 		dishDao.goDishLike(dnum,mnum);
 	}
 
+	@Override
+	public void goDishDislike(int dnum, int mnum) {
+		
+		dishDao.goDishDislike(dnum,mnum);
+	}
+
 	
 }

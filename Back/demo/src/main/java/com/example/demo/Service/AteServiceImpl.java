@@ -55,5 +55,23 @@ public class AteServiceImpl implements AteService {
 		
 	}
 
+	@Override
+	public int ateLike(int mnum, int ate_num) {
+	
+		return ateDao.ateLike(mnum,ate_num);
+	}
+
+	@Override
+	public void goAteLike(int ate_num, int mnum) {
+		
+		ateDao.goAteLike(ate_num,mnum);
+	}
+
+	@Override
+	public void goAteDislike(int ate_num, int mnum) {
+		
+		ateDao.goAteDislike(ate_num,mnum);
+	}
+
 	
 }

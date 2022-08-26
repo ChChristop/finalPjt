@@ -36,4 +36,21 @@
 		WHERE ate_num = #{ate_num}
 	</update>
 	
+	<select id="ateLike" parameterType="int" resultType="int">
+		select count(*) from ate_like where ate_num=#{ate_num} and mnum=#{mnum};
+	</select>
+	
+	<insert id="goAteLike" parameterType="Integer">
+		insert into ate_like
+		set ate_num=#{ate_num}, mnum=#{mnum} 
+	</insert>
+	
+	<delete id="goAteDislike" parameterType="Integer">
+		DELETE FROM ate_like
+		WHERE ate_num=#{ate_num} and mnum=#{mnum} 
+		
+	</delete>
+	
+	
+	
 </mapper>

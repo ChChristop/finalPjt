@@ -18,5 +18,11 @@ public interface AteService {
 
 	public void upHit(int ate_num);
 
+	public int ateLike(int mnum, int ate_num);
+
+	public void goAteLike(int ate_num, int mnum);
+
+	public void goAteDislike(int ate_num, int mnum);
+
 
 }
