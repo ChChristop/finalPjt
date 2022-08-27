@@ -37,6 +37,17 @@ public class DishController {
 	
 	
 	/*
+	 * dishDB에서 가져오기 
+	 */
+	@GetMapping("/get")
+	public List<Dish> get() {
+
+		return dishService.get();
+	}
+	
+	
+	
+	/*
 	 * 음식 추가
 	 */
 	@PostMapping("/add")
@@ -101,11 +112,7 @@ public class DishController {
 	}
 
 	
-	@GetMapping("/get")
-	public List<Dish> get() {
 
-		return dishService.get();
-	}
 	
 	@GetMapping("/get/{dnum}/{mnum}")
 	public Map<String,Object> getOne(@PathVariable int dnum, @PathVariable int mnum) {
