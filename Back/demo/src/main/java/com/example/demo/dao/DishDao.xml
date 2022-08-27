@@ -2,32 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.dao.DishDao">
-	
-	<resultMap type="DPicture" id="DPicture">
-		<result property="pnum" column="pnum" />
-		<result property="pname" column="pname" />
-		<result property="dnum" column="dnum" />
-		<result property="pictures" column="pictures" />
-	</resultMap>
-	
-	<resultMap type="Dish" id="Dish">
-		<result property="dnum" column="dnum" />
-		<result property="writer" column="writer" />
-		<result property="ingredient" column="ingredient" />
-		<result property="title" column="title" />
-		<result property="url" column="url" />
-		<result property="dish_like" column="dish_like" />
-		<result property="ate" column="ate" />
-		<result property="date" column="date" />
-		<result property="t_time" column="t_time" />
-		<result property="m_intredient" column="m_intredient" />
-		<result property="t_weather" column="t_weather" />
-		<result property="hit" column="hit" />
-		<result property="editdate" column="editdate" />
-		<result property="cookery" column="cookery" />
-		<result property="recipe" column="recipe" />
-		<collection property="dpicture" resultMap="DPicture"/>
-	</resultMap>
 
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -50,21 +24,150 @@
 	</insert>
 	
 
-	<select id="getOne" parameterType="Integer" resultMap="Dish">
-		select d.*, dp.pictures 
-		from dish d left outer join (select dnum, group_concat(pname) pictures
-		from dish_picture group by dnum) dp on d.dnum = dp.dnum
-		where d.dnum=#{dnum}
+	<select id="getOne" parameterType="Integer" resultType="map">
+		SELECT
+		d_l.*, 
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk  
+		from 
+		(SELECT 
+		d.*, 
+		l.lnum, 
+		l.mnum, 
+		l.date as like_date 
+		from dish_like l right join dish d 
+		on l.RCP_SEQ = d.RCP_SEQ) d_l 
+		right join 
+		dishDB db 
+		on db.RCP_SEQ = d_l.RCP_SEQ
+		where db.RCP_SEQ=#{RCP_SEQ}
 	</select>
-	
-	<select id="get" parameterType="Integer" resultMap="Dish">
-		select d.*, dp.pictures 
-		from dish d left outer join (select dnum, group_concat(pname) pictures
-		from dish_picture group by dnum) dp on d.dnum = dp.dnum
+	 
+	<select id="get" parameterType="Integer" resultType="map">
+		SELECT
+		d.writer,
+		d.url,
+		d.dish_like,
+		d.ate,
+		d.date,
+		d.t_time,
+		d.m_ingredient,
+		d.t_weather,
+		d.hit,
+		d.editdate,
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ
 	</select>
-	
+
 	<select id="dishLike" parameterType="int" resultType="int">
-		select count(*) from dish_like where dnum=#{dnum} and mnum=#{mnum};
+		select count(*) from dish_like where dnum=#{dnum} and mnum=#{mnum}
 	</select>
 	
 	<update id="edit" parameterType="map">
@@ -75,14 +178,13 @@
 	</update>
 	
 	<update id="upHit" parameterType="Integer">
-		UPDATE dish
-		SET hit = hit + 1
-		WHERE dnum = #{dnum}
+		INSERT INTO DISH (hit,rcp_seq, writer) VALUES ('1','271','a')
+        ON DUPLICATE KEY UPDATE hit = hit+1
 	</update>
 		
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM dish WHERE dnum = #{dnum};
-		DELETE FROM dish_picture WHERE dnum = #{dnum}; 
+		DELETE FROM dish_picture WHERE dnum = #{dnum}
 	</delete>
 	
 	<delete id="delPicture" parameterType="Integer">

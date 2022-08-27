@@ -6,19 +6,20 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishDB;
 
 @Mapper 
 public interface DishDao {
 
-	public List<Dish> get();
+	public List<Map<String, Object>> get();
 
 	public void add(Dish dish);
 
-	public List<Dish> getOne(int id);
+	public Map<String, Object> getOne(int RCP_SEQ);
 
 	public void edit(Dish dish);
 
-	public void upHit(int id);
+	public void upHit(int RCP_SEQ);
 
 	public void delete(int id);
 

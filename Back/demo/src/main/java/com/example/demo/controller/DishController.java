@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Service.DishService;
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishDB;
 
 import groovy.util.logging.Slf4j;
 
@@ -35,14 +37,91 @@ public class DishController {
 	String fdir;
 
 	
-	
+	 
 	/*
 	 * dishDB에서 가져오기 
 	 */
 	@GetMapping("/get")
-	public List<Dish> get() {
+	public List<Map<String, Object>> get() {
 
-		return dishService.get();
+		//DB에서 받아온 모양
+		List<Map<String, Object>> DBlist =  dishService.get();
+		
+		//리턴해줄 List모양
+		List<Map<String, Object>> result = new ArrayList<>();
+		
+		for(Map<String, Object> resultMap: DBlist) {
+			Map<String, Object> map = new HashMap<>();
+			
+			map.put("hit", resultMap.get("hit")); //조회수
+			
+			map.put("dish_num", resultMap.get("rcp_seq")); //고유번호
+			map.put("dish_name", resultMap.get("rcp_nm"));  //음식명
+			map.put("cookery", resultMap.get("rcp_way2")); //조리방법
+			map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
+			
+			
+			
+			//조리 재료
+			//조회를 위한 재료는 다시 재가공 필요! 
+			
+			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
+			ingSTR = ingSTR.replace("재료","");
+			ingSTR = ingSTR.replaceAll("\n",", ");
+			List<String> ingList = new ArrayList<>();
+			for(int i = 0; i<ingSTR.split(",").length; i++) {
+				ingList.add(ingSTR.split(",")[i]);
+
+			}
+			
+			map.put("ingredient", ingList); 
+			
+			//조리방법 불러오기 
+			List<String> recipe = new ArrayList<>();
+	
+			for(int i = 0; i < 20; i++) {
+				String manualId = "manual";
+				String manualIdNum = "";
+				if(i<9) {
+					manualIdNum = "0"+String.valueOf(i+1);
+				}else {
+					manualIdNum = String.valueOf(i+1);
+				}
+				manualId += manualIdNum;
+				if(!resultMap.get(manualId).toString().isEmpty()) {
+					String manualStr = resultMap.get(manualId).toString();
+					manualStr = manualStr.replace("\n","");
+					recipe.add(i,manualStr);
+				}
+			}
+			map.put("recipe", recipe); //조리방법
+			
+			List<String> imgList = new ArrayList<>();
+		
+			for(int i = 0; i < 20; i++) {
+				String imgId = "manual_img";
+				String imgIdNum = "";
+				if(i<9) {
+					imgIdNum = "0"+String.valueOf(i+1);
+				}else {
+					imgIdNum = String.valueOf(i+1);
+				}
+				
+				imgId += imgIdNum;
+				
+				if(!resultMap.get(imgId).toString().isEmpty()) {
+					String imgStr = resultMap.get(imgId).toString();
+					imgStr = imgStr.replace("\n","");
+					imgList.add(i,imgStr);
+				}
+			}
+
+			map.put("imgList", imgList); //조리이미지
+
+			result.add(map);		
+		}
+		
+		return result;
 	}
 	
 	
@@ -104,7 +183,7 @@ public class DishController {
 		}
 		
 		
-		dish.setDnum(dnum);
+		//dish.setDnum(dnum);
 		
 		dishService.edit(dish);
 		
@@ -114,34 +193,105 @@ public class DishController {
 	
 
 	
-	@GetMapping("/get/{dnum}/{mnum}")
-	public Map<String,Object> getOne(@PathVariable int dnum, @PathVariable int mnum) {
-		Map<String,Object> param = new HashMap<>();
+	@GetMapping("/get/{RCP_SEQ}")
+	public Map<String,Object> getOne(@PathVariable int RCP_SEQ) {
+		Map<String,Object> result = new HashMap<>();
 		/*
 		 * 조회수 +1 
 		 */
-		dishService.upHit(dnum);
+		dishService.upHit(RCP_SEQ);
 		/*
 		 * 프론트에서 회원 아이디 받기
 		 * 이건 게시물, 회원번호 받아와서 좋아요 체크했나 확인하는 메소드
 		 * 상의 : 좋아요 어떻게 구현할 것인가?
 		 */
 
-		int check = dishService.dishLike(mnum,dnum);
+	//	int check = dishService.dishLike(mnum,RCP_SEQ);
 		
-		String str = "";
-			if(check == 1) { //본 게시물 좋아요 눌렀음
-				str = "liked";
-			}	
+	//	String str = "";
+	//		if(check == 1) { //본 게시물 좋아요 눌렀음
+	//			str = "liked";
+	//		}	
 			
 		
 		//프론트에서 받을때 주의!
-		List<Dish> getOne = dishService.getOne(dnum);
-		param.put("getOne",getOne);
-		param.put("liked", str);
+		Map<String,Object> resultMap = dishService.getOne(RCP_SEQ);
+		
+	
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("hit", resultMap.get("hit")); //조회수
+		
+		map.put("dish_num", resultMap.get("rcp_seq")); //고유번호
+		map.put("dish_name", resultMap.get("rcp_nm"));  //음식명
+		map.put("cookery", resultMap.get("rcp_way2")); //조리방법
+		map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
+		
+		
+		
+		//조리 재료
+		//조회를 위한 재료는 다시 재가공 필요! 
+		
+		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
+		ingSTR = ingSTR.replace("재료","");
+		ingSTR = ingSTR.replaceAll("\n",", ");
+		List<String> ingList = new ArrayList<>();
+		for(int i = 0; i<ingSTR.split(",").length; i++) {
+			ingList.add(ingSTR.split(",")[i]);
 
-		return param;
+		}
+		
+		map.put("ingredient", ingList); 
+		
+		//조리방법 불러오기 
+		List<String> recipe = new ArrayList<>();
+
+		for(int i = 0; i < 20; i++) {
+			String manualId = "manual";
+			String manualIdNum = "";
+			if(i<9) {
+				manualIdNum = "0"+String.valueOf(i+1);
+			}else {
+				manualIdNum = String.valueOf(i+1);
+			}
+			manualId += manualIdNum;
+			if(!resultMap.get(manualId).toString().isEmpty()) {
+				String manualStr = resultMap.get(manualId).toString();
+				manualStr = manualStr.replace("\n","");
+				recipe.add(i,manualStr);
+			}
+		}
+		map.put("recipe", recipe); //조리방법
+		
+		List<String> imgList = new ArrayList<>();
+	
+		for(int i = 0; i < 20; i++) {
+			String imgId = "manual_img";
+			String imgIdNum = "";
+			if(i<9) {
+				imgIdNum = "0"+String.valueOf(i+1);
+			}else {
+				imgIdNum = String.valueOf(i+1);
+			}
+			
+			imgId += imgIdNum;
+			
+			if(!resultMap.get(imgId).toString().isEmpty()) {
+				String imgStr = resultMap.get(imgId).toString();
+				imgStr = imgStr.replace("\n","");
+				imgList.add(i,imgStr);
+			}
+		}
+
+		map.put("imgList", imgList); //조리이미지
+
+		result.put("result",map);
+		
+		return result;
 	}
+	
+	
+	
 	
 
 	/*

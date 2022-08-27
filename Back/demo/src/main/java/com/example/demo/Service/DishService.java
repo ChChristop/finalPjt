@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishDB;
 
 public interface DishService {
 
@@ -14,11 +15,11 @@ public interface DishService {
 	/*
 	 * 음식 전체 리스트 불러오기 
 	 */
-	public List<Dish> get();
+	public List<Map<String, Object>> get();
 	/*
 	 * 음식 정보 한개 불러오기
 	 */
-	public List<Dish> getOne(int id);
+	public Map<String,Object> getOne(int RCP_SEQ);
 	/*
 	 * 음식 정보 수정하기
 	 */
@@ -26,7 +27,7 @@ public interface DishService {
 	/*
 	 *  조회수 +1
 	 */
-	public void upHit(int id);
+	public void upHit(int RCP_SEQ);
 	/*
 	 * 음식 정보 삭제하기 
 	 */

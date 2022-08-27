@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.DishDao;
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishDB;
 
 import groovy.util.logging.Slf4j;
 
@@ -19,9 +20,10 @@ public class DishServiceImpl implements DishService {
 	DishDao dishDao;
 
 	@Override
-	public List<Dish> get() {
+	public List<Map<String, Object>> get() {
 		
-		List<Dish> list =  dishDao.get();
+		List<Map<String, Object>> list =  dishDao.get();
+		System.out.println("list::: " + list);
 		return list;
 	}
 
@@ -32,9 +34,9 @@ public class DishServiceImpl implements DishService {
 	}
 	
 	@Override
-	public List<Dish> getOne(int id) {
+	public Map<String,Object> getOne(int RCP_SEQ) {
 		
-		return dishDao.getOne(id);
+		return dishDao.getOne(RCP_SEQ);
 	}  
 
 	@Override
@@ -44,9 +46,9 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void upHit(int id) {
+	public void upHit(int RCP_SEQ) {
 	
-		dishDao.upHit(id);
+		dishDao.upHit(RCP_SEQ);
 	}
 
 	@Override
