@@ -26,6 +26,5 @@ public interface AteDao {
 	public void goAteLike(int ate_num, int mnum);
 
 	public void goAteDislike(int ate_num, int mnum);
-
 	
 }

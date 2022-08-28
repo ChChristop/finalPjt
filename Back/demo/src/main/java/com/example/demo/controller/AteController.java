@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,22 +36,29 @@ public class AteController {
 	
 	/*
 	 * 먹음 등록 
+	 * mnum : 회원정보 필요
 	 */
-	@PostMapping("/add")
-	public String add(@ModelAttribute Ate ate,
+	@PostMapping("/add/{RCP_SEQ}/{mnum}")
+	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, 
+			@PathVariable int mnum, 
 			@RequestParam("file") MultipartFile file) throws Exception {
 	
-
-		File dest = new File(fdir + "/" + file.getOriginalFilename());
-		
-		file.transferTo(dest);
-		
-		ate.setAte_picture("/img/" + dest.getName());
-
 	
-		ateService.add(ate);
+			ate.setRCP_SEQ(RCP_SEQ);
+			ate.setMnum(mnum);
+		
 
-		return  ate.getAte_num() + "이 등록되었습니다.";
+			File dest = new File(fdir + "/" + file.getOriginalFilename());
+			
+			file.transferTo(dest);
+			
+			ate.setAte_picture("/img/" + dest.getName());
+			
+			ateService.add(ate);
+			
+	
+
+		return ate.getAte_num() + "이 등록되었습니다.";
 	}
 	
 	/*
@@ -63,24 +72,37 @@ public class AteController {
 	/*
 	 * 먹음 게시글 한개 불러오기
 	 */
-	@GetMapping("/get/{ate_num}")
-	public Ate getOne(@PathVariable int ate_num) {
+	@GetMapping("/get/{ate_num}/{mnum}")
+	public Map<String,Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
+		Map<String,Object> resultMap = new HashMap<>();
+		
+		String str="";
+		
 		/*
 		 * 조회수 +1 
 		 */
 		ateService.upHit(ate_num);
 		
-		//글가져올때 좋아요 눌렀는지 체크해줘야해 
-		
+		//글가져올때 좋아요 눌렀는지 체크해줘야해 : 수정 필요!
+		if(ateService.ateLike(mnum, ate_num) == 1) {
+			//좋아요 누른 사람
+			str = "liked";	
+		}
 
-		return ateService.getOne(ate_num);
+		Ate result = ateService.getOne(ate_num);
+		
+		resultMap.put("result", result);
+		resultMap.put("liked", str);
+
+		return resultMap;
 	}
 	
 	/*
-	 * 먹음 게시글 수정하기(글 번호도 같이 보내주세요) 
+	 * 먹음 게시글 수정하기(글 번호, 로그인한 아이디도 같이 보내주세요) 
+	 * 수정은 작성자만 가능하게 -> 프론트와 상의
 	 */
 	
-	@PutMapping("/edit/{ate_num}")
+	@PutMapping("/edit/{ate_num}/{mnum}")
 	public String edit(@ModelAttribute Ate ate,
 			@RequestParam("file") MultipartFile file) throws Exception{
 		
@@ -89,7 +111,7 @@ public class AteController {
 			file.transferTo(dest);
 
 			ate.setAte_picture("/img/" + dest.getName());
-		
+
 		ateService.editAte(ate);
 		
 	}
@@ -100,7 +122,7 @@ public class AteController {
 	/*
 	 * 먹음 게시글 삭제하기(글 번호도 같이 보내주세요) 
 	 */
-	@DeleteMapping("/delete/{ate_num}")
+	@DeleteMapping("/delete/{ate_num}/{munm}")
 	public String delete(@PathVariable int ate_num) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
