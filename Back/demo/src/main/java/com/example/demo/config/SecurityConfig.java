@@ -61,12 +61,13 @@ public class SecurityConfig {
 	    .authorizeRequests()
 	        .antMatchers("/api/logout/**")
 	      	.hasAnyRole("MEMBER","ADMIN")
+	    	.antMatchers("/api/admin/**")
+	    	.hasRole("ADMIN")
 	      	.antMatchers("/api/member/member-list")
 	     	.hasAnyRole("ADMIN")
 	      	.antMatchers("/api/member/**")
 	     	.hasAnyRole("MEMBER","ADMIN")
-	    	.antMatchers("/api/admin/**")
-	    	.hasAnyRole("ADMIN")
+	    
 		    .anyRequest().permitAll();
 
 		return http.build();

@@ -72,7 +72,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		
 		param = params;
 	
-		System.out.println(Arrays.toString(param));
+		System.out.println("Arrays.toString(param)"+Arrays.toString(param));
 		
 		if(param[0].contains("=")) {
 			for(int i = 0; i<param.length;i++ ) {

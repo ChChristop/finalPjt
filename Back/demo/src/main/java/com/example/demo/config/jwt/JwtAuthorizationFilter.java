@@ -137,7 +137,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 				chain.doFilter(request, response);
 
-				return;
 			}
 
 		} catch (Exception e) {
@@ -148,7 +147,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 
 	}
 
@@ -215,10 +214,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			}
 		}
 
+
+		
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
-
+		
+		System.out.println(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 
 		return principalDetails;
 

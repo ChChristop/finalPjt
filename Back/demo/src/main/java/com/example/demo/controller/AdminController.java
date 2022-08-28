@@ -34,6 +34,7 @@ public class AdminController {
 	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
+		log.info("/checkID/{adminID} 진입");
 		// 관리자 아이디 중복 체크 true or false 사용
 		boolean result = adminService.CheckadminID(adminID);
 
