@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,16 +54,28 @@ public class MemberController {
 		}
 	}
 
+//	// 회원 리스트 조회
+//	@GetMapping("/member-list")
+//	public ResponseEntity<PageResultDTO<MemberVO, MemberDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO) {
+//
+//		log.info("회원 리스트 조회 ------------------------- ");
+//		
+//		PageResultDTO<MemberVO, MemberDTO> result = memberService.getAmindList(pageRequestDTO);
+//
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
+	
 	// 회원 리스트 조회
 	@GetMapping("/member-list")
-	public ResponseEntity<PageResultDTO<MemberVO, MemberDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO) {
+	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(@ModelAttribute PageRequestDTO pageRequestDTO) {
 
 		log.info("회원 리스트 조회 ------------------------- ");
 		
-		PageResultDTO<MemberVO, MemberDTO> result = memberService.getAmindList(pageRequestDTO);
+		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getAmindList2(pageRequestDTO);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	
 	
 	//회원 삭제 URI
 	@DeleteMapping("/delete/{mnum}")

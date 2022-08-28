@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -49,8 +50,8 @@ public class MemberDTO {
 //		좋아요
 //		private 좋아요 좋아요;
 		
-//		먹음
-//		private 먹음 먹음;
+		//먹음
+		private int ateCount;
 		
 //		댓글
 //		private 댓글 댓글;

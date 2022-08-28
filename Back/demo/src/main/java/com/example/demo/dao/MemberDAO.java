@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Delete;
@@ -23,6 +24,8 @@ public interface MemberDAO {
 	Long addMember(MemberVO member);
 	
 	//회원 전체 리스트 조회(페이지 설정 가능)
+	List<Map<String,Object>> getMemberList2(PageRequestDTO pageReuqestDTO);
+	
 	List<MemberVO> getMemberList(PageRequestDTO pageReuqestDTO);
 	
 	//회원 아이디 중복 체크

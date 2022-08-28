@@ -5,7 +5,9 @@
 <mapper namespace="com.example.demo.dao.MemberDAO">
 	<select id="getMemberList" resultType="MemberVO">
 		
-		SELECT MNUM, MEMBERID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM MEMBER
+		SELECT M.MNUM, MEMBERID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
    		  
 		<where>
 			<if test= 'type == "i"'>
@@ -21,9 +23,38 @@
 			
 		</where>
 		
+		GROUP BY M.MNUM
+				
 		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
 		
 	</select>
+	
+	<select id="getMemberList2" resultType="Map">
+		
+		SELECT M.mnum, memberID, nickname, phoneNumber, date, lastAccessDate, role, count(A.ate_num) AS ateCount
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+   		  
+		<where>
+			<if test= 'type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		GROUP BY M.MNUM
+				
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+
 
 	<select id="countMemberAllList" resultType="int">
 		

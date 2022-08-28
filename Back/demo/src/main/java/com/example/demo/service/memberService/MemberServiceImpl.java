@@ -1,6 +1,7 @@
 package com.example.demo.service.memberService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -101,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
 		log.info("회원 수정 중 : " + memberDTO);
 
 		memberDAO.updateAdminByMnum(member);
-		
+
 		memberDAO.updateModDateByMnum(memberDTO.getMnum());
 
 		return (long) member.getMnum();
@@ -118,16 +119,45 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		pageRequestDTO.setterChange();
-		
+
 		// 조회 메서드
 		List<MemberVO> result = memberDAO.getMemberList(pageRequestDTO);
 
+		System.out.println(result.get(0).toString());
+
 		// dto->vo 변환 함수 함수
-		Function<MemberVO, MemberDTO> fn = (admin) -> voTOdto(admin);
+		Function<MemberVO, MemberDTO> fn = (map) -> voTOdto(map);
 
 		int count = memberDAO.countMemberAllList(pageRequestDTO);
 
+		return new PageResultDTO<>(result, fn, pageRequestDTO, count); 
+	}
+	
+	//join table 테스트
+	@Override
+	public PageResultDTO<Map<String, Object>, MemberDTO> getAmindList2(PageRequestDTO pageRequestDTO) {
+		log.info("회원 리스트 찾는 중 : ");
+
+		// 기w준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+
+		// 조회 메서드
+		List<Map<String, Object>> result = memberDAO.getMemberList2(pageRequestDTO);
+
+
+		// dto->vo 변환 함수 함수
+		Function<Map<String, Object>, MemberDTO> fn = (map) -> mapTOdto(map);
+
+		int count = memberDAO.countMemberAllList(pageRequestDTO);
+
+//		return null;
 		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+
 	}
 
 }
