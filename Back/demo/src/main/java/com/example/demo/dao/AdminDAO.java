@@ -9,8 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Repository;
 
+import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.vo.AdminVO;
 
 @Mapper
@@ -24,7 +24,7 @@ public interface AdminDAO {
 	
 	//관리자 전체 리스트 조회
 //	@Select("SELECT ANUM, ADMINID, NICKNAME, PHONNUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN ORDER BY #{basis} #{align} LIMIT #{page},#{size}")
-	List<AdminVO> getAdminList(String basis, String align, int page, int size);
+	List<AdminVO> getAdminList(PageRequestDTO pageRequestDTO);
 	
 	//관리자 아이디 중복체크
 	@Select("SELECT ADMINID FROM ADMIN WHERE ADMINID = #{adminID}")
@@ -65,9 +65,8 @@ public interface AdminDAO {
 			+ "WHERE ANUM=#{anum}")
 	void updateModDateByAnum(long anum);
 
-	//관리자 총 숫자(조건 지정 가능하게 해야함)
-	@Select("SELECT COUNT(*) FROM ADMIN")
-	int countAdminAllList();
+	//관리자 총 숫자(조건 지정 가능하게)
+	int countAdminAllList(PageRequestDTO pageRequestDTO);
 	
 
 }

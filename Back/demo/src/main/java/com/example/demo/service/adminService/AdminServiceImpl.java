@@ -33,26 +33,21 @@ public class AdminServiceImpl implements AdminService {
 		log.info("관리자 리스트 찾는 중 : ");
 
 		// 기준
-		String basis = "";
-
 		if (pageRequestDTO.getBasis() == "pk") {
 
-			basis = "anum";
+			pageRequestDTO.setBasis("anum"); 
 		}
-
-		// 정렬
-		String align = pageRequestDTO.isAlign() ? "asc" : "desc";
-
-		int page = (pageRequestDTO.getPage() - 1) * 10;
-
+		
+		pageRequestDTO.setterChange();
+		
 		// 조회 메서드
-		List<AdminVO> result = adminDAO.getAdminList(basis, align, page, pageRequestDTO.getSize());
+		List<AdminVO> result = adminDAO.getAdminList(pageRequestDTO);
 
 		// dto->vo 변환 함수 함수
 		Function<AdminVO, AdminDTO> fn = (admin) -> voTOdto(admin);
 
 		// totalpage 조건 없음
-		int count = adminDAO.countAdminAllList();
+		int count = adminDAO.countAdminAllList(pageRequestDTO);
 
 		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
 	}

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.example.demo.vo.AdminVO;
+import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.vo.MemberVO;
 
 @Mapper
@@ -23,7 +23,7 @@ public interface MemberDAO {
 	Long addMember(MemberVO member);
 	
 	//회원 전체 리스트 조회(페이지 설정 가능)
-	List<MemberVO> getMemberList(String basis, String align, int page, int size);
+	List<MemberVO> getMemberList(PageRequestDTO pageReuqestDTO);
 	
 	//회원 아이디 중복 체크
 	@Select("SELECT MEMBERID FROM MEMBER WHERE MEMBERID = #{memberID}")
@@ -72,6 +72,6 @@ public interface MemberDAO {
 	
 	
 	//회원 총 숫자
-	@Select("SELECT COUNT(*) FROM MEMBER")
-	int countAdminAllList();
+//	@Select("SELECT COUNT(*) FROM MEMBER")
+	int countMemberAllList(PageRequestDTO pageReuqestDTO);
 }

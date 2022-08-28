@@ -62,7 +62,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public Long register(MemberDTO memberDTO) {
-
 		log.info("회원 등록 중 : " + memberDTO);
 
 		memberDTO.setMemberPW(passwordEncoder.encode(memberDTO.getMemberPW()));
@@ -76,7 +75,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean checkMemberID(String id) {
-
 		log.info("회원 아이디 중복 확인 : " + id);
 
 		Optional<String> result = memberDAO.checkByMemberId(id);
@@ -96,7 +94,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Long update(MemberDTO memberDTO) {
-
 		memberDTO.setMemberPW(passwordEncoder.encode(memberDTO.getMemberPW()));
 
 		MemberVO member = dtoTOvo(memberDTO);
@@ -114,27 +111,21 @@ public class MemberServiceImpl implements MemberService {
 	public PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO) {
 		log.info("회원 리스트 찾는 중 : ");
 
-		// 기준
-		String basis = "";
-
+		// 기w준
 		if (pageRequestDTO.getBasis() == "pk") {
 
-			basis = "mnum";
+			pageRequestDTO.setBasis("mnum");
 		}
 
-		// 정렬
-		String align = pageRequestDTO.isAlign() ? "asc" : "desc";
-
-		int page = (pageRequestDTO.getPage() - 1) * 10;
-
+		pageRequestDTO.setterChange();
+		
 		// 조회 메서드
-		List<MemberVO> result = memberDAO.getMemberList(basis, align, page, pageRequestDTO.getSize());
+		List<MemberVO> result = memberDAO.getMemberList(pageRequestDTO);
 
 		// dto->vo 변환 함수 함수
 		Function<MemberVO, MemberDTO> fn = (admin) -> voTOdto(admin);
 
-		// totalpage 조건 없음
-		int count = memberDAO.countAdminAllList();
+		int count = memberDAO.countMemberAllList(pageRequestDTO);
 
 		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
 	}

@@ -63,8 +63,8 @@ public class SecurityConfig {
 	      	.hasAnyRole("MEMBER","ADMIN")
 	    	.antMatchers("/api/admin/**")
 	    	.hasRole("ADMIN")
-	      	.antMatchers("/api/member/member-list")
-	     	.hasAnyRole("ADMIN")
+//	      	.antMatchers("/api/member/member-list")
+//	     	.hasAnyRole("ADMIN,MEMBER")
 	      	.antMatchers("/api/member/**")
 	     	.hasAnyRole("MEMBER","ADMIN")
 	    
