@@ -6,7 +6,7 @@
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="ate_num">
 		insert into ate 
-		set RCP_SEQ=#{RCP_SEQ}, mnum=#{mnum}, ate_date=now(),
+		set dnum=#{dnum}, mnum=#{mnum}, ate_date=now(),
 		ate_picture=#{ate_picture}, ate_content=#{ate_content}
 	</insert>
 
@@ -23,11 +23,11 @@
 		UPDATE ate
 		set ate_editdate=now(),
 		ate_picture=#{ate_picture}, ate_content=#{ate_content}
-		WHERE ate_num = #{ate_num} and mnum =#{mnum}
+		WHERE ate_num = #{ate_num}
 	</update>
 	
 	<delete id="delete" parameterType="Integer">
-		DELETE FROM ate WHERE ate_num = #{ate_num} and mnum =#{mnum};
+		DELETE FROM ate WHERE ate_num = #{ate_num};
 	</delete>
 	
 	<update id="upHit" parameterType="Integer">
@@ -37,21 +37,17 @@
 	</update>
 	
 	<select id="ateLike" parameterType="int" resultType="int">
-		select count(*) from ate_like where ate_num=#{ate_num} and mnum=#{mnum}
+		select count(*) from ate_like where ate_num=#{ate_num} and mnum=#{mnum};
 	</select>
 	
-	<insert id="goAteLike" parameterType="Integer">		
+	<insert id="goAteLike" parameterType="Integer">
 		insert into ate_like
-		set 
-		ate_num=#{ate_num}, 
-		mnum=#{mnum}, 
-		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num} and mnum=#{mnum})
+		set ate_num=#{ate_num}, mnum=#{mnum} 
 	</insert>
 	
 	<delete id="goAteDislike" parameterType="Integer">
 		DELETE FROM ate_like
-		WHERE ate_num=#{ate_num} and mnum=#{mnum} and
-		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num} and mnum=#{mnum})
+		WHERE ate_num=#{ate_num} and mnum=#{mnum} 
 		
 	</delete>
 	

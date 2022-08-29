@@ -25,7 +25,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.example.demo.Service.DishDBService;
-import com.example.demo.vo.DishDB;
 
 @RestController
 public class RestTestController {
