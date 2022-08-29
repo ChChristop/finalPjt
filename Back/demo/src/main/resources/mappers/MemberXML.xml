@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.dao.MemberDAO">
+	<select id="getMemberList" resultType="MemberVO">
+		
+		SELECT M.MNUM, MEMBERID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+   		  
+		<where>
+			<if test= 'type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		GROUP BY M.MNUM
+				
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+	
+	<select id="getMemberList2" resultType="Map">
+		
+		SELECT M.mnum, memberID, nickname, phoneNumber, date, lastAccessDate, role, count(A.ate_num) AS ateCount
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+   		  
+		<where>
+			<if test= 'type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		GROUP BY M.MNUM
+				
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+
+
+	<select id="countMemberAllList" resultType="int">
+		
+		SELECT COUNT(*) FROM MEMBER
+		
+		<where>
+		<choose>
+			<when test='type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+		</choose>
+		</where>
+
+	</select>
+</mapper>

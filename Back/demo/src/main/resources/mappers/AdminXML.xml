@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+        
+<mapper namespace="com.example.demo.dao.AdminDAO">
+    <select id="getAdminList" resultType="AdminVO">
+   		  SELECT ANUM, ADMINID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN
+   
+    	<where>
+			<if test= 'type == "i"'>
+				ADMINID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "in"'>
+				ADMINID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+    
+    
+    
+  
+    
+    	<select id="countAdminAllList" resultType="int">
+		
+		SELECT COUNT(*) FROM ADMIN
+		
+		<where>
+		<choose>
+			<when test='type == "i"'>
+				ADMINID like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "in"'>
+				ADMINID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+		</choose>
+		</where>
+
+	</select>
+</mapper>

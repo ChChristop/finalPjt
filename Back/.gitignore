@@ -16,6 +16,7 @@ local.properties
 .loadpath
 .recommenders
 application.properties
+application.yml
 
 # External tool builders
 .externalToolBuilders/
