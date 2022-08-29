@@ -59,14 +59,14 @@ public class SecurityConfig {
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
-	        .antMatchers("/api/logout/**")
-	      	.hasAnyRole("MEMBER","ADMIN")
-	    	.antMatchers("/api/admin/**")
-	    	.hasRole("ADMIN")
+//	        .antMatchers("/api/logout/**")
+//	      	.hasAnyRole("MEMBER","ADMIN")
+//	    	.antMatchers("/api/admin/**")
+//	    	.hasRole("ADMIN")
 //	      	.antMatchers("/api/member/member-list")
 //	     	.hasAnyRole("ADMIN,MEMBER")
-	      	.antMatchers("/api/member/**")
-	     	.hasAnyRole("MEMBER","ADMIN")
+//	      	.antMatchers("/api/member/**")
+//	     	.hasAnyRole("MEMBER","ADMIN")
 	    
 		    .anyRequest().permitAll();
 
