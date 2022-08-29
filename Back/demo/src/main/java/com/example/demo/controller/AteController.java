@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.Service.AteService;
+import com.example.demo.service.AteService;
 import com.example.demo.vo.Ate;
 
 import groovy.util.logging.Slf4j;
