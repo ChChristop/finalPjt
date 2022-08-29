@@ -1,9 +1,14 @@
 package com.example.demo.service.memberService;
 
+import java.util.Map;
+
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.vo.MemberVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public interface MemberService {
 	
@@ -22,6 +27,8 @@ public interface MemberService {
 	
 	PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO);
 	
+	PageResultDTO<Map<String,Object>, MemberDTO>  getAmindList2(PageRequestDTO pageRequestDTO);
+	
 	default MemberVO dtoTOvo(MemberDTO memberDTO) {
 		
 		MemberVO member = MemberVO.builder()
@@ -37,7 +44,7 @@ public interface MemberService {
 		
 	}
 	
-	//테이블 조인 되면 더 늘어나야함
+
 	default MemberDTO voTOdto(MemberVO member) {
 
 		MemberDTO memberDTO = MemberDTO.builder()
@@ -52,6 +59,30 @@ public interface MemberService {
 				.build();
 		
 				return memberDTO;
+	}
+	
+	default MemberDTO mapTOdto(Map<String,Object> member) {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		
+		MemberDTO memberDTO = objectMapper.convertValue(member, MemberDTO.class);
+		
+		
+//		MemberDTO memberDTO = MemberDTO.builder()
+//				.mnum(Long.valueOf(String.valueOf(member.get("MNUM"))))
+//				.memberID((String)member.get("MEMBERID"))
+//				.nickname((String)member.get("NICKNAME"))
+//				.phoneNumber((String)member.get("PHONENUMBER"))
+//				.role((String) member.get("ROLE"))
+//				.lastAccessDate((LocalDateTime)member.get("DATE"))
+//				.date((LocalDateTime)member.get("DATE"))
+//				.modDate((LocalDateTime)member.get("MODATE"))
+//				.ateCount(Integer.valueOf(String.valueOf(member.get("ateCount"))))
+//				.build();
+		
+		return memberDTO;
 	}
 
 

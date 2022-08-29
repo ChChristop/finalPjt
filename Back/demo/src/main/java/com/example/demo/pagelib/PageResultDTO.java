@@ -35,7 +35,7 @@ public class PageResultDTO<VO,DTO> {
 
 		dtoList = result.stream().map(fn).collect(Collectors.toList());
 		
-		this.page = pageRequestDTO.getPage();
+		this.page = pageRequestDTO.getPage()+1;
 		
 		this.size = pageRequestDTO.getSize();
 		

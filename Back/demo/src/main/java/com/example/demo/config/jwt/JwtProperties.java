@@ -6,31 +6,33 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.config.auth.AdminCheck;
 import com.example.demo.config.auth.PrincipalDetails;
 
-public interface JwtProperties {
+@Component
+public class JwtProperties {
 
-	public final String TOKEN_PREFIX = "Bearer ";
+	public static final String TOKEN_PREFIX = "Bearer ";
 
-	public final String SECRETKEY = "final";
+	private static String SECRETKEY;
 
-	public final int SECRETKEY_EXPIRATION_TIME = 600000; // 5초; //600000;// 10분
+	public static final int SECRETKEY_EXPIRATION_TIME = 600000; // 5초; //600000;// 10분
 
-	public final String SECRETKEY_HEADER_STRING = "Authorization";
+	public static final String SECRETKEY_HEADER_STRING = "Authorization";
 
-	public final String REFRESHKEY = "rfstokken";
+	private static String REFRESHKEY;
 
-	// 10일 1일 86,400,000 (1/1000초)
-	public final int REFRESHKEY_EXPIRATION_TIME = 864000000; // 10일
+	// 10일 static 1일 86,400,000 (1/1000초)
+	public static final int REFRESHKEY_EXPIRATION_TIME = 864000000; // 10일
 
-	public final String REFRESHKEY_HEADER_STRING = "Refresh-Token";
+	public static final String REFRESHKEY_HEADER_STRING = "Refresh-Token";
 
-	
-	default String CreateJWTToken(PrincipalDetails principalDetails) {
+	public static String CreateJWTToken(PrincipalDetails principalDetails) {
 		
 		boolean check = AdminCheck.check;
 				
@@ -62,7 +64,7 @@ public interface JwtProperties {
 	}
 
 	
-	default String CreateJWTRefreshToken(PrincipalDetails principalDetails) {
+	public static String CreateJWTRefreshToken(PrincipalDetails principalDetails) {
 		
 		String jwtRefreshToken = "";
 		
@@ -87,7 +89,7 @@ public interface JwtProperties {
 	}
 
 	
-	default String[] vaildateJwtToken(String jwtToken, boolean check) throws Exception {
+	public static String[] vaildateJwtToken(String jwtToken, boolean check) throws Exception {
 		
 		if (jwtToken == "") {
 			return new String[0];
@@ -135,11 +137,21 @@ public interface JwtProperties {
 
 		} catch (Exception e) {
 			
-			e.printStackTrace();
-
 			return new String[0];
 		}
 
+	}
+	
+	//키 숨기기 위해 setter 사용(static에서는 어쩔 수 없음)
+	@Value("${JwtProperties.secretKey}")
+	public void setSECRETKEY(String value) {
+		SECRETKEY = value;
+	}
+	
+	//키 숨기기 위해 setter 사용(static에서는 어쩔 수 없음
+	@Value("${JwtProperties.refreshKey}")
+	public void setREFRESHKEY(String value) {
+		REFRESHKEY = value;
 	}
 
 }

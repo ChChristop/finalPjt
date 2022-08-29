@@ -1,6 +1,7 @@
 package com.example.demo.service.memberService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -62,7 +63,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public Long register(MemberDTO memberDTO) {
-
 		log.info("회원 등록 중 : " + memberDTO);
 
 		memberDTO.setMemberPW(passwordEncoder.encode(memberDTO.getMemberPW()));
@@ -76,7 +76,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean checkMemberID(String id) {
-
 		log.info("회원 아이디 중복 확인 : " + id);
 
 		Optional<String> result = memberDAO.checkByMemberId(id);
@@ -96,7 +95,6 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	@Transactional
 	public Long update(MemberDTO memberDTO) {
-
 		memberDTO.setMemberPW(passwordEncoder.encode(memberDTO.getMemberPW()));
 
 		MemberVO member = dtoTOvo(memberDTO);
@@ -104,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
 		log.info("회원 수정 중 : " + memberDTO);
 
 		memberDAO.updateAdminByMnum(member);
-		
+
 		memberDAO.updateModDateByMnum(memberDTO.getMnum());
 
 		return (long) member.getMnum();
@@ -114,29 +112,52 @@ public class MemberServiceImpl implements MemberService {
 	public PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO) {
 		log.info("회원 리스트 찾는 중 : ");
 
-		// 기준
-		String basis = "";
-
+		// 기w준
 		if (pageRequestDTO.getBasis() == "pk") {
 
-			basis = "mnum";
+			pageRequestDTO.setBasis("mnum");
 		}
 
-		// 정렬
-		String align = pageRequestDTO.isAlign() ? "asc" : "desc";
-
-		int page = (pageRequestDTO.getPage() - 1) * 10;
+		pageRequestDTO.setterChange();
 
 		// 조회 메서드
-		List<MemberVO> result = memberDAO.getMemberList(basis, align, page, pageRequestDTO.getSize());
+		List<MemberVO> result = memberDAO.getMemberList(pageRequestDTO);
+
+		System.out.println(result.get(0).toString());
 
 		// dto->vo 변환 함수 함수
-		Function<MemberVO, MemberDTO> fn = (admin) -> voTOdto(admin);
+		Function<MemberVO, MemberDTO> fn = (map) -> voTOdto(map);
 
-		// totalpage 조건 없음
-		int count = memberDAO.countAdminAllList();
+		int count = memberDAO.countMemberAllList(pageRequestDTO);
 
+		return new PageResultDTO<>(result, fn, pageRequestDTO, count); 
+	}
+	
+	//join table 테스트
+	@Override
+	public PageResultDTO<Map<String, Object>, MemberDTO> getAmindList2(PageRequestDTO pageRequestDTO) {
+		log.info("회원 리스트 찾는 중 : ");
+
+		// 기w준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+
+		// 조회 메서드
+		List<Map<String, Object>> result = memberDAO.getMemberList2(pageRequestDTO);
+
+
+		// dto->vo 변환 함수 함수
+		Function<Map<String, Object>, MemberDTO> fn = (map) -> mapTOdto(map);
+
+		int count = memberDAO.countMemberAllList(pageRequestDTO);
+
+//		return null;
 		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+
 	}
 
 }

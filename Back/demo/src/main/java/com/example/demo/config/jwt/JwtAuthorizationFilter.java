@@ -30,7 +30,7 @@ import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements JwtProperties {
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private AdminDAO adminDAO;
 
@@ -50,11 +50,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		boolean requestURI = request.getRequestURI().matches("/api/member+|/api/admin+");
+		boolean requestURI = request.getRequestURI().matches("(/api/member.+)|(/api/admin.+)|(/api/logout/.+)");
 
+	
 		// 권한 필요 없는 요청이면 jwt 확인 필요 없음.
 		if (!(requestURI)) {
-
+			log.info("???/");
 			chain.doFilter(request, response);
 
 			return;
@@ -62,16 +63,18 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		log.info("JwtAuthorizationFilter : 진입");
 
-		String jwtHeader = request.getHeader(SECRETKEY_HEADER_STRING);
+		String jwtHeader = request.getHeader(JwtProperties.SECRETKEY_HEADER_STRING);
+		
+		System.out.println(request.getRequestURI()+" requestURI " + requestURI);
 
 		log.info("jwtHeader : 확인 중 " + jwtHeader);
 
-		String jwtRefreshHeader = request.getHeader(REFRESHKEY_HEADER_STRING) != null
-				? request.getHeader(REFRESHKEY_HEADER_STRING)
+		String jwtRefreshHeader = request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING) != null
+				? request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING)
 				: "";
 
 		// Header가 있는지 확인
-		if (jwtHeader == null || !((String) jwtHeader).startsWith(TOKEN_PREFIX)) {
+		if (jwtHeader == null || !((String) jwtHeader).startsWith(JwtProperties.TOKEN_PREFIX)) {
 			chain.doFilter(request, response);
 			return;
 		}
@@ -91,10 +94,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 		try {
 			// jwtToken이 날짜가 유효하지 않을 경우 checkJWTToken 길이는 0
-			checkJWTToken = vaildateJwtToken(jwtToken, true);
+			checkJWTToken = JwtProperties.vaildateJwtToken(jwtToken, true);
 
 			// jwtRefreahToken이 날짜가 유효하지 않을 경우 checkRefreshToken 길이는 0
-			checkRefreshToken = vaildateJwtToken(jwtRefreahToken, false);
+			checkRefreshToken = JwtProperties.vaildateJwtToken(jwtRefreahToken, false);
 
 			
 			if (checkJWTToken.length != 0) {
@@ -126,15 +129,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 
 				};
 
-				String newJWTToken = CreateJWTToken(principalDetails);
+				String newJWTToken = JwtProperties.CreateJWTToken(principalDetails);
 
 				log.info("newJWTToken : " + newJWTToken);
 
-				response.addHeader(SECRETKEY_HEADER_STRING, newJWTToken);
+				response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, newJWTToken);
 
 				chain.doFilter(request, response);
 
-				return;
 			}
 
 		} catch (Exception e) {
@@ -145,7 +147,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 
 	}
 
@@ -204,15 +206,22 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter implements
 			if ((!jwtCheck.getJwt().equals(jwt[2]))) {
 
 				System.out.println("jwt[2] = jwtCheck.getJwt() " + jwt[2].equals(jwtCheck.getJwt()));
+				
+				System.out.println(jwt[2]);
+				System.out.println(jwtCheck.getJwt());
 
 				return null;
 			}
 		}
 
+
+		
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
-
+		
+		System.out.println(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 
 		return principalDetails;
 

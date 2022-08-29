@@ -101,7 +101,6 @@ public class LoginController {
 	@GetMapping("/api/logout/{id}")
 	public ResponseEntity<String> logout(@PathVariable String id) {
 
-
 		jwtTokkenDAO.refreshTokenRemove(id);
 		
 		boolean check = AdminCheck.check;

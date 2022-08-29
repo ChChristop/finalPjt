@@ -2,12 +2,13 @@ package com.example.demo.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,6 @@ import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.adminService.AdminService;
 import com.example.demo.vo.AdminVO;
-import com.github.javaparser.utils.Log;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +34,7 @@ public class AdminController {
 	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
+		log.info("/checkID/{adminID} 진입");
 		// 관리자 아이디 중복 체크 true or false 사용
 		boolean result = adminService.CheckadminID(adminID);
 
@@ -88,7 +89,7 @@ public class AdminController {
 
 	// 관리자 삭제 URI, 관리자 삭제 시 연관된 게시글, 댓글 삭제도 이루어져야 할지 회의 필요
 	// 탈퇴 삭제
-	@GetMapping("/delete/{anum}")
+	@DeleteMapping("/delete/{anum}")
 	public ResponseEntity<Long> removeAdmin(@PathVariable Long anum) {
 
 		log.info("Delete admin by anum : " + anum);
@@ -100,7 +101,7 @@ public class AdminController {
 	}
 
 	// 관리자 수정 URI
-	@PostMapping("/update")
+	@PutMapping("/update")
 
 	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
