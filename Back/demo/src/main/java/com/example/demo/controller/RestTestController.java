@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.example.demo.Service.DishDBService;
+import com.example.demo.vo.DishDB;
 
 @RestController
 public class RestTestController {
@@ -129,7 +130,6 @@ public class RestTestController {
 		System.out.println(dbGO.length());
 		List<Map<String, Object>> list = new ArrayList<>();
 		//for(int i = 0 ; i<)
-		
 		
 		
 		

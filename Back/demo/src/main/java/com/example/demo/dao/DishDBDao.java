@@ -7,7 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper 
 public interface DishDBDao {
 
-	public void dbGO(Map<String, Object> nodeMapData);
+	public int dbGO(Map<String, Object> nodeMapData);
+
+	
+	public void dbGoInfo();
 
 	
 }

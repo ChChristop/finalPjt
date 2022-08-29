@@ -13,17 +13,15 @@ public interface DishDao {
 
 	public List<Map<String, Object>> get();
 
-	public void add(Dish dish);
+	public void add(DishDB dish);
 
 	public Map<String, Object> getOne(int RCP_SEQ);
 
-	public void edit(Dish dish);
+	public void edit(DishDB dish);
 
 	public void upHit(int RCP_SEQ);
 
-	public void delete(int id);
-
-	public void addPicture(Map<String, Object> param);
+	public void delete(int RCP_SEQ);
 
 	public void pictures(int dnum);
 
@@ -31,11 +29,17 @@ public interface DishDao {
 
 	public void editPicture(Map<String, Object> param);
 
-	public int dishLike(int mnum, int dnum);
+	public int dishLike(int mnum, int RCP_SEQ);
 
-	public void goDishLike(int dnum, int mnum);
+	public void goDishLike(int RCP_SEQ, int mnum);
 
-	public void goDishDislike(int dnum, int mnum);
+	public void goDishDislike(int RCP_SEQ, int mnum);
+
+	public int getNum();
+
+	public void addInfo(int dnum, int mnum);
+
+	public void editInfo(Dish dish1, int rCP_SEQ, int mnum);
 	
 	
 }

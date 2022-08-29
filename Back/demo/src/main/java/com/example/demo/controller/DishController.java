@@ -128,73 +128,204 @@ public class DishController {
 	
 	/*
 	 * 음식 추가
+	 * mnum : 작성자 고유 번호
 	 */
-	@PostMapping("/add")
-	public String add(@ModelAttribute Dish dish,
-			@RequestParam("files") MultipartFile[] files) throws Exception {
-	
-		dishService.add(dish);
-		Map<String, Object> param = new HashMap<>();
-
-		for(MultipartFile file : files) {
-			if(file.getSize() > 0) {
-			
-			String pname = file.getOriginalFilename();
-			File dest = new File(fdir + "/" + file.getOriginalFilename());
-			file.transferTo(dest);
-			param.put("pname", "/img/"+pname);
-			}
-			dishService.addPicture(param);
+	@PostMapping("/add/{mnum}")
+	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,
+			@RequestParam("file01") MultipartFile file01,
+			@RequestParam("file02") MultipartFile file02,
+			@RequestParam("file03") MultipartFile file03,
+			@RequestParam("file04") MultipartFile file04,
+			@RequestParam("file05") MultipartFile file05,
+			@RequestParam("file06") MultipartFile file06,
+			@RequestParam("file07") MultipartFile file07,
+			@RequestParam("file08") MultipartFile file08,
+			@RequestParam("file09") MultipartFile file09,
+			@RequestParam("file10") MultipartFile file10) throws Exception {
+		
+		
+		if(!file01.isEmpty()) {
+		String pname = file01.getOriginalFilename();
+		File dest = new File(fdir + "/" + file01.getOriginalFilename());
+		file01.transferTo(dest);
+		dish.setMANUAL_IMG01("/img/"+pname);
 		}
-		//pictureTest(file);
-	
+		
+		if(!file02.isEmpty()) {
+			String pname = file02.getOriginalFilename();
+			File dest = new File(fdir + "/" + file02.getOriginalFilename());
+			file02.transferTo(dest);
+			dish.setMANUAL_IMG02("/img/"+pname);
+			}
 
-		return dish.getTitle() + "이 등록되었습니다.";
+		if(!file03.isEmpty()) {
+			String pname = file03.getOriginalFilename();
+			File dest = new File(fdir + "/" + file03.getOriginalFilename());
+			file03.transferTo(dest);
+			dish.setMANUAL_IMG03("/img/"+pname);
+			}
+		
+		if(!file04.isEmpty()) {
+			String pname = file04.getOriginalFilename();
+			File dest = new File(fdir + "/" + file04.getOriginalFilename());
+			file04.transferTo(dest);
+			dish.setMANUAL_IMG04("/img/"+pname);
+			}
+		
+		if(!file05.isEmpty()) {
+			String pname = file05.getOriginalFilename();
+			File dest = new File(fdir + "/" + file05.getOriginalFilename());
+			file05.transferTo(dest);
+			dish.setMANUAL_IMG05("/img/"+pname);
+			}
+		
+		if(!file06.isEmpty()) {
+			String pname = file06.getOriginalFilename();
+			File dest = new File(fdir + "/" + file06.getOriginalFilename());
+			file06.transferTo(dest);
+			dish.setMANUAL_IMG06("/img/"+pname);
+			}
+		
+		if(!file07.isEmpty()) {
+			String pname = file07.getOriginalFilename();
+			File dest = new File(fdir + "/" + file07.getOriginalFilename());
+			file07.transferTo(dest);
+			dish.setMANUAL_IMG07("/img/"+pname);
+			}
+		
+		if(!file08.isEmpty()) {
+			String pname = file08.getOriginalFilename();
+			File dest = new File(fdir + "/" + file08.getOriginalFilename());
+			file08.transferTo(dest);
+			dish.setMANUAL_IMG08("/img/"+pname);
+			}
+		
+		if(!file09.isEmpty()) {
+			String pname = file09.getOriginalFilename();
+			File dest = new File(fdir + "/" + file09.getOriginalFilename());
+			file09.transferTo(dest);
+			dish.setMANUAL_IMG09("/img/"+pname);
+			}
+		
+		if(!file10.isEmpty()) {
+			String pname = file10.getOriginalFilename();
+			File dest = new File(fdir + "/" + file10.getOriginalFilename());
+			file10.transferTo(dest);
+			dish.setMANUAL_IMG10("/img/"+pname);
+			}
+		
+		int num = dishService.getNum();
+
+		dish.setRCP_SEQ(Integer.toString(num));
+		
+		
+		dishService.add(dish, mnum);
+		
+		return dish.getRCP_SEQ() + "이 등록되었습니다.";
 	}
 	/*
 	 * 음식 정보 수정하기
 	 * 	오수진(0818) : 추후 프론트와 이야기! 
-	 *  							-> id 정보 받을 방법 정해서 수정하기
-	 *  								->지금은 id가 없어서 내가 적어줘야하지만, 
-	 *  									나중엔 dish Map안에 들어있을 예정
-	 *  							-> 기존 정보 어떻게 보여줄지 정하기   
+	 *  	-> 음식 정보 수정한 사람 : mnum
 	 */
-	@PutMapping("/edit/{dnum}")
-	public String edit(@ModelAttribute Dish dish,
-			@RequestParam("files") MultipartFile[] files, @PathVariable int dnum) throws Exception {
+	@PutMapping("/edit/{RCP_SEQ}/{mnum}")
+	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int mnum, @PathVariable int RCP_SEQ,
+			@RequestParam("file01") MultipartFile file01,
+			@RequestParam("file02") MultipartFile file02,
+			@RequestParam("file03") MultipartFile file03,
+			@RequestParam("file04") MultipartFile file04,
+			@RequestParam("file05") MultipartFile file05,
+			@RequestParam("file06") MultipartFile file06,
+			@RequestParam("file07") MultipartFile file07,
+			@RequestParam("file08") MultipartFile file08,
+			@RequestParam("file09") MultipartFile file09,
+			@RequestParam("file10") MultipartFile file10) throws Exception {
 		
-		//오수진(0818): 프론트와 상의하기 
-			//1. 기존 정보 불러오기 (이건 어떻게 작동해서 보여줄지 상의하자) 
-			//Dish BeforeData = dishService.getOne(id);
 		
-		if (files.length > 0) {
-			dishService.delPicture(dnum);
-			for(MultipartFile file : files) {
-				
-				Map<String, Object> param = new HashMap<>();
-				
-				String pname = file.getOriginalFilename();
-				File dest = new File(fdir + "/" + file.getOriginalFilename());
-				file.transferTo(dest);
-				param.put("pname", "/img/"+pname);
-				param.put("dnum", dnum);
-				dishService.editPicture(param);
-			}
+
+		if(!file01.isEmpty()) {
+		String pname = file01.getOriginalFilename();
+		File dest = new File(fdir + "/" + file01.getOriginalFilename());
+		file01.transferTo(dest);
+		dish.setMANUAL_IMG01("/img/"+pname);
 		}
 		
+		if(!file02.isEmpty()) {
+			String pname = file02.getOriginalFilename();
+			File dest = new File(fdir + "/" + file02.getOriginalFilename());
+			file02.transferTo(dest);
+			dish.setMANUAL_IMG02("/img/"+pname);
+			}
+
+		if(!file03.isEmpty()) {
+			String pname = file03.getOriginalFilename();
+			File dest = new File(fdir + "/" + file03.getOriginalFilename());
+			file03.transferTo(dest);
+			dish.setMANUAL_IMG03("/img/"+pname);
+			}
 		
-		//dish.setDnum(dnum);
+		if(!file04.isEmpty()) {
+			String pname = file04.getOriginalFilename();
+			File dest = new File(fdir + "/" + file04.getOriginalFilename());
+			file04.transferTo(dest);
+			dish.setMANUAL_IMG04("/img/"+pname);
+			}
 		
-		dishService.edit(dish);
+		if(!file05.isEmpty()) {
+			String pname = file05.getOriginalFilename();
+			File dest = new File(fdir + "/" + file05.getOriginalFilename());
+			file05.transferTo(dest);
+			dish.setMANUAL_IMG05("/img/"+pname);
+			}
 		
-		return dish.getTitle() +"이 수정되었습니다.";
+		if(!file06.isEmpty()) {
+			String pname = file06.getOriginalFilename();
+			File dest = new File(fdir + "/" + file06.getOriginalFilename());
+			file06.transferTo(dest);
+			dish.setMANUAL_IMG06("/img/"+pname);
+			}
+		
+		if(!file07.isEmpty()) {
+			String pname = file07.getOriginalFilename();
+			File dest = new File(fdir + "/" + file07.getOriginalFilename());
+			file07.transferTo(dest);
+			dish.setMANUAL_IMG07("/img/"+pname);
+			}
+		
+		if(!file08.isEmpty()) {
+			String pname = file08.getOriginalFilename();
+			File dest = new File(fdir + "/" + file08.getOriginalFilename());
+			file08.transferTo(dest);
+			dish.setMANUAL_IMG08("/img/"+pname);
+			}
+		
+		if(!file09.isEmpty()) {
+			String pname = file09.getOriginalFilename();
+			File dest = new File(fdir + "/" + file09.getOriginalFilename());
+			file09.transferTo(dest);
+			dish.setMANUAL_IMG09("/img/"+pname);
+			}
+		
+		if(!file10.isEmpty()) {
+			String pname = file10.getOriginalFilename();
+			File dest = new File(fdir + "/" + file10.getOriginalFilename());
+			file10.transferTo(dest);
+			dish.setMANUAL_IMG10("/img/"+pname);
+			}
+		
+		
+		dish.setRCP_SEQ(Integer.toString(RCP_SEQ));
+		
+		dishService.edit(dish, dish1, RCP_SEQ, mnum);
+		
+		return dish.getRCP_SEQ() +"이 수정되었습니다.";
 	}
 
 	
 
-	
-	@GetMapping("/get/{RCP_SEQ}")
-	public Map<String,Object> getOne(@PathVariable int RCP_SEQ) {
+	//좋아요 확인 : 로그인한 회원 같이 받아야함!!!
+	@GetMapping("/get/{RCP_SEQ}/{mnum}")
+	public Map<String,Object> getOne(@PathVariable int RCP_SEQ, @PathVariable int mnum) {
 		Map<String,Object> result = new HashMap<>();
 		/*
 		 * 조회수 +1 
@@ -202,16 +333,15 @@ public class DishController {
 		dishService.upHit(RCP_SEQ);
 		/*
 		 * 프론트에서 회원 아이디 받기
-		 * 이건 게시물, 회원번호 받아와서 좋아요 체크했나 확인하는 메소드
-		 * 상의 : 좋아요 어떻게 구현할 것인가?
+		 * 좋아요 체크했나 확인하는 메소드
 		 */
 
-	//	int check = dishService.dishLike(mnum,RCP_SEQ);
+		int check = dishService.dishLike(mnum,RCP_SEQ);
 		
-	//	String str = "";
-	//		if(check == 1) { //본 게시물 좋아요 눌렀음
-	//			str = "liked";
-	//		}	
+		String str = "";
+			if(check == 1) { //본 게시물 좋아요 눌렀음
+				str = "liked";
+			}	
 			
 		
 		//프론트에서 받을때 주의!
@@ -220,6 +350,7 @@ public class DishController {
 	
 		Map<String, Object> map = new HashMap<>();
 		
+		map.put("liked", str); //좋아요 누른 회원
 		map.put("hit", resultMap.get("hit")); //조회수
 		
 		map.put("dish_num", resultMap.get("rcp_seq")); //고유번호
@@ -289,19 +420,16 @@ public class DishController {
 		
 		return result;
 	}
-	
-	
-	
-	
 
+	
 	/*
 	 * 음식 정보 삭제하기 
 	 */
-	@DeleteMapping("/delete/{dnum}")
-	public String delete(@PathVariable int dnum) {
+	@DeleteMapping("/delete/{RCP_SEQ}")
+	public String delete(@PathVariable int RCP_SEQ) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
-		dishService.delete(dnum);
+		dishService.delete(RCP_SEQ);
 		
 		return "글이 삭제되었습니다.";
 	}
@@ -311,24 +439,21 @@ public class DishController {
 	 * 좋아요 등록 / 취소
 	 * 유저 번호도 같이 받아야해! 
 	 */
-	@PostMapping("/like/{dnum}/{mnum}")
-	public String goDishLike(@PathVariable int dnum, @PathVariable int mnum) {
+	@PostMapping("/like/{RCP_SEQ}/{mnum}")
+	public String goDishLike(@PathVariable int RCP_SEQ, @PathVariable int mnum) {
 
 		String str ="";
 			//좋아요 안누른 상태면, 좋아요 등록
-		if (dishService.dishLike(mnum, dnum) == 0) {
+		if (dishService.dishLike(mnum, RCP_SEQ) == 0) {
 			
-			dishService.goDishLike(dnum, mnum);
+			dishService.goDishLike(RCP_SEQ, mnum);
 			
 			str = "좋아요 등록!";
+			}else {
 			//좋아요 누른 상태면, 좋아요 해제 
-		}else if(dishService.dishLike(mnum, dnum) == 1){
-			
-			dishService.goDishDislike(dnum, mnum);
-			
+				dishService.goDishDislike(RCP_SEQ, mnum);
 			str = "좋아요 해제!";
-
-		}
+			}
 		
 		return str;
 	}

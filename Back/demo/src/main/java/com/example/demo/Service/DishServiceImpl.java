@@ -28,9 +28,11 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void add(Dish dish) {
+	public void add(DishDB dish, int mnum) {
 		
 		dishDao.add(dish);
+		int dnum= Integer.parseInt(dish.getRCP_SEQ());
+		dishDao.addInfo(dnum, mnum);
 	}
 	
 	@Override
@@ -40,9 +42,10 @@ public class DishServiceImpl implements DishService {
 	}  
 
 	@Override
-	public void edit(Dish dish) {
+	public void edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
 		
 		dishDao.edit(dish);
+		dishDao.editInfo(dish1, rCP_SEQ, mnum);
 	}
 
 	@Override
@@ -52,14 +55,9 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void delete(int id) {
+	public void delete(int RCP_SEQ) {
 		
-		dishDao.delete(id);
-	}
-
-	@Override
-	public void addPicture(Map<String, Object> param) {
-		dishDao.addPicture(param);
+		dishDao.delete(RCP_SEQ);
 	}
 
 	@Override
@@ -75,22 +73,28 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public int dishLike(int mnum, int dnum) {
+	public int dishLike(int mnum, int RCP_SEQ) {
 		
-		return dishDao.dishLike(mnum,dnum);
+		return dishDao.dishLike(mnum,RCP_SEQ);
 		
 	}
 
 	@Override
-	public void goDishLike(int mnum, int dnum) {
+	public void goDishLike(int RCP_SEQ, int mnum) {
 	
-		dishDao.goDishLike(dnum,mnum);
+		dishDao.goDishLike(RCP_SEQ,mnum);
 	}
 
 	@Override
-	public void goDishDislike(int dnum, int mnum) {
+	public void goDishDislike(int RCP_SEQ, int mnum) {
 		
-		dishDao.goDishDislike(dnum,mnum);
+		dishDao.goDishDislike(RCP_SEQ,mnum);
+	}
+
+	@Override
+	public int getNum() {
+		
+		return dishDao.getNum();
 	}
 
 	
