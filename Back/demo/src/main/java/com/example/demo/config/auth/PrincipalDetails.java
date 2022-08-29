@@ -61,7 +61,6 @@ public class PrincipalDetails implements UserDetails {
 			
 			authorities.add(new SimpleGrantedAuthority(memberDTO.getRole()));
 
-			System.out.println(memberDTO.getRole() + authorities.toString());
 			return authorities;
 		}
 

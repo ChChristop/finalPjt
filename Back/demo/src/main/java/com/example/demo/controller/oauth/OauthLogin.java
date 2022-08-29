@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/oauth")
 @RequiredArgsConstructor
-public class OauthLogin implements JwtProperties {
+public class OauthLogin{
 
 	private final GoogleLoginService googleLoginService;
 
@@ -35,12 +35,9 @@ public class OauthLogin implements JwtProperties {
 		public ResponseEntity<MemberDTO> login( HttpServletResponse response,
 				HttpServletRequest request) {
 		
-		String ggg= (String) request.getHeader("code");
+		String fullHeader= (String) request.getHeader("code");
 		
-		String getHeader = ggg.substring(ggg.indexOf("code")+5,ggg.indexOf("&scope"));
-		
-		
-		System.out.println("getHeader : "+ getHeader);
+		String getHeader = fullHeader.substring(fullHeader.indexOf("code")+5,fullHeader.indexOf("&scope"));
 		
 		MemberDTO memberDTO = googleLoginService.login(getHeader);
 
@@ -51,11 +48,11 @@ public class OauthLogin implements JwtProperties {
 
 		googleLoginService.loginSuccess(memberDTO, request);
 		
-		String jwtToken = (String)request.getAttribute(SECRETKEY_HEADER_STRING);
+		String jwtToken = (String)request.getAttribute(JwtProperties.SECRETKEY_HEADER_STRING);
 		String jwtrefreshToekn = (String)request.getAttribute("refreshToken");
 		
-		response.addHeader(SECRETKEY_HEADER_STRING, jwtToken);
-		response.addHeader(REFRESHKEY_HEADER_STRING, jwtrefreshToekn);
+		response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, jwtToken);
+		response.addHeader(JwtProperties.REFRESHKEY_HEADER_STRING, jwtrefreshToekn);
 		
 		return new ResponseEntity<>(memberDTO, HttpStatus.ACCEPTED);
 			

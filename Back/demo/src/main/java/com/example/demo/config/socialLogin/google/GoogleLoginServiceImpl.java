@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleLoginServiceImpl implements GoogleLoginService, JwtProperties {
+public class GoogleLoginServiceImpl implements GoogleLoginService {
 	
 
 	private final MemberDAO memberDAO;
@@ -78,7 +78,6 @@ public class GoogleLoginServiceImpl implements GoogleLoginService, JwtProperties
 			    params.add("code", decodedCode);
 			    params.add("grant_type", "authorization_code");
 			    params.add("redirect_uri", "http://localhost:5500/ttest/aa.html");
-//			    params.add("redirect_uri", "http://localhost:8080/api/oauth/login");
 
 			   HttpEntity<MultiValueMap<String, String>> accessTokenRequest = new HttpEntity<>(params, headers);
 				
@@ -106,8 +105,6 @@ public class GoogleLoginServiceImpl implements GoogleLoginService, JwtProperties
 				String requestUrl = UriComponentsBuilder.fromHttpUrl("https://oauth2.googleapis.com" + "/tokeninfo").queryParam("id_token", token.getId_token()).toUriString();
 
 		        String resultJson = rt.getForObject(requestUrl, String.class);
-		        
-		        System.out.println(resultJson.toString());	
 		        
 		        MemberDTO member = null;
 		        
@@ -167,8 +164,8 @@ public class GoogleLoginServiceImpl implements GoogleLoginService, JwtProperties
 	public void loginSuccess(MemberDTO memberDTO, HttpServletRequest request) {
 		
 		PrincipalDetails principalDetails = new PrincipalDetails(memberDTO); 	
-		request.setAttribute(SECRETKEY_HEADER_STRING, TOKEN_PREFIX + CreateJWTToken(principalDetails));
-		request.setAttribute("refreshToken", TOKEN_PREFIX + CreateJWTRefreshToken(principalDetails));
+		request.setAttribute(JwtProperties.SECRETKEY_HEADER_STRING, JwtProperties.TOKEN_PREFIX + JwtProperties.CreateJWTToken(principalDetails));
+		request.setAttribute("refreshToken", JwtProperties.TOKEN_PREFIX + JwtProperties.CreateJWTRefreshToken(principalDetails));
 		request.setAttribute("id", memberDTO.getMemberID());
 
 		

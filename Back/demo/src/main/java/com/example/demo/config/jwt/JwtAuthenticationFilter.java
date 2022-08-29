@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
 
 //로그인 인증관련 필터
 @Log4j2
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter implements JwtProperties {
+public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
 	private AuthenticationManager authenticationManager;
 
@@ -71,8 +71,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		}
 		
 		param = params;
-	
-		System.out.println("Arrays.toString(param)"+Arrays.toString(param));
 		
 		if(param[0].contains("=")) {
 			for(int i = 0; i<param.length;i++ ) {
@@ -105,8 +103,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			AdminCheck.check = false;
 			
 			MemberDTO memberDTO = MemberDTO.builder().memberID(param[0]).memberPW(param[1]).build();
-			
-			System.out.println(memberDTO.getMemberID()+" "+ memberDTO.getMemberPW());
 
 			authenticationToken = new UsernamePasswordAuthenticationToken(memberDTO.getMemberID(), memberDTO.getMemberPW());
 
@@ -115,7 +111,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		// 세션 생성
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 	
-		System.out.println("authentication.getAuthorities().toString()" + authentication.getAuthorities().toString());
 
 		return authentication;
 
@@ -132,9 +127,9 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		
 		log.info("로그인 되었음 : " + principalDetails.getUsername());
 
-		String jwtToken = CreateJWTToken(principalDetails);
+		String jwtToken = JwtProperties.CreateJWTToken(principalDetails);
 
-		String jwtRefreshToken = CreateJWTRefreshToken(principalDetails);
+		String jwtRefreshToken = JwtProperties.CreateJWTRefreshToken(principalDetails);
 
 		request.setAttribute("refreshToken", jwtRefreshToken);
 
@@ -149,9 +144,9 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			request.setAttribute("memberDTO",principalDetails.getMemberDTO());
 		}
 
-		response.addHeader(SECRETKEY_HEADER_STRING, TOKEN_PREFIX + jwtToken);
+		response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 
-		response.addHeader(REFRESHKEY_HEADER_STRING, TOKEN_PREFIX + jwtRefreshToken);
+		response.addHeader(JwtProperties.REFRESHKEY_HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtRefreshToken);
 
 		chain.doFilter(request, response);
 
