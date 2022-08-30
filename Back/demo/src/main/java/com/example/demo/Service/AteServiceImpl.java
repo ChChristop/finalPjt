@@ -73,5 +73,13 @@ public class AteServiceImpl implements AteService {
 		ateDao.goAteDislike(ate_num,mnum);
 	}
 
+	@Override
+	public List<Ate> getAllList(long mnum) {
+		
+		List<Ate> result = ateDao.getAllList(mnum);
+		
+		return result;
+	}
+
 	
 }

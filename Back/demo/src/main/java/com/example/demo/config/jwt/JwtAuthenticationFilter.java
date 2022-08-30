@@ -24,9 +24,10 @@ import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
 
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 //로그인 인증관련 필터
-@Log4j2
+@Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
 
 	private AuthenticationManager authenticationManager;
@@ -39,8 +40,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	// login 필터
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
-
-		log.info("JwtAuthneticationFilter : 로그인 시도 중 ");
 
 		// 관리자 또는 회원으로 나누어져 로그인 진행으로 파라미터를 읽을 필요가 있음
 		BufferedReader br = new BufferedReader(
@@ -83,9 +82,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			}
 		}
 
-
+		
+		log.info("[JwtAuthneticationFilter] : 로그인 시도 중 " + param[0]);
+		
 		// html로 받을 시
-
 		UsernamePasswordAuthenticationToken authenticationToken = null;;
 
 //		ObjectMapper om = new ObjectMapper();
@@ -110,12 +110,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 		// 세션 생성
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-	
+		
+		log.info("[JwtAuthneticationFilter] : authentication 객체 생성 : " + authentication.getName());
 
 		return authentication;
-
-//		PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 		
 		
-		log.info("로그인 되었음 : " + principalDetails.getUsername());
+		log.info("[JwtAuthneticationFilter] : 로그인 성공 : " + principalDetails.getUsername());
 
 		String jwtToken = JwtProperties.CreateJWTToken(principalDetails);
 
@@ -147,6 +145,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 
 		response.addHeader(JwtProperties.REFRESHKEY_HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtRefreshToken);
+		
 
 		chain.doFilter(request, response);
 

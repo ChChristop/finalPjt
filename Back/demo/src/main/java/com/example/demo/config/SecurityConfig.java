@@ -23,11 +23,12 @@ import com.example.demo.dao.MemberDAO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class SecurityConfig {
 	
 	private final CorsConfig corsConfig = new CorsConfig();
@@ -59,15 +60,14 @@ public class SecurityConfig {
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
-	        .antMatchers("/api/logout/**")
-	      	.hasAnyRole("MEMBER","ADMIN")
-	    	.antMatchers("/api/admin/**")
-	    	.hasRole("ADMIN")
-//	      	.antMatchers("/api/member/member-list")
-//	     	.hasAnyRole("ADMIN,MEMBER")
-	      	.antMatchers("/api/member/**")
-	     	.hasAnyRole("MEMBER","ADMIN")
-	    
+				/*
+				 * .antMatchers("/api/logout/**") .hasAnyRole("MEMBER","ADMIN")
+				 * .antMatchers("/api/admin/**") .hasRole("ADMIN")
+				 * .antMatchers("/api/member/member-list") .hasAnyRole("ADMIN")
+				 * .antMatchers("/api/member/**") .hasAnyRole("MEMBER","ADMIN")
+				 * .antMatchers("/api/refre/**") .hasAnyRole("MEMBER")
+				 */
+	     	
 		    .anyRequest().permitAll();
 
 		return http.build();
@@ -81,7 +81,8 @@ public class SecurityConfig {
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
+					;
+//					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
 		}
 	}
 

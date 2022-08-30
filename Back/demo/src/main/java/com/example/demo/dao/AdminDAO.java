@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.annotations.Delete;
@@ -32,11 +33,15 @@ public interface AdminDAO {
 	
 	//관리자 식별자로 관리자 정보 조회
 	@Select("SELECT ANUM, ADMINID, ADMINPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE FROM ADMIN WHERE ANUM = #{anum}")
-	Optional<AdminVO> findAdminIdByAnum(long anum);
+	Optional<AdminVO> findAdminIdByAnumForJWt(long anum);
+	
+	Map<String, Object> findAdminIdByAnum(long anum);
 	
 	//관리자 아이디로 관리자 정보 조회
 	@Select("SELECT ANUM, ADMINID, ADMINPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE FROM ADMIN WHERE ADMINID = #{adminID}")
-	Optional<AdminVO> findAdminIdByID(String adminID);
+	Optional<AdminVO> findAdminIdByIDForJWT(String adminID);
+	
+	Map<String, Object> findAdminIdByID(String adminID);
 	
 	//관리자 식별자로 관리자 정보 삭제
 	@Delete("DELETE FROM ADMIN WHERE ANUM=#{anum}")

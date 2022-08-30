@@ -25,9 +25,9 @@ public interface MemberService {
 	
 	Long update(MemberDTO memberDTO);
 	
-	PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO);
+	PageResultDTO<MemberVO, MemberDTO> getAdminList(PageRequestDTO pageRequestDTO);
 	
-	PageResultDTO<Map<String,Object>, MemberDTO>  getAmindList2(PageRequestDTO pageRequestDTO);
+	PageResultDTO<Map<String,Object>, MemberDTO>  getAdminList2(PageRequestDTO pageRequestDTO);
 	
 	default MemberVO dtoTOvo(MemberDTO memberDTO) {
 		

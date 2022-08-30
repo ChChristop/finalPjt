@@ -20,7 +20,7 @@ public interface AdminService {
 	
 	Long update(AdminDTO adminDTO);
 	
-	PageResultDTO<AdminVO, AdminDTO> getAmindList(PageRequestDTO pageRequestDTO);
+	PageResultDTO<AdminVO, AdminDTO> getAdminList(PageRequestDTO pageRequestDTO);
 	
 	default AdminVO dtoTOvo(AdminDTO adminDTO) {
 		

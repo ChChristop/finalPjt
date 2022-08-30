@@ -55,6 +55,12 @@
 		
 	</delete>
 	
+	<select id="getAllList" resultType="Ate">
+		SELECT * FROM ATE
+		WHERE mnum = #{mnum}
+	</select>
+	
+	
 	
 	
 </mapper>

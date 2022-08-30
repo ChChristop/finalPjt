@@ -19,10 +19,12 @@ import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.adminService.AdminService;
 import com.example.demo.vo.AdminVO;
 
+import groovy.transform.SelfType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
@@ -34,7 +36,8 @@ public class AdminController {
 	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
-		log.info("/checkID/{adminID} 진입");
+		log.info("[AdminController /api/checkID/{adminID}] : 진입 :" + adminID);
+
 		// 관리자 아이디 중복 체크 true or false 사용
 		boolean result = adminService.CheckadminID(adminID);
 
@@ -45,6 +48,8 @@ public class AdminController {
 	@GetMapping("/adminID/{adminId}")
 	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminId) {
 
+		log.info("[AdminController /api/adminID/{adminId}] : 진입 :" + adminId);
+
 		AdminDTO result = null;
 
 		try {
@@ -54,11 +59,11 @@ public class AdminController {
 			result = adminService.findAdmin(adminId);
 		}
 
-		// 관리자 아이디 중복 체크 true or false 사용
 		if (result == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		}
-		else {
+			log.warn("[AdminController /api/adminID/{adminId}] : 관리자 조회 실패 :" + adminId);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} else {
+			log.warn("[AdminController /api/adminID/{adminId}] : 관리자 조회 성공 :" + adminId);
 			result.setAdminPW("");
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
@@ -69,7 +74,9 @@ public class AdminController {
 	public ResponseEntity<PageResultDTO<AdminVO, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
 			Model mopdel) {
 
-		PageResultDTO<AdminVO, AdminDTO> result = adminService.getAmindList(pageRequestDTO);
+		log.info("[AdminController /api/admin-list] : 진입 ");
+
+		PageResultDTO<AdminVO, AdminDTO> result = adminService.getAdminList(pageRequestDTO);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -79,12 +86,19 @@ public class AdminController {
 
 	public ResponseEntity<Long> addAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("Controller /register 접근");
+		log.info("[AdminController /api/register] : 진입 : " + adminDTO.getAdminID());
 
-		// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
+		// 정상적으로 등록됐으면 관리자 식별자 리턴;
 		Long result = adminService.register(adminDTO);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[AdminController /api/register] : 회원 가입 성공 : " + adminDTO.getAdminID());
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[AdminController /api/register] : 회원 가입 실패 : " + adminDTO.getAdminID());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		}
 	}
 
 	// 관리자 삭제 URI, 관리자 삭제 시 연관된 게시글, 댓글 삭제도 이루어져야 할지 회의 필요
@@ -92,24 +106,37 @@ public class AdminController {
 	@DeleteMapping("/delete/{anum}")
 	public ResponseEntity<Long> removeAdmin(@PathVariable Long anum) {
 
-		log.info("Delete admin by anum : " + anum);
+		log.info("[AdminController /api/delete/{anum}] : 진입 : " + anum);
 
 		// 정상적으로 삭제됐으면 anum 리턴, 아니면 0
 		Long result = adminService.remove(anum);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[AdminController /api/register] : 관리자 삭제 성공 : " + anum);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[AdminController /api/register] : 관리자 삭제 실패 : " + anum);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 	// 관리자 수정 URI
 	@PutMapping("/update")
-
 	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("Update admin : " + adminDTO);
+		log.info("[AdminController /api/update] : 진입 : " + adminDTO.getAdminID());
 
 		Long result = adminService.update(adminDTO);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[AdminController /api/update] : 관리자 수정 성공 : " + adminDTO.getAdminID());
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[AdminController /api/update] : 관리자 수정 실패 : " + adminDTO.getAdminID());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 }

@@ -27,4 +27,6 @@ public interface AteDao {
 
 	public void goAteDislike(int ate_num, int mnum);
 	
+	public List<Ate> getAllList(long mnum);
+	
 }

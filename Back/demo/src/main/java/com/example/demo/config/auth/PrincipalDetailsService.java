@@ -16,10 +16,11 @@ import com.example.demo.vo.MemberVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 
 //UsernamePasswordAuthenticationFilter 필터 후에 적용 됨
 public class PrincipalDetailsService implements UserDetailsService{
@@ -32,14 +33,14 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		log.info("PrincipalDetailsService : 진입");
+		log.info("[PrincipalDetailsService] : 진입 : " + username);
 		
 		boolean check = AdminCheck.check;
 		
 		if(check) {
 		
 		//DB 접속
-		Optional<AdminVO> result = adminDAO.findAdminIdByID(username);
+		Optional<AdminVO> result = adminDAO.findAdminIdByIDForJWT(username);
 		
 		if(result.isEmpty()) {
 			throw new UsernameNotFoundException("Check ID");
@@ -59,11 +60,14 @@ public class PrincipalDetailsService implements UserDetailsService{
 				.role(admin.getRoleList())
 				.build();
 		
+		
+		log.info("[PrincipalDetails(adminDTO)] : 진입 : " + adminDTO.getAdminID());
+		
 		return new PrincipalDetails(adminDTO);
 		
 		}else {
 			
-			Optional<MemberVO> result = memberDAO.findMemberbyMemberID(username);
+			Optional<MemberVO> result = memberDAO.findMemberbyMemberIDForJWT(username);
 			
 			if(result.isEmpty()) {
 				throw new UsernameNotFoundException("Check ID");
@@ -83,6 +87,8 @@ public class PrincipalDetailsService implements UserDetailsService{
 					.modDate(member.getModDate())
 					.build();
 
+			log.info("[PrincipalDetails(adminDTO)] : 진입 : " + memberDTO.getMemberID());
+			
 			return new PrincipalDetails(memberDTO);
 		}
 		

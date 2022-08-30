@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.service.DishService;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishDB;
@@ -42,7 +43,7 @@ public class DishController {
 	 * dishDB에서 가져오기 
 	 */
 	@GetMapping("/get")
-	public List<Map<String, Object>> get() {
+	public List<Map<String, Object>> get(PageRequestDTO pagerequestDTO) {
 
 		//DB에서 받아온 모양
 		List<Map<String, Object>> DBlist =  dishService.get();
