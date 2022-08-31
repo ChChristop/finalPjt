@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 
 public interface DishService {
@@ -55,6 +56,22 @@ public interface DishService {
 	 * 글 추가시, 글번호
 	 */
 	public int getNum();
+	/*
+	 * 음식 게시물 댓글 - 추가 
+	 */
+	public void commAdd(DishComm dishComm);
+	/*
+	 * 음식 게시물 댓글 - 삭제
+	 */
+	public void commDelete(DishComm dishComm);
+	/*
+	 * 음식 게시물 댓글 - 수정
+	 */
+	public void commEdit(DishComm dishComm);
+	/*
+	 * 음식 게시물 댓글 - 전체 가져오기 
+	 */
+	public List<DishComm> commGet(int rCP_SEQ);
 
 	
 	

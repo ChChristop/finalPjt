@@ -10,7 +10,10 @@
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
-      
+	<insert id="commAdd" parameterType="map">
+		insert into dish_comm set 
+		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
+    </insert>
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -143,6 +146,10 @@
  		right join dishDB db
 		on db.RCP_SEQ = d.RCP_SEQ
 		where db.RCP_SEQ = #{RCP_SEQ}
+	</select>
+	
+	<select id="commGet" parameterType="Integer" resultType="map">
+		select * from dish_comm;
 	</select>
 	 
 	<select id="get" parameterType="Integer" resultType="map">
@@ -308,9 +315,19 @@
 		INSERT INTO DISH (hit,rcp_seq, writer) VALUES ('1',#{rcp_seq},'a')
         ON DUPLICATE KEY UPDATE hit = hit+1
 	</update>
+	
+	<update id="commEdit" parameterType="map">
+		UPDATE dish_comm
+		SET content=#{content}, editdate=now()
+		WHERE mnum=#{mnum} and RCP_SEQ = #{RCP_SEQ}
+	</update>
 		
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM dishDB WHERE RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<delete id="commDelete" parameterType="map">
+		DELETE FROM dish_comm WHERE RCP_SEQ = #{RCP_SEQ} and mnum = #{mnum}
 	</delete>
 	
 	<delete id="delPicture" parameterType="Integer">

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.service.DishService;
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 
 import groovy.util.logging.Slf4j;
@@ -124,7 +125,49 @@ public class DishController {
 		return result;
 	}
 	
+	/*
+	 * 댓글 추가 
+	 */
+	@PostMapping("/comm/add/{mnum}/{RCP_SEQ}")
+	public String commAdd(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable String RCP_SEQ) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setRCP_SEQ(RCP_SEQ);
+		
+		dishService.commAdd(dishComm);
+		
+		return "댓글이 등록되었습니다.";
+	}
 	
+	/*
+	 * 댓글 삭제(작성한 사람만 삭제 가능)  
+	 */
+	@DeleteMapping("/comm/delete/{mnum}/{RCP_SEQ}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable String RCP_SEQ) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setRCP_SEQ(RCP_SEQ);
+		
+		dishService.commDelete(dishComm);
+		
+		return "댓글이 삭제되었습니다.";
+	}
+	
+	/*
+	 * 댓글 수정(작성한 사람만 수정 가능)  
+	 */
+	@PutMapping("/comm/edit/{mnum}/{RCP_SEQ}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable String RCP_SEQ) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setRCP_SEQ(RCP_SEQ);
+		
+		dishService.commEdit(dishComm);
+		
+		return "댓글이 수정되었습니다.";
+	}
+	
+
 	
 	/*
 	 * 음식 추가
@@ -324,8 +367,10 @@ public class DishController {
 	
 
 	//좋아요 확인 : 로그인한 회원 같이 받아야함!!!
+	//댓글도 같이 불러오기
 	@GetMapping("/get/{RCP_SEQ}/{mnum}")
 	public Map<String,Object> getOne(@PathVariable int RCP_SEQ, @PathVariable int mnum) {
+		
 		Map<String,Object> result = new HashMap<>();
 		/*
 		 * 조회수 +1 
@@ -369,7 +414,6 @@ public class DishController {
 		List<String> ingList = new ArrayList<>();
 		for(int i = 0; i<ingSTR.split(",").length; i++) {
 			ingList.add(ingSTR.split(",")[i]);
-
 		}
 		
 		map.put("ingredient", ingList); 
@@ -412,11 +456,19 @@ public class DishController {
 				imgStr = imgStr.replace("\n","");
 				imgList.add(i,imgStr);
 			}
-		}
+		}  
 
 		map.put("imgList", imgList); //조리이미지
-
+		
+		//댓글 불러오기
+		List<DishComm> commList = dishService.commGet(RCP_SEQ);
+		
+		map.put("commList", commList);
+		
 		result.put("result",map);
+		
+		
+		
 		
 		return result;
 	}

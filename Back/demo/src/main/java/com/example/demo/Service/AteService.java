@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 
 public interface AteService {
 
@@ -23,6 +24,14 @@ public interface AteService {
 	public void goAteLike(int ate_num, int mnum);
 
 	public void goAteDislike(int ate_num, int mnum);
+
+	public void commAdd(DishComm dishComm);
+
+	public void commDelete(DishComm dishComm);
+
+	public void commEdit(DishComm dishComm);
+
+	public List<DishComm> commGet(int ate_num);
 
 
 }

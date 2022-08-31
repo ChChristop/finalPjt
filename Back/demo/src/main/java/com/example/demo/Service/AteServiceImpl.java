@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.AteDao;
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 
 import groovy.util.logging.Slf4j;
 
@@ -71,6 +72,30 @@ public class AteServiceImpl implements AteService {
 	public void goAteDislike(int ate_num, int mnum) {
 		
 		ateDao.goAteDislike(ate_num,mnum);
+	}
+
+	@Override
+	public void commAdd(DishComm dishComm) {
+		
+		ateDao.commAdd(dishComm);
+	}
+
+	@Override
+	public void commDelete(DishComm dishComm) {
+		
+		ateDao.commDelete(dishComm);
+	}
+
+	@Override
+	public void commEdit(DishComm dishComm) {
+		
+		ateDao.commEdit(dishComm);
+	}
+
+	@Override
+	public List<DishComm> commGet(int ate_num) {
+		
+		return ateDao.commGet(ate_num);
 	}
 
 	

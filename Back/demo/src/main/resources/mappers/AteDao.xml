@@ -18,6 +18,25 @@
 		select * from ate where ate_num=#{ate_num}
 	</select>
 	
+	<select id="commGet" parameterType="Integer" resultType="map">
+		select * from ate_comm;
+	</select>
+	
+	<insert id="commAdd" parameterType="map">
+		insert into ate_comm set 
+		mnum=#{mnum}, ate_num=#{ate_num}, content=#{content}
+    </insert>
+	
+	<delete id="commDelete" parameterType="map">
+		DELETE FROM ate_comm WHERE ate_num = #{ate_num} and mnum = #{mnum}
+	</delete>
+	
+	<update id="commEdit" parameterType="map">
+		UPDATE ate_comm
+		SET content=#{content}, editdate=now()
+		WHERE mnum=#{mnum} and ate_num = #{ate_num}
+	</update>
+	
 	
 	<update id="editAte" parameterType="map">
 		UPDATE ate
@@ -29,6 +48,7 @@
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM ate WHERE ate_num = #{ate_num} and mnum =#{mnum};
 	</delete>
+	
 	
 	<update id="upHit" parameterType="Integer">
 		UPDATE ate

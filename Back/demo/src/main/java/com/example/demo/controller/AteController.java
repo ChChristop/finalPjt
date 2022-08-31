@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.service.AteService;
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 
 import groovy.util.logging.Slf4j;
 
@@ -71,6 +72,7 @@ public class AteController {
 	}
 	/*
 	 * 먹음 게시글 한개 불러오기
+	 * 댓글도 같이 불러옴 
 	 */
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String,Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
@@ -90,7 +92,9 @@ public class AteController {
 		}
 
 		Ate result = ateService.getOne(ate_num);
+		List<DishComm> commList = ateService.commGet(ate_num);
 		
+		resultMap.put("commList", commList);
 		resultMap.put("result", result);
 		resultMap.put("liked", str);
 
@@ -156,6 +160,49 @@ public class AteController {
 		
 		return str;
 	}
+	
+	/*
+	 * 댓글 추가 
+	 */
+	@PostMapping("/comm/add/{mnum}/{ate_num}")
+	public String commAdd(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+		
+		ateService.commAdd(dishComm);
+		
+		return "댓글이 등록되었습니다.";
+	}
+	
+	/*
+	 * 댓글 삭제(작성한 사람만 삭제 가능)  
+	 */
+	@DeleteMapping("/comm/delete/{mnum}/{ate_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+		
+		ateService.commDelete(dishComm);
+		
+		return "댓글이 삭제되었습니다.";
+	}
+	
+	/*
+	 * 댓글 수정(작성한 사람만 수정 가능)  
+	 */
+	@PutMapping("/comm/edit/{mnum}/{ate_num}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+		
+		ateService.commEdit(dishComm);
+		
+		return "댓글이 수정되었습니다.";
+	}
+	
 	
 	
 	

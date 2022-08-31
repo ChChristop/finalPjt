@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 
 @Mapper 
@@ -40,6 +41,14 @@ public interface DishDao {
 	public void addInfo(int dnum, int mnum);
 
 	public void editInfo(Dish dish1, int rCP_SEQ, int mnum);
+
+	public void commAdd(DishComm dishComm);
+
+	public void commDelete(DishComm dishComm);
+
+	public void commEdit(DishComm dishComm);
+
+	public List<DishComm> commGet(int rCP_SEQ);
 	
 	
 }

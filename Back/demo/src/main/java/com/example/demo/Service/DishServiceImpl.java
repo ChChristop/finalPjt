@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.DishDao;
 import com.example.demo.vo.Dish;
+import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 
 import groovy.util.logging.Slf4j;
@@ -95,6 +96,30 @@ public class DishServiceImpl implements DishService {
 	public int getNum() {
 		
 		return dishDao.getNum();
+	}
+
+	@Override
+	public void commAdd(DishComm dishComm) {
+		
+		dishDao.commAdd(dishComm);
+	}
+
+	@Override
+	public void commDelete(DishComm dishComm) {
+		
+		dishDao.commDelete(dishComm);
+	}
+
+	@Override
+	public void commEdit(DishComm dishComm) {
+		
+		dishDao.commEdit(dishComm);
+	}
+
+	@Override
+	public List<DishComm> commGet(int rCP_SEQ) {
+
+		return dishDao.commGet(rCP_SEQ);
 	}
 
 	
