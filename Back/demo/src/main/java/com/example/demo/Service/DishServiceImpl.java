@@ -122,5 +122,12 @@ public class DishServiceImpl implements DishService {
 		return dishDao.commGet(rCP_SEQ);
 	}
 
+	@Override
+	public List<Map<String, Object>> search(String select, String searchI) {
+		
+		
+		return dishDao.search(select,searchI);
+	}
+
 	
 }

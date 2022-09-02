@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,6 +97,12 @@ public class AteServiceImpl implements AteService {
 	public List<DishComm> commGet(int ate_num) {
 		
 		return ateDao.commGet(ate_num);
+	}
+
+	@Override
+	public List<Map<String, Object>> search(String select) {
+
+		return ateDao.search(select);
 	}
 
 	

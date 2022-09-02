@@ -49,6 +49,8 @@ public interface DishDao {
 	public void commEdit(DishComm dishComm);
 
 	public List<DishComm> commGet(int rCP_SEQ);
+
+	public List<Map<String, Object>> search(String select, String searchI);
 	
 	
 }

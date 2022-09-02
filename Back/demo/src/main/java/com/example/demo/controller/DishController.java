@@ -37,7 +37,6 @@ public class DishController {
 	@Value("${a.imgdir}")
 	String fdir;
 
-	
 	 
 	/*
 	 * dishDB에서 가져오기 
@@ -166,12 +165,23 @@ public class DishController {
 		
 		return "댓글이 수정되었습니다.";
 	}
+	/*
+	 * 레시피 검색 기능
+	 * 검색 일치 내용이 없을 경우 ?
+	 */
+	@GetMapping("/search")
+	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
+		
+		List<Map<String, Object>> dishList = dishService.search(select,searchI);
+		
+		return dishList;
+	}
+	
 	
 
 	
 	/*
 	 * 음식 추가
-	 * mnum : 작성자 고유 번호
 	 */
 	@PostMapping("/add/{mnum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,

@@ -122,6 +122,19 @@ public class AteController {
 	
 		return "글 수정되었습니다.";
 	}
+	/*
+	 * 먹음 게시물 조회
+	 * 검색 일치 내용이 없을 경우 ?
+	 * 수정 : @RequestParam명은 나중에 수정
+	 */
+	@GetMapping("/search")
+	public List<Map<String, Object>> search(@RequestParam String select) {
+		
+		List<Map<String, Object>> ateList = ateService.search(select);
+		
+		return ateList;
+	}
+	
 
 	/*
 	 * 먹음 게시글 삭제하기(글 번호도 같이 보내주세요) 

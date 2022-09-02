@@ -72,6 +72,10 @@ public interface DishService {
 	 * 음식 게시물 댓글 - 전체 가져오기 
 	 */
 	public List<DishComm> commGet(int rCP_SEQ);
+	/*
+	 * 레시피 게시물 검색 기능
+	 */
+	public List<Map<String, Object>> search(String select, String searchI);
 
 	
 	

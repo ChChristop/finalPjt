@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -35,5 +36,7 @@ public interface AteDao {
 	public void commEdit(DishComm dishComm);
 
 	public List<DishComm> commGet(int ate_num);
+
+	public List<Map<String, Object>> search(String select);
 	
 }
