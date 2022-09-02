@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE XML>
+<Configuration name="ConfigTest" status="info">
+
+
+	<Properties>
+		<Property name="logNm">Spring Log4j2 Test</Property>
+		<Property name="layoutPattern">%d{[yyyy/MM/dd HH:mm:ss,SSS]} [%p] [%C{.1}][%t] => %m%n</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${layoutPattern}" charset="UTF-8" />
+		</Console>
+
+		<RollingFile name="RollingFile" fileName="./logs/test.log" filePattern="./logs/spring-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout pattern="${layoutPattern}" charset="UTF-8" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+				<SizeBasedTriggeringPolicy size="200KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" fileIndex="min" />
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<!-- LOG everything at INFO level -->
+		<Root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</Root>
+
+		<logger name="com.example.demo" level="info" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</logger>
+
+
+		<logger name="org.springframework.security" level="info" additivity="false">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="RollingFile" />
+		</logger>
+
+
+	</Loggers>
+
+</Configuration>

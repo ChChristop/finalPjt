@@ -1,7 +1,6 @@
 package com.example.demo.config.jwt;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -26,8 +25,6 @@ import com.example.demo.vo.AdminVO;
 import com.example.demo.vo.JwtVO;
 import com.example.demo.vo.MemberVO;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

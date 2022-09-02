@@ -86,11 +86,11 @@ public class LoginController {
 		
 		MemberDTO memberDTO = (MemberDTO) request.getAttribute("memberDTO");
 
-		List<RefrigeratorDTO>reuslt = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
-		
-		log.info("[LoginController /api/login/member] : 냉장고 리스트 얻는 중 : " + memberDTO.getMemberID());
-		
-		memberDTO.setRefrigerator(reuslt);
+//		List<RefrigeratorDTO>reuslt = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
+//		
+//		log.info("[LoginController /api/login/member] : 냉장고 리스트 얻는 중 : " + memberDTO.getMemberID());
+//		
+//		memberDTO.setRefrigerator(reuslt);
 
 		if (ip == null)
 			ip = request.getRemoteAddr();
