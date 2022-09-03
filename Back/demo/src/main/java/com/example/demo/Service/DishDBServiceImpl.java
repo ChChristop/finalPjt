@@ -28,5 +28,15 @@ public class DishDBServiceImpl implements DishDBService {
 		
 	}
 
+
+	@Override
+	public void ingAdd(Map<String, Object> ingMap) {
+	
+		dishDBDao.ingAdd(ingMap);
+	}
+
+
+
+
 	
 }

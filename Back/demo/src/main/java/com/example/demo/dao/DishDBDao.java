@@ -12,5 +12,8 @@ public interface DishDBDao {
 	
 	public void dbGoInfo();
 
+
+	public void ingAdd(Map<String, Object> ingMap);
+
 	
 }

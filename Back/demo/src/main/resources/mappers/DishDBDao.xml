@@ -6,6 +6,16 @@
 	<insert id="dbGoInfo" parameterType="map">
 		insert into dish set writer='1'
 	</insert>
+	
+	<insert id="ingAdd" parameterType="map">
+		insert into dish_ing set 
+		RCP_SEQ = #{RCP_SEQ},
+		<foreach collection="ingList" item="item" index="index" open="(" close=")" separator=","> 
+		 iname=#{item}
+		</foreach>
+	</insert>
+	
+	
 
 
 	<insert id="dbGO" parameterType="map">

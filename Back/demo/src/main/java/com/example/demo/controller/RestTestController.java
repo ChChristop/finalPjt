@@ -1,20 +1,17 @@
 package com.example.demo.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.json.JSONObject;
-import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,109 +29,6 @@ public class RestTestController {
 	@Autowired
 	DishDBService dishService;
 
-	
-	
-	@GetMapping("/api")
-    public String callApiWithJson() {
-        StringBuffer result = new StringBuffer();
-        String jsonPrintString = null;
-        
-        try {
-        	
-	        String apiUrl ="http://openapi.foodsafetykorea.go.kr/api/e6966c1b694a4befb4c1/COOKRCP01/json/1/2";
-			URL url = new URL(apiUrl);
-			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();	
-			urlConnection.connect();
-			BufferedInputStream bufferedInputStream = new BufferedInputStream(urlConnection.getInputStream());
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream, "UTF-8"));
-			String returnLine;
-            while((returnLine = bufferedReader.readLine()) != null) {
-                result.append(returnLine);
-            }
-
-            JSONObject jsonObject = XML.toJSONObject(result.toString());
-            System.out.println(jsonObject);
-            jsonPrintString = jsonObject.toString();
-			
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        System.out.println(jsonPrintString);
-        
-        return jsonPrintString;
-	}
-	   @GetMapping("/apitest1")
-	    public String callApiWithXml1() {
-	        StringBuffer result = new StringBuffer();
-	        try {
-	            String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/e6966c1b694a4befb4c1/COOKRCP01/xml/1/1";
-	            URL url = new URL(apiUrl);
-	            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-	            urlConnection.setRequestMethod("GET");
-
-	            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-	            String returnLine;
-	            result.append("<xmp>");
-	            while((returnLine = bufferedReader.readLine()) != null) {
-	                result.append(returnLine + "\n");
-	            }
-	            urlConnection.disconnect();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-
-	        System.out.println("result"+result);
-	        String dbGO = result + "</xmp>";
-	        System.out.println("dbGO1 :::" + dbGO);
-	        
-	       return dbGO;
-	    }
-	
-	   @GetMapping("/apitest")
-	    public void callApiWithXml() {
-	        StringBuffer result = new StringBuffer();
-	        try {
-	            String apiUrl = "http://openapi.foodsafetykorea.go.kr/api/e6966c1b694a4befb4c1/COOKRCP01/xml/1/1";
-	            URL url = new URL(apiUrl);
-	            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-	            urlConnection.setRequestMethod("GET");
-
-	            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
-	            String returnLine;
-	            result.append("<xmp>");
-	            while((returnLine = bufferedReader.readLine()) != null) {
-	                result.append(returnLine + "\n");
-	            }
-	            urlConnection.disconnect();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	        Map<String, Object> map = new HashMap<>();
-	        
-	        String dbGO = result + "</xmp>";
-	        System.out.println("dbGO1 :::" + dbGO);
-	        
-	        dbGO(dbGO);
-	    }
-
-	private String dbGO(String dbGO) {
-	
-		System.out.println("dbGO2 :::" + dbGO);
-		// 일단 저장은 나중에
-		//dishService.dbGO(dbGO);
-		System.out.println(dbGO.length());
-		List<Map<String, Object>> list = new ArrayList<>();
-		//for(int i = 0 ; i<)
-		
-		
-		
-		return "db저장 성공";
-		
-	}
 	
 	@GetMapping("/tagtest/{start}/{end}")
 	 public void main(String[] args, @PathVariable int start,@PathVariable int end) {
@@ -159,38 +53,38 @@ public class RestTestController {
 	            //HIT Tag 정보들을  검색
 	            //item(번호)에 따라 정보가 바뀜
 	            List<Map<String, Object>> list = new ArrayList<>();
+	            List<Map<String, Object>> ing = new ArrayList<>();
 	            
 	            for(int i = 0; i<(end-start+1); i++) {
 	            Node firstNode = document.getElementsByTagName("row").item(i);
 	            NodeList childNodeList = firstNode.getChildNodes();
 	            Map<String, Object> nodeMapData = getNodeList(childNodeList);
-	           System.out.println(nodeMapData.toString());
+	         //  System.out.println("nodeMapData.toString() ::: " + nodeMapData.toString());
 	           //list.add(nodeMapData);
-	           dishService.dbGO(nodeMapData);
+	           //전체 db에 저장하는 메소드 ; 나중에 살려야해! 
+	           //dishService.dbGO(nodeMapData);
+	           //재료만 저장하는 메소드
+	           String result = RegexCheck(nodeMapData.get("RCP_PARTS_DTLS"));
+	           String num = RegexCheck(nodeMapData.get("RCP_SEQ"));
+	           
+	           Map<String, Object> ingMap = new HashMap<>(); 
+	           List<String> ingList = new ArrayList<>();
+	           
+	   			for(int j= 0; j<result.split(",").length; j++) {
+	   			ingList.add(result.split(",")[j].trim());
+		   		}
+		   		
+	   			ingMap.put("ingList", ingList);
+	   			ingMap.put("RCP_SEQ", num);
+	   			
+	           
+	           
+	           dishService.ingAdd(ingMap);
+
+	           System.out.println();
 	            }
-	            System.out.println("list 0::: " + list.get(0));
-	            System.out.println("list 1::: " + list.get(1));
-	           
-	           
-	           //DB저장
-				/* 돈타치
-				 * String openApiUrl =
-				 * "http://openapi.foodsafetykorea.go.kr/api/e6966c1b694a4befb4c1/COOKRCP01/xml/1/3";
-				 * //OpenAPI URL 정보 읽기 URL obj = new URL(openApiUrl); HttpURLConnection con =
-				 * (HttpURLConnection)obj.openConnection(); con.setDoOutput(true);
-				 * con.setRequestMethod("GET"); //받아온 XML문서 파싱 => document인스턴스에 저장
-				 * DocumentBuilderFactory docBuilderFactory =
-				 * DocumentBuilderFactory.newInstance(); DocumentBuilder docBuilder =
-				 * docBuilderFactory.newDocumentBuilder(); Document document = (Document)
-				 * docBuilder.parse(new InputSource(con.getInputStream())); //Dom Tree를 XML문서의
-				 * 구조대로 완성 document.getDocumentElement().normalize(); //HIT Tag 정보들을 검색 Node
-				 * firstNode = document.getElementsByTagName("row").item(0); NodeList
-				 * childNodeList = firstNode.getChildNodes(); Map<String, Object> nodeMapData =
-				 * getNodeList(childNodeList); System.out.println(nodeMapData.toString());
-				 * List<String> list = new ArrayList<>(); System.out.println( nodeMapData);
-				 */
-	           
-	          // dishService.dbGO(nodeMapData);
+	        //    System.out.println("list 0::: " + list.get(0));
+	         //   System.out.println("list 1::: " + list.get(1));
 	           
 	           
 	        } catch (Exception e){
@@ -199,7 +93,28 @@ public class RestTestController {
 	    }
 
 		
-	    public static Map<String,Object> getNodeList(NodeList nodeList){
+	    private String RegexCheck(Object obj) {
+	    	
+	    	 String target = String.valueOf(obj);
+	    	 String regEx = "[(0-9]+[^gl리개)]*[gl리개]+"; 
+	    	 String regEx1 = "\\n[가-힣]* :";
+	    	 Pattern pat = Pattern.compile(regEx);
+	    	 Pattern pat1 = Pattern.compile(regEx1);
+	    	 
+	    	 Matcher m = pat.matcher(target);
+	    	 String result = m.replaceAll("");
+	    	 Matcher m1 = pat1.matcher(result);
+	    	 result = m1.replaceAll(", ");
+	    	 
+	    	 //\n거르기
+	    	 result = result.replaceAll("\n", ", ");
+	    	 
+	    	 return result;
+
+	    }
+	    	
+
+		public static Map<String,Object> getNodeList(NodeList nodeList){
 	        Map<String, Object> dataMap = new HashMap<>();
 	        for(int i = 0; i < nodeList.getLength(); i++){
 	            String tagName = nodeList.item(i).getNodeName();
