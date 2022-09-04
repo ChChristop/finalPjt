@@ -39,13 +39,13 @@ mybatis:
   type-aliases-package: com.example.demo.vo
 
 logging:
-  config: classpath:log4j2.xml
+  config: classpath:logback-spring.xml
 
           
 JwtProperties:
   secretKey: final
   refreshKey: rfstokken
-  
+
 
 
   

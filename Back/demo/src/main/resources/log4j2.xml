@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE XML>
 <Configuration name="ConfigTest" status="info">
-
 
 	<Properties>
 		<Property name="logNm">Spring Log4j2 Test</Property>
@@ -21,6 +19,10 @@
 			</Policies>
 			<DefaultRolloverStrategy max="10" fileIndex="min" />
 		</RollingFile>
+		<appender name ="stash" class="io.gitgub.alexwilliams.logstashlog4j2encoder">
+			<destination>127.0.0.1:4560</destination>
+			<encoder class="io.gitgub.alexwilliams.logstashlog4j2encoder"></encoder>
+		</appender>
 	</Appenders>
 
 	<Loggers>
@@ -33,6 +35,7 @@
 		<logger name="com.example.demo" level="info" additivity="false">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="RollingFile" />
+			<AppenderRef ref="stash"/>
 		</logger>
 
 
