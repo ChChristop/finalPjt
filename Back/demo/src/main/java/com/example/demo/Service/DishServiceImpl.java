@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.controller.RestTestController;
 import com.example.demo.dao.DishDao;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
@@ -19,6 +20,8 @@ public class DishServiceImpl implements DishService {
 
 	@Autowired
 	DishDao dishDao;
+	@Autowired
+	RestTestController restTestController;
 
 	@Override
 	public List<Map<String, Object>> get() {
@@ -32,8 +35,15 @@ public class DishServiceImpl implements DishService {
 	public void add(DishDB dish, int mnum) {
 		
 		dishDao.add(dish);
+		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
 		dishDao.addInfo(dnum, mnum);
+		
+		Object obj = dish.getRCP_PARTS_DTLS();
+		String result = restTestController.RegexCheck(obj);
+		String num = Integer.toString(dnum);
+		restTestController.goDish_ing(result,num);
+		
 	}
 	
 	@Override

@@ -274,6 +274,7 @@ public class DishController {
 		
 		dishService.add(dish, mnum);
 		
+		
 		return dish.getRCP_SEQ() + "이 등록되었습니다.";
 	}
 	/*

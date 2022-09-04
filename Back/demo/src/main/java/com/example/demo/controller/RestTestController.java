@@ -30,8 +30,8 @@ public class RestTestController {
 	DishDBService dishService;
 
 	
-	@GetMapping("/tagtest/{start}/{end}")
-	 public void main(String[] args, @PathVariable int start,@PathVariable int end) {
+	@GetMapping("/tagtest/{start}/{end}/{mnum}")
+	 public void main(String[] args, @PathVariable int start,@PathVariable int end, @PathVariable int mnum) {
 
 	        try {
 	  
@@ -59,32 +59,17 @@ public class RestTestController {
 	            Node firstNode = document.getElementsByTagName("row").item(i);
 	            NodeList childNodeList = firstNode.getChildNodes();
 	            Map<String, Object> nodeMapData = getNodeList(childNodeList);
-	         //  System.out.println("nodeMapData.toString() ::: " + nodeMapData.toString());
-	           //list.add(nodeMapData);
 	           //전체 db에 저장하는 메소드 ; 나중에 살려야해! 
-	           //dishService.dbGO(nodeMapData);
+	           dishService.dbGO(nodeMapData,mnum);
+	           
 	           //재료만 저장하는 메소드
+	            
 	           String result = RegexCheck(nodeMapData.get("RCP_PARTS_DTLS"));
 	           String num = RegexCheck(nodeMapData.get("RCP_SEQ"));
 	           
-	           Map<String, Object> ingMap = new HashMap<>(); 
-	           List<String> ingList = new ArrayList<>();
-	           
-	   			for(int j= 0; j<result.split(",").length; j++) {
-	   			ingList.add(result.split(",")[j].trim());
-		   		}
-		   		
-	   			ingMap.put("ingList", ingList);
-	   			ingMap.put("RCP_SEQ", num);
-	   			
-	           
-	           
-	           dishService.ingAdd(ingMap);
-
-	           System.out.println();
-	            }
-	        //    System.out.println("list 0::: " + list.get(0));
-	         //   System.out.println("list 1::: " + list.get(1));
+	           goDish_ing(result,num);
+ 
+	           }
 	           
 	           
 	        } catch (Exception e){
@@ -93,10 +78,26 @@ public class RestTestController {
 	    }
 
 		
-	    private String RegexCheck(Object obj) {
+	    public void goDish_ing(String result, String num) {
+	    	
+	    	   Map<String, Object> ingMap = new HashMap<>(); 
+	           List<String> ingList = new ArrayList<>();
+	   			for(int j= 0; j<result.split(",").length; j++) {
+	   				String ingItem = result.split(",")[j].trim();
+	   				if(ingItem!=null || ingItem!=" ") {
+	   				ingMap.put("ing",ingItem);
+	   				ingMap.put("RCP_SEQ", num);
+	   				dishService.ingAdd(ingMap);
+	   				}
+		   		}
+		
+	}
+
+
+		public String RegexCheck(Object obj) {
 	    	
 	    	 String target = String.valueOf(obj);
-	    	 String regEx = "[(0-9]+[^gl리개)]*[gl리개]+"; 
+	    	 String regEx = "[(0-9]+[^gl리개)]*[gl리개)]+"; 
 	    	 String regEx1 = "\\n[가-힣]* :";
 	    	 Pattern pat = Pattern.compile(regEx);
 	    	 Pattern pat1 = Pattern.compile(regEx1);
@@ -108,6 +109,14 @@ public class RestTestController {
 	    	 
 	    	 //\n거르기
 	    	 result = result.replaceAll("\n", ", ");
+	    	 //,,두개
+	    	 result = result.replaceAll(",,",",");
+	    	 
+	    	 result = result.replaceAll("육수","");
+	    	 result = result.replaceAll("양념","");
+	    	 
+	    	 
+	    	 System.out.println("result::: " + result);
 	    	 
 	    	 return result;
 
@@ -119,7 +128,7 @@ public class RestTestController {
 	        for(int i = 0; i < nodeList.getLength(); i++){
 	            String tagName = nodeList.item(i).getNodeName();
 	            if(!"#text".equals(tagName)){
-	                System.out.println("tagName = " + tagName);
+	                //System.out.println("tagName = " + tagName);
 	                if(nodeList.item(i).getChildNodes().getLength()>1){
 	                    dataMap.put(tagName,getNodeList(nodeList.item(i).getChildNodes()));
 	                }else{
