@@ -10,7 +10,11 @@
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
-      
+	<insert id="commAdd" parameterType="map">
+		insert into dish_comm set 
+		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
+    </insert>
+    
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -143,6 +147,91 @@
  		right join dishDB db
 		on db.RCP_SEQ = d.RCP_SEQ
 		where db.RCP_SEQ = #{RCP_SEQ}
+	</select>
+	
+	<select id="commGet" parameterType="Integer" resultType="map">
+		select * from dish_comm;
+	</select>
+	
+	<select id="search" parameterType="map" resultType="map">
+		SELECT
+		d.writer,
+		d.url,
+		d.dish_like,
+		d.ate,
+		d.date,
+		d.t_time,
+		d.m_ingredient,
+		d.t_weather,
+		d.hit,
+		d.editdate,
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ
+		<if test='select.equals("0")'>
+		where db.rcp_nm like concat('%',#{searchI},'%')
+		</if>
+		<if test='select.equals("1")'>
+		where d.writer like concat('%',#{searchI},'%')
+		</if>
+		<if test='select.equals("2")'>
+		where db.rcp_nm like concat('%',#{searchI},'%') or d.writer like concat('%',#{searchI},'%')
+		</if>
+		
 	</select>
 	 
 	<select id="get" parameterType="Integer" resultType="map">
@@ -308,9 +397,19 @@
 		INSERT INTO DISH (hit,rcp_seq, writer) VALUES ('1',#{rcp_seq},'a')
         ON DUPLICATE KEY UPDATE hit = hit+1
 	</update>
+	
+	<update id="commEdit" parameterType="map">
+		UPDATE dish_comm
+		SET content=#{content}, editdate=now()
+		WHERE mnum=#{mnum} and RCP_SEQ = #{RCP_SEQ}
+	</update>
 		
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM dishDB WHERE RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<delete id="commDelete" parameterType="map">
+		DELETE FROM dish_comm WHERE RCP_SEQ = #{RCP_SEQ} and mnum = #{mnum}
 	</delete>
 	
 	<delete id="delPicture" parameterType="Integer">
@@ -327,6 +426,24 @@
 		DELETE FROM dish_like
 		WHERE RCP_SEQ=#{RCP_SEQ} and mnum=#{mnum} 		
 	</delete>
+	
+	<select id="topDish" resultType="map">
+		SELECT D.WRITER, D.RCP_SEQ, D.DATE, D.HIT, COUNT(C.MNUM) AS commCount
+		
+	    ,(SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) AS DISH_LIKE
+	    
+	    ,(SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) AS ATE
+	    
+		,((SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) * 20 
+	    + COUNT(C.MNUM) * 5 + (SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) * 1) as rank_dish
+	
+		FROM DISH D LEFT OUTER JOIN dish_comm C ON D.RCP_SEQ = C.RCP_SEQ
+	   
+	    group by D.RCP_SEQ
+	   
+	   order by rank_dish DESC LIMIT 0,50;
+	
+	</select>
 	
 	
 	

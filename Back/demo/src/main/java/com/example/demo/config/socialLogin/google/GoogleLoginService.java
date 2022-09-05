@@ -10,5 +10,8 @@ public interface GoogleLoginService {
 	
 	MemberDTO check(MemberDTO memberDTO);
 	
-	void loginSuccess(MemberDTO memberDTO, HttpServletRequest request)
-;}
+	void loginSuccess(MemberDTO memberDTO, HttpServletRequest request);
+	
+	MemberDTO mobileGoogleLogin(String id);
+	
+	MemberDTO mobileCheck(String id);}

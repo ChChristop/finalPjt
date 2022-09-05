@@ -1,7 +1,6 @@
 package com.example.demo.config.jwt;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -26,10 +25,9 @@ import com.example.demo.vo.AdminVO;
 import com.example.demo.vo.JwtVO;
 import com.example.demo.vo.MemberVO;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private AdminDAO adminDAO;
@@ -50,32 +48,38 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		boolean requestURI = request.getRequestURI().matches("(/api/member.+)|(/api/admin.+)|(/api/logout/.+)");
+		log.info("[JwtAuthorizationFilter] : 진입");
 
-	
+		// boolean requestURI =
+		// request.getRequestURI().matches("(/api/member.+)|(/api/admin.+)|(/api/logout/.+)|(/api/refre/.+)");
+
+		boolean requestURI = request.getRequestURI().matches("(/api/admin.+)|(/api/logout/.+)|(/api/refre/.+)");
+
 		// 권한 필요 없는 요청이면 jwt 확인 필요 없음.
 		if (!(requestURI)) {
-			log.info("???/");
+			log.info("[JwtAuthorizationFilter] : 권한 필요 없는 주소 : " + request.getRequestURI());
 			chain.doFilter(request, response);
 
 			return;
 		}
 
-		log.info("JwtAuthorizationFilter : 진입");
-
 		String jwtHeader = request.getHeader(JwtProperties.SECRETKEY_HEADER_STRING);
-		
-		System.out.println(request.getRequestURI()+" requestURI " + requestURI);
 
-		log.info("jwtHeader : 확인 중 " + jwtHeader);
+		System.out.println(request.getRequestURI() + " requestURI " + requestURI);
+
+		log.info("[JwtAuthorizationFilter] : Header JWTToken 확인 중 " + jwtHeader);
 
 		String jwtRefreshHeader = request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING) != null
 				? request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING)
 				: "";
 
-		// Header가 있는지 확인
+		// Header에 jwt token에 있는지 확인
 		if (jwtHeader == null || !((String) jwtHeader).startsWith(JwtProperties.TOKEN_PREFIX)) {
+
+			log.warn("[JwtAuthorizationFilter] : Header에 JWTToken 없음");
+
 			chain.doFilter(request, response);
+
 			return;
 		}
 
@@ -99,41 +103,49 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			// jwtRefreahToken이 날짜가 유효하지 않을 경우 checkRefreshToken 길이는 0
 			checkRefreshToken = JwtProperties.vaildateJwtToken(jwtRefreahToken, false);
 
-			
 			if (checkJWTToken.length != 0) {
 
-				log.info("jwtToken 확인중 : " + jwtToken);
+				log.info("[JwtAuthorizationFilter] : JWTToken 확인 중 : " + jwtToken);
 
 				principalDetails = check(checkJWTToken, ip, false);
 
-//				if (principalDetails == null) {
-//
-//					return;
-//				};
+				if (principalDetails == null) {
+
+					log.warn("[JwtAuthorizationFilter] : JWTToken 인증 실패 : " + jwtToken);
+
+				}
 
 				chain.doFilter(request, response);
 
-				// Access 토근이 유효하지 않다면 refreshToken 조회
 			}
 
-			
+			// Access 토근이 유효하지 않다면 refreshToken 조회
 			if (checkRefreshToken.length != 0) {
 
-				log.info("jwtRefreahToken 확인중 : " + jwtRefreahToken);
+				log.info("[JwtAuthorizationFilter] : JWTRefreshToken 확인 중 : " + jwtRefreahToken);
 
 				principalDetails = check(checkRefreshToken, ip, true);
 
 				if (principalDetails == null) {
 
+					log.warn("[JwtAuthorizationFilter] : JWTRefreshToken 인증 실패 : " + jwtRefreahToken);
+
 					throw new Exception();
 
-				};
+				}
 
 				String newJWTToken = JwtProperties.CreateJWTToken(principalDetails);
 
-				log.info("newJWTToken : " + newJWTToken);
+				// Refresh Token 유효시 새로운 Access Token 발급
+
+				log.info("[JwtAuthorizationFilter] : JWTToken 재발급 : " + newJWTToken);
 
 				response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, newJWTToken);
+
+				if (AdminCheck.check)
+					request.setAttribute("GetNumber", principalDetails.getAdminDTO().getAnum());
+				else
+					request.setAttribute("GetNumber", principalDetails.getMemberDTO().getMnum());
 
 				chain.doFilter(request, response);
 
@@ -141,19 +153,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
-			log.error(e.getMessage());
+			log.warn("[JwtAuthorizationFilter] : 인증 실패");
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-			return;
+		return;
 
 	}
 
 	public PrincipalDetails check(String[] jwt, String ip, boolean check) {
-
-		log.info("jwt 체크 확인 중");
 
 		boolean adminCheck = AdminCheck.check;
 
@@ -161,11 +170,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		if (adminCheck) {
 
-			Optional<AdminVO> result = adminDAO.findAdminIdByID(jwt[1]);
+			Optional<AdminVO> result = adminDAO.findAdminIdByIDForJWT(jwt[1]);
 
 			AdminVO admin = null;
 
 			if (!(result.isPresent())) {
+
 				return null;
 			}
 
@@ -178,7 +188,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		} else {
 
-			Optional<MemberVO> result = memberDAO.findMemberbyMemberID(jwt[1]);
+			Optional<MemberVO> result = memberDAO.findMemberbyMemberIDForJWT(jwt[1]);
 
 			MemberVO member = null;
 
@@ -205,23 +215,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 			if ((!jwtCheck.getJwt().equals(jwt[2]))) {
 
-				System.out.println("jwt[2] = jwtCheck.getJwt() " + jwt[2].equals(jwtCheck.getJwt()));
-				
-				System.out.println(jwt[2]);
-				System.out.println(jwtCheck.getJwt());
-
 				return null;
 			}
 		}
 
-
-		
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null,
 				principalDetails.getAuthorities());
-		
-		System.out.println(authentication);
+
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
 
 		return principalDetails;
 
