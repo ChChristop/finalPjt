@@ -36,7 +36,7 @@ public class MemberDTO {
 		//전화번호
 		private String phoneNumber;
 		
-		//포인트
+		//포인트 합계
 		private int point;
 
 		//최종접속시간
@@ -51,16 +51,14 @@ public class MemberDTO {
 		//먹음 갯수
 		private int ateCount;
 		
+		//냉장고 재료 개수
 		private int refreCount;
 		
-		//먹음 게시물
-		private List<Ate> memberAteList;
+		//댓글 갯수
+		private int comment;
 		
 		//좋아요 갯수
-//		private 좋아요 좋아요;
-		
-//		댓글
-//		private 댓글 댓글;
+		private int likeCount;
 		
 		//냉장고 재료 리스트
 		private List<RefrigeratorDTO> refrigerator;

@@ -1,8 +1,10 @@
 package com.example.demo.service.adminService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,6 @@ import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.vo.AdminVO;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -29,7 +30,7 @@ public class AdminServiceImpl implements AdminService {
 
 	// 조회 메서드
 	@Override
-	public PageResultDTO<AdminVO, AdminDTO> getAdminList(PageRequestDTO pageRequestDTO) {
+	public PageResultDTO<Map<String,Object>, AdminDTO> getAdminList(PageRequestDTO pageRequestDTO) {
 
 		// 기준
 		if (pageRequestDTO.getBasis() == "pk") {
@@ -39,28 +40,31 @@ public class AdminServiceImpl implements AdminService {
 		
 		pageRequestDTO.setterChange();
 		
-		// 조회 메서드
-		List<AdminVO> result;
-	
 		try {
 			
-			result = adminDAO.getAdminList(pageRequestDTO);
+			List<Map<String,Object>> result = adminDAO.getAdminList(pageRequestDTO);
+			
+			Function<Map<String,Object>, AdminDTO> fn = (map) -> mapToDto(map);
+				
+			
+			
+			// totalpage 조건 없음
+			int count = adminDAO.countAdminAllList(pageRequestDTO);
 			
 			log.info("[AdminServiceImpl] : getAdminList : 성공");
 			
+			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+		
 		}catch(Exception e) {
 
 			log.warn("[AdminServiceImpl] : getAdminList : 실패");
 			
-			result = null;
+			e.printStackTrace();
+			
+			return null;
 		}
-		// dto->vo 변환 함수 함수
-		Function<AdminVO, AdminDTO> fn = (admin) -> voTOdto(admin);
 
-		// totalpage 조건 없음
-		int count = adminDAO.countAdminAllList(pageRequestDTO);
-
-		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+	
 	}
 
 	// 등록 메서드

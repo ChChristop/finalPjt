@@ -36,7 +36,7 @@ public interface MemberDAO {
 	Optional<String> checkByMemberId(String memberID);
 	
 	//식별자로로 회원 정보 조회
-	Map<String,Object> findMemberbyMnum(long mnum);
+	List<Map<String,Object>> findMemberbyMnum(long mnum);
 	
 	//식별자로로 회원 정보 조회
 	@Select("SELECT MNUM, MEMBERID, MEMBERPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE "
@@ -45,7 +45,7 @@ public interface MemberDAO {
 	Optional<MemberVO> findMemberbyMnumForJWT(long mnum);
 	
 	//아이디로 회원 정보 조회
-	Map<String,Object> findMemberbyMemberID(String memberID);
+	List<Map<String,Object>> findMemberbyMemberID(String memberID);
 	
 	@Select("SELECT MNUM, MEMBERID, MEMBERPW, NICKNAME, ROLE, DATE, MODDATE, LASTACCESSDATE, PHONENUMBER, MODDATE "
 			+ "FROM MEMBER "
@@ -81,4 +81,6 @@ public interface MemberDAO {
 	void updateModDateByMnum(long mnum);
 	
 	int countMemberAllList(PageRequestDTO pageReuqestDTO);
+	
+	List<Map<String, Object>> topUser();
 }

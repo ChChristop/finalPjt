@@ -80,11 +80,13 @@ public class LoginController {
 
 		String id = (String) request.getAttribute("id");
 
-		
-		
 		String ip = (String) request.getHeader("X-FORWARDED-FOR");
 		
 		MemberDTO memberDTO = (MemberDTO) request.getAttribute("memberDTO");
+		
+		List<RefrigeratorDTO> refre = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
+		
+		memberDTO.setRefrigerator(refre);
 
 //		List<RefrigeratorDTO>reuslt = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
 //		

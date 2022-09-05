@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -19,9 +21,7 @@ import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.adminService.AdminService;
 import com.example.demo.vo.AdminVO;
 
-import groovy.transform.SelfType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -71,12 +71,12 @@ public class AdminController {
 
 	// 관리자 리스트 조회
 	@GetMapping("/admin-list")
-	public ResponseEntity<PageResultDTO<AdminVO, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
+	public ResponseEntity<PageResultDTO<Map<String,Object>, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
 			Model mopdel) {
 
 		log.info("[AdminController /api/admin-list] : 진입 ");
 
-		PageResultDTO<AdminVO, AdminDTO> result = adminService.getAdminList(pageRequestDTO);
+		PageResultDTO<Map<String,Object>, AdminDTO> result = adminService.getAdminList(pageRequestDTO);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

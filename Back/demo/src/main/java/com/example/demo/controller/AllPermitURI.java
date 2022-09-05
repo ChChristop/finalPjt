@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.service.DishService;
 import com.example.demo.service.memberService.MemberService;
 import com.example.demo.vo.IngredientsVO;
 
@@ -26,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AllPermitURI {
 	
 	private final MemberService memberService;
+	
+	private final DishService dishService;
 	
 	// 회원 등록 URI
 	@PostMapping("/register")
@@ -55,19 +59,29 @@ public class AllPermitURI {
 		return (result) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.OK);
 	}
 	
-	
-	@GetMapping("/ingredients-All-List")
-		public ResponseEntity<List<IngredientsVO>> ingredientsallList(){
-			
-			log.info("[AllPermitURI /id-check/{memberID}] : 진입 : ");
-			
-			//추후 구현
 
-			return new ResponseEntity<>(null,HttpStatus.OK);
-		}
 	
-	
+	@GetMapping("/topUser")
+	public ResponseEntity<List<Map<String,Object>>> topUser(){
 		
+		log.info("[/topUser] [탑 유저 조회]");
+		
+		List<Map<String,Object>> result = memberService.topUser();
+		
+		return new ResponseEntity<>(result,  HttpStatus.OK);
+	}
+	
+	@GetMapping("/topDish")
+	public ResponseEntity<List<Map<String,Object>>> topDish(){
+		
+		log.info("[/topDish] [탑 레시피 조회]");
+		
+		List<Map<String,Object>> result = dishService.topDish();
+		
+		return new ResponseEntity<>(result,  HttpStatus.OK);
+	}
+	
+
 }
 
 

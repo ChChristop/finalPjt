@@ -17,7 +17,7 @@ public interface AteDao {
 
 	public void editAte(Ate ate);
 
-	public void delete(int ate_num);
+	public void delete(int ate_num, int mnum);
 
 	public void upHit(int ate_num);
 

@@ -1,5 +1,7 @@
 package com.example.demo.config.auth;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,11 +13,13 @@ import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.MemberDAO;
 import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.service.function.ObjectMapperToDTO;
 import com.example.demo.vo.AdminVO;
-import com.example.demo.vo.MemberVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -66,30 +70,34 @@ public class PrincipalDetailsService implements UserDetailsService{
 		return new PrincipalDetails(adminDTO);
 		
 		}else {
-			
-			Optional<MemberVO> result = memberDAO.findMemberbyMemberIDForJWT(username);
-			
-			if(result.isEmpty()) {
-				throw new UsernameNotFoundException("Check ID");
+
+			MemberDTO memberDTO = null;
+	
+			try {
+				
+				List<Map<String,Object>> result = memberDAO.findMemberbyMemberID(username);
+				
+				ObjectMapperToDTO objectMapperToDTO = new ObjectMapperToDTO(result,memberDTO,MemberDTO.class);
+				
+				memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
+				
+				memberDTO.setAteCount(result.size());
+		
+				
+				if(memberDTO.getMemberID() == null) {
+					throw new UsernameNotFoundException("Check ID");
+				}
+				
+				log.info("[PrincipalDetails(memberDTO)] : 진입 : " + memberDTO.getMemberID());
+				
+				return new PrincipalDetails(memberDTO);
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+				
+				return null;
 			}
-			
-			MemberVO member = result.get();
-
-			MemberDTO memberDTO = MemberDTO.builder()
-					.mnum(member.getMnum())
-					.memberID(member.getMemberID())
-					.nickname(member.getNickname())
-					.phoneNumber(member.getPhoneNumber())
-					.memberPW(member.getMemberPW())
-					.role("ROLE_"+member.getRole())
-					.date(member.getDate())
-					.lastAccessDate(member.getLastAccessDate())
-					.modDate(member.getModDate())
-					.build();
-
-			log.info("[PrincipalDetails(adminDTO)] : 진입 : " + memberDTO.getMemberID());
-			
-			return new PrincipalDetails(memberDTO);
+	
 		}
 		
 	}

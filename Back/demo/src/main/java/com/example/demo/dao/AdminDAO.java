@@ -24,8 +24,7 @@ public interface AdminDAO {
 	Long addAdmin(AdminVO admin);
 	
 	//관리자 전체 리스트 조회
-//	@Select("SELECT ANUM, ADMINID, NICKNAME, PHONNUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN ORDER BY #{basis} #{align} LIMIT #{page},#{size}")
-	List<AdminVO> getAdminList(PageRequestDTO pageRequestDTO);
+	List<Map<String,Object>> getAdminList(PageRequestDTO pageRequestDTO);
 	
 	//관리자 아이디 중복체크
 	@Select("SELECT ADMINID FROM ADMIN WHERE ADMINID = #{adminID}")

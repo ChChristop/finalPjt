@@ -34,20 +34,29 @@
 	<!-- 회원 리스트 조회-->
 	<select id="getMemberList2" resultType="Map">
 		
-		SELECT M.mnum, memberID, nickname, phoneNumber, date, lastAccessDate, role, count(A.ate_num) AS ateCount,
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, M.lastAccessDate, M.role
+
+		,count(A.ate_num) AS ateCount
 		
-		(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		
+		,(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+        
+		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
+        
+        ,(SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
 		
 		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+
    		  
 		<where>
 			<if test= 'type == "i"'>
 				MEMBERID like CONCAT('%',#{searchThings},'%')
 			</if>
-			<if test='type == "n"'>
+			<if test= 'type == "n"'>
 				NICKNAME like CONCAT('%',#{searchThings},'%')
 			</if>
-			<if test='type == "in"'>
+			<if test= 'type == "in"'>
 				MEMBERID like CONCAT('%',#{searchThings},'%') 
 				OR NICKNAME like CONCAT('%',#{searchThings},'%')
 			</if>
@@ -86,26 +95,70 @@
 		<!-- 회원 식별자로 회원 정보 조회, ate 갯수 포함-->		
 	<select id="findMemberbyMnum" resultType="map">
 		
-		SELECT M.mnum, memberID, nickname, phoneNumber, date, lastAccessDate, role, count(A.ate_num) AS ateCount,
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
+
+		M.lastAccessDate, M.role, M.memberPW, A.ATE_NUM as ateCount, COUNT(R.INAME) AS refreCount,
 		
-		(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+        
+        (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
+        
+        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
 		
-		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM 
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+			LEFT OUTER JOIN refrigerator R ON M.MNUM = R.MNUM
 		
 		WHERE M.MNUM = #{mnum}
+        
+        group by A.ATE_NUM;
 
 	</select>
 	
 	<!-- 회원 아이디로 회원 정보 조회, ate 갯수 포함-->		
 	<select id="findMemberbyMemberID" resultType="map">
 		
-		SELECT M.mnum, memberID, nickname, phoneNumber, date, lastAccessDate, role, count(A.ate_num) AS ateCount,
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
+
+		M.lastAccessDate, M.role, M.memberPW, A.ATE_NUM as ateCount, COUNT(R.INAME) AS refreCount,
 		
-		(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+        
+        (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
+        
+        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount
 		
-		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM 
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+			LEFT OUTER JOIN refrigerator R ON M.MNUM = R.MNUM
 		
 		WHERE M.MEMBERID = #{memberID}
+        
+        group by A.ATE_NUM;
 
 	</select>
+	
+	
+		<select id="topUser" resultType="Map">
+		
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, M.lastAccessDate, M.role
+
+		,count(A.ate_num) AS ateCount
+		
+		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		
+		,(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+        
+		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
+        
+        ,(SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+        group by M.mnum
+        
+		ORDER BY point, ateCount, comment, likeCount DESC LIMIT 0,50;
+		
+		</select>
+
 </mapper>

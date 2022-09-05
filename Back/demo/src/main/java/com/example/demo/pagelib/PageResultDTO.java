@@ -44,6 +44,8 @@ public class PageResultDTO<VO,DTO> {
 		makePageList();
 	}
 	
+	
+	
 	private void makePageList() {
 		
 		int tempEnd = (int)(Math.ceil(page/10.0)) * 10;

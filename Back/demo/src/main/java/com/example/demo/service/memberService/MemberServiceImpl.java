@@ -14,11 +14,10 @@ import com.example.demo.dao.RefrigeratorDAO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
+import com.example.demo.service.function.ObjectMapperToDTO;
 import com.example.demo.vo.MemberVO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -39,8 +38,13 @@ public class MemberServiceImpl implements MemberService {
 
 		try {
 
-			Map<String, Object> get = memberDAO.findMemberbyMnum(mnum);
-			memberDTO = mapTOdto(get);
+			List<Map<String, Object>> get = memberDAO.findMemberbyMnum(mnum);
+			
+			ObjectMapperToDTO objectMapperToDTO = new ObjectMapperToDTO(get,memberDTO,MemberDTO.class);
+			
+			memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
+			
+			memberDTO.setAteCount(get.size());
 			log.info("[MemberServiceImpl] : findMember 성공 : " + memberDTO.getMemberID());
 
 			return memberDTO;
@@ -59,8 +63,14 @@ public class MemberServiceImpl implements MemberService {
 		MemberDTO memberDTO = null;
 
 		try {
-			Map<String, Object> get = memberDAO.findMemberbyMemberID(memberID);
-			memberDTO = mapTOdto(get);
+			List<Map<String, Object>> get = memberDAO.findMemberbyMemberID(memberID);
+			
+			ObjectMapperToDTO objectMapperToDTO = new ObjectMapperToDTO(get,memberDTO,MemberDTO.class);
+			
+			memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
+			
+			memberDTO.setAteCount(get.size());
+			
 			log.info("[MemberServiceImpl] : findMember 성공 : " + memberDTO.getMemberID());
 
 			return memberDTO;
@@ -72,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 	}
+
 
 	@Override
 	public Long register(MemberDTO memberDTO) {
@@ -147,8 +158,8 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 
-	@Override
-	public PageResultDTO<MemberVO, MemberDTO> getAdminList(PageRequestDTO pageRequestDTO) {
+//	@Override
+	public PageResultDTO<MemberVO, MemberDTO> getMemberList(PageRequestDTO pageRequestDTO) {
 
 		// 기준
 		if (pageRequestDTO.getBasis() == "pk") {
@@ -173,10 +184,10 @@ public class MemberServiceImpl implements MemberService {
 			fn = (map) -> voTOdto(map);
 			count = memberDAO.countMemberAllList(pageRequestDTO);
 
-			log.info("[MemberServiceImpl] : getAmindList 성공");
+			log.info("[MemberServiceImpl] : getMemberList 성공");
 			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
 		} catch (Exception e) {
-			log.info("[MemberServiceImpl] : getAmindList 실패");
+			log.info("[MemberServiceImpl] : getMemberList 실패");
 			return null;
 		}
 
@@ -184,7 +195,7 @@ public class MemberServiceImpl implements MemberService {
 
 	// join table 테스트
 	@Override
-	public PageResultDTO<Map<String, Object>, MemberDTO> getAdminList2(PageRequestDTO pageRequestDTO) {
+	public PageResultDTO<Map<String, Object>, MemberDTO> getMemberList2(PageRequestDTO pageRequestDTO) {
 
 		// 기w준
 		if (pageRequestDTO.getBasis() == "pk") {
@@ -203,12 +214,36 @@ public class MemberServiceImpl implements MemberService {
 
 			int count = memberDAO.countMemberAllList(pageRequestDTO);
 
-			log.info("[MemberServiceImpl] : getAdminList2 성공");
+			log.info("[MemberServiceImpl] : getMemberList2 성공");
+			
 			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+			
 		} catch (Exception e) {
-			log.info("[MemberServiceImpl] : getAdminList2 실패");
+			e.printStackTrace();
+			log.info("[MemberServiceImpl] : getMemberList2 실패");
 			return null;
 		}
+	}
+
+	@Override
+	public List<Map<String, Object>> topUser() {
+		
+			
+		try {
+			
+			List<Map<String, Object>> result = memberDAO.topUser();
+			
+			log.info("[MemberServiceImpl] [topUser 성공]");
+			
+			return result;
+			
+		}catch(Exception e) {
+			
+			log.info("[MemberServiceImpl] [topUser 실패]");
+			
+			return null;
+		}
+	
 	}
 
 }

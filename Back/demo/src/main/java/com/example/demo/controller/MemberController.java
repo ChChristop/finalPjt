@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.dto.PointDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.memberService.MemberService;
+import com.example.demo.service.point.PointService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
+	
+	private final PointService pointService;
 
 	// 회원 아이디 또는 회원 식별자로 회원 조회
 	@GetMapping("/search/{memberID}")
@@ -76,9 +81,9 @@ public class MemberController {
 	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(
 			@ModelAttribute PageRequestDTO pageRequestDTO) {
 
-		log.info("[MemberController /api/member/search/{memberID}] : 회원 리스트 조회 ");
+		log.info("[MemberController /api/member/member-list] : 회원 리스트 조회 ");
 
-		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getAdminList2(pageRequestDTO);
+		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getMemberList2(pageRequestDTO);
 
 		if (result == null)
 			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -148,5 +153,31 @@ public class MemberController {
 		}
 
 	}
+	
+	@GetMapping("/point/{mnum}")
+	public ResponseEntity<List<PointDTO>> userPoint(
+			@PathVariable long mnum){
+		
+		log.info("[/point/{mnum}] [유저 포인트 조회] [{}]",mnum);
+		
+		// 추후 주석 해제 예정
+
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (mnum != getNumber) {
+		 * 
+		 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + mnum);
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
+
+		
+		List<PointDTO> result =  pointService.userPoint(mnum);
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
 
 }

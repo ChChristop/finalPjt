@@ -88,7 +88,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		// html로 받을 시
 		UsernamePasswordAuthenticationToken authenticationToken = null;;
 
-//		ObjectMapper om = new ObjectMapper();
 
 		if (param[2].equals("true")) {
 			
@@ -139,6 +138,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			
 		}else {
 			principalDetails.getMemberDTO().setMemberPW("");
+			
 			request.setAttribute("memberDTO",principalDetails.getMemberDTO());
 		}
 

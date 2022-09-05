@@ -3,8 +3,10 @@
 
 
 <mapper namespace="com.example.demo.dao.AdminDAO">
-	<select id="getAdminList" resultType="AdminVO">
-		SELECT ANUM, ADMINID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN
+	<select id="getAdminList" resultType="Map">
+		SELECT A.anum, A.adminID, A.nickName, A.phoneNumber, A.date, A.lastAccessDate, A.role as role 
+		,COUNT(D.WRITER) AS dishCount
+		FROM ADMIN A LEFT OUTER JOIN DISH D ON A.ANUM = D.WRITER
 		<where>
 			<if test='type == "i"'>
 				ADMINID like CONCAT('%',#{searchThings},'%')
@@ -18,6 +20,7 @@
 			</if>
 
 		</where>
+		group by ANUM
 		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
 	</select>
 
