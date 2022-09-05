@@ -4,7 +4,7 @@
 <mapper namespace="com.example.demo.dao.DishDao">
 
 	<select id="getNum" parameterType="map" resultType="int">
-			select max(RCP_SEQ)+1 from dishDB
+			select max(convert(RCP_SEQ, SIGNED))+1 RCP_SEQ from dishDB ORDER BY RCP_SEQ
 	</select> 
 	<insert id="addInfo" parameterType="map">
 		insert into dish set

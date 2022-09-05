@@ -65,7 +65,7 @@ public class RestTestController {
 	           //재료만 저장하는 메소드
 	            
 	           String result = RegexCheck(nodeMapData.get("RCP_PARTS_DTLS"));
-	           String num = RegexCheck(nodeMapData.get("RCP_SEQ"));
+	           String num = (String) nodeMapData.get("RCP_SEQ");
 	           
 	           goDish_ing(result,num);
  
@@ -84,7 +84,7 @@ public class RestTestController {
 	           List<String> ingList = new ArrayList<>();
 	   			for(int j= 0; j<result.split(",").length; j++) {
 	   				String ingItem = result.split(",")[j].trim();
-	   				if(ingItem!=null || ingItem!=" ") {
+	   				if(!ingItem.isEmpty()) {
 	   				ingMap.put("ing",ingItem);
 	   				ingMap.put("RCP_SEQ", num);
 	   				dishService.ingAdd(ingMap);
@@ -96,14 +96,19 @@ public class RestTestController {
 
 		public String RegexCheck(Object obj) {
 	    	
+			 String result;
 	    	 String target = String.valueOf(obj);
 	    	 String regEx = "[(0-9]+[^gl리개)]*[gl리개)]+"; 
 	    	 String regEx1 = "\\n[가-힣]* :";
+	    	 String regEx2 = "\\[\\S*\\]";
 	    	 Pattern pat = Pattern.compile(regEx);
 	    	 Pattern pat1 = Pattern.compile(regEx1);
+	    	 Pattern pat2 = Pattern.compile(regEx2);
 	    	 
-	    	 Matcher m = pat.matcher(target);
-	    	 String result = m.replaceAll("");
+	    	 Matcher m2 = pat2.matcher(target);
+	    	 result = m2.replaceAll(",");
+	    	 Matcher m = pat.matcher(result);
+	    	 result = m.replaceAll("");
 	    	 Matcher m1 = pat1.matcher(result);
 	    	 result = m1.replaceAll(", ");
 	    	 
@@ -114,6 +119,7 @@ public class RestTestController {
 	    	 
 	    	 result = result.replaceAll("육수","");
 	    	 result = result.replaceAll("양념","");
+	    	 result = result.replaceAll("재료","");
 	    	 
 	    	 
 	    	 System.out.println("result::: " + result);

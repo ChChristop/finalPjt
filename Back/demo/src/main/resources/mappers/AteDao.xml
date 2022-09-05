@@ -21,8 +21,7 @@
         on a.RCP_SEQ = db.RCP_SEQ
         where 
         db.RCP_NM like concat('%',#{select},'%') 
-        or a.mnum like concat('%',#{select},'%') 
-        or ate_content like concat('%',#{select},'%')
+        or a.mnum like concat('%',#{select},'%')  
 	</select>
 	
 	<select id="getOne" parameterType="Integer" resultType="Ate">
