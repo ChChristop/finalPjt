@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.common.Constants;
 import com.example.demo.service.AteService;
 import com.example.demo.vo.Ate;
 import com.example.demo.vo.DishComm;
@@ -44,11 +45,11 @@ public class AteController {
 			@PathVariable int mnum, 
 			@RequestParam("file") MultipartFile file) throws Exception {
 	
-	
+			
 			ate.setRCP_SEQ(RCP_SEQ);
 			ate.setMnum(mnum);
 		
-
+			
 			File dest = new File(fdir + "/" + file.getOriginalFilename());
 			
 			file.transferTo(dest);
@@ -210,6 +211,7 @@ public class AteController {
 		
 		dishComm.setMnum(mnum);
 		dishComm.setAte_num(ate_num);
+		String ip = Constants.IP_PORT;
 		
 		ateService.commEdit(dishComm);
 		

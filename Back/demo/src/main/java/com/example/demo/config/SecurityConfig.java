@@ -78,10 +78,10 @@ public class SecurityConfig {
 		public void configure(HttpSecurity http) throws Exception {
 
 			//비회원이 게시물 읽을 때는 jwt 확인 하지 않게 하기
-			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-			http
-					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
-					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
+		//	AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+		//	http
+		//			.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
+		//			.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
 		}
 	}
 

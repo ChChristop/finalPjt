@@ -301,7 +301,7 @@
 		db.att_file_no_mk
 		from dish d  
  		right join dishDB db
-		on db.RCP_SEQ = d.RCP_SEQ
+		on db.RCP_SEQ = d.RCP_SEQ limit 0,10
 	</select>
 
 	<select id="dishLike" parameterType="int" resultType="int">
