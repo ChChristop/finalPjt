@@ -23,6 +23,12 @@ public class MainServiceImpl implements MainService {
 		return mainDao.auto();
 	}
 
+	@Override
+	public List<Map<String, Object>> recipeAuto(String iname) {
+	
+		return mainDao.recipeAuto(iname);
+	}
+
 
 	
 }

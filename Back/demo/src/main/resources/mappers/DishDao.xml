@@ -14,7 +14,6 @@
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
     </insert>
-    
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -425,6 +424,9 @@
 	<delete id="goDishDislike" parameterType="Integer">
 		DELETE FROM dish_like
 		WHERE RCP_SEQ=#{RCP_SEQ} and mnum=#{mnum} 		
+	</delete>
+	<delete id="deleIng" parameterType="Integer">
+		delete from dish_ing where RCP_SEQ = #{RCP_SEQ}
 	</delete>
 	
 	

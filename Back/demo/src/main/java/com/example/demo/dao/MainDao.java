@@ -9,5 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface MainDao {
 
 	public List<Map<String, Object>> auto();
+
+	public List<Map<String, Object>> recipeAuto(String iname);
 	
 }

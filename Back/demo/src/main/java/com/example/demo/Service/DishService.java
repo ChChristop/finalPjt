@@ -34,13 +34,6 @@ public interface DishService {
 	 */
 	public void delete(int RCP_SEQ);
 	/*
-	 * 사진 수정하려면 그냥 기존 사진 삭제하기
-	 */
-	public void delPicture(int dnum);
-	
-	public void editPicture(Map<String, Object> param);
-	
-	/*
 	 * 본 게시물 좋아요 눌렀나 확인
 	 */
 	public int dishLike(int mnum, int RCP_SEQ);

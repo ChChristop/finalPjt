@@ -40,8 +40,22 @@ public class DishServiceImpl implements DishService {
 		dishDao.addInfo(dnum, mnum);
 		
 		Object obj = dish.getRCP_PARTS_DTLS();
-		String result = restTestController.RegexCheck(obj);
 		String num = Integer.toString(dnum);
+		String result = restTestController.RegexCheck(obj);
+		restTestController.goDish_ing(result,num);
+	}
+
+
+	@Override
+	public void edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
+		
+		dishDao.edit(dish);
+		dishDao.editInfo(dish1, rCP_SEQ, mnum);
+		dishDao.deleIng(rCP_SEQ);
+		
+		Object obj = dish.getRCP_PARTS_DTLS();
+		String num = Integer.toString(rCP_SEQ);
+		String result = restTestController.RegexCheck(obj);
 		restTestController.goDish_ing(result,num);
 		
 	}
@@ -52,12 +66,6 @@ public class DishServiceImpl implements DishService {
 		return dishDao.getOne(RCP_SEQ);
 	}  
 
-	@Override
-	public void edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
-		
-		dishDao.edit(dish);
-		dishDao.editInfo(dish1, rCP_SEQ, mnum);
-	}
 
 	@Override
 	public void upHit(int RCP_SEQ) {
@@ -71,17 +79,6 @@ public class DishServiceImpl implements DishService {
 		dishDao.delete(RCP_SEQ);
 	}
 
-	@Override
-	public void delPicture(int dnum) {
-		dishDao.delPicture(dnum);
-		
-	}
-
-	@Override
-	public void editPicture(Map<String, Object> param) {
-		dishDao.editPicture(param);
-		
-	}
 
 	@Override
 	public int dishLike(int mnum, int RCP_SEQ) {

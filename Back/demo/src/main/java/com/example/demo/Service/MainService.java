@@ -7,5 +7,7 @@ public interface MainService {
 
 	public List<Map<String, Object>> auto();
 
+	public List<Map<String, Object>> recipeAuto(String iname);
+
 
 }

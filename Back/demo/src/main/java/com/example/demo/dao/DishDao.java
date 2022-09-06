@@ -51,6 +51,8 @@ public interface DishDao {
 	public List<DishComm> commGet(int rCP_SEQ);
 
 	public List<Map<String, Object>> search(String select, String searchI);
+
+	public void deleIng(int rCP_SEQ);
 	
 	
 }

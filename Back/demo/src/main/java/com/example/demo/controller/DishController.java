@@ -118,7 +118,7 @@ public class DishController {
 
 			map.put("imgList", imgList); //조리이미지
 
-			result.add(map);		
+			result.add(map);
 		}
 		
 		return result;
@@ -279,8 +279,6 @@ public class DishController {
 	}
 	/*
 	 * 음식 정보 수정하기
-	 * 	오수진(0818) : 추후 프론트와 이야기! 
-	 *  	-> 음식 정보 수정한 사람 : mnum
 	 */
 	@PutMapping("/edit/{RCP_SEQ}/{mnum}")
 	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int mnum, @PathVariable int RCP_SEQ,
