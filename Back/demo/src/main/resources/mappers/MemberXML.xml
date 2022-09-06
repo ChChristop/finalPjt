@@ -40,7 +40,7 @@
 		
 		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
 		
-		,(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+		,(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
         
 		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
         
@@ -97,13 +97,13 @@
 		
 		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
 
-		M.lastAccessDate, M.role, M.memberPW, A.ATE_NUM as ateCount, COUNT(R.INAME) AS refreCount,
+		M.lastAccessDate, M.role, M.memberPW, count(A.ate_num) AS ateCount, COUNT(R.INAME) AS refreCount,
 		
-		(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+		(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
         
         (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
         
-        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
+        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount
 		
 		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
 		
@@ -120,9 +120,9 @@
 		
 		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
 
-		M.lastAccessDate, M.role, M.memberPW, A.ATE_NUM as ateCount, COUNT(R.INAME) AS refreCount,
+		M.lastAccessDate, M.role, M.memberPW, count(A.ate_num) AS ateCount, COUNT(R.INAME) AS refreCount,
 		
-		(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+		(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
         
         (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
         
@@ -147,7 +147,7 @@
 		
 		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
 		
-		,(SELECT SUM(U.POINT) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+		,(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
         
 		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
         
@@ -157,7 +157,7 @@
 		
         group by M.mnum
         
-		ORDER BY point, ateCount, comment, likeCount DESC LIMIT 0,50;
+		ORDER BY point desc, ateCount desc, refreCount desc, comment desc, likeCount desc limit 0,50;
 		
 		</select>
 

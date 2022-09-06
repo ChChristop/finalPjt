@@ -156,7 +156,7 @@ public class AteController {
 	@GetMapping("/getList/{mnum}")
 	public ResponseEntity<List<Ate>> getUserList(@PathVariable long mnum, HttpServletRequest request) {
 		
-		log.info("[AteController /api//getList/{mnum} : 진입 ]" + mnum);
+		log.info("[/api/getList/{mnum}] [먹음 리스트 조회] ] [{}]", mnum);
 		
 		//jwt 인증정보와 요청 회원 번호와 다를 때 
 
@@ -169,7 +169,7 @@ public class AteController {
 		 
 		List<Ate> result = ateService.getAllList(mnum);
 
-		log.info("[AteController /api//getList/{mnum} : 성공 ]" + mnum);
+		log.info("[/api/getList/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

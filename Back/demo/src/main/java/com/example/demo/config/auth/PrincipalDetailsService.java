@@ -81,8 +81,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 				
 				memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
 				
-				memberDTO.setAteCount(result.size());
-		
+						
 				
 				if(memberDTO.getMemberID() == null) {
 					throw new UsernameNotFoundException("Check ID");

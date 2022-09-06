@@ -40,7 +40,7 @@ public class MemberController {
 	@GetMapping("/search/{memberID}")
 	public ResponseEntity<MemberDTO> searchMember(@PathVariable String memberID) {
 
-		log.info("[MemberController /api/member/search/{memberID}] : 회원 조회 중 : " + memberID);
+		log.info("[/api/member/search/{memberID}] [회원 조회] [{}]", memberID);
 
 		MemberDTO result = null;
 
@@ -54,10 +54,10 @@ public class MemberController {
 
 		// 회원 아이디 중복 체크 true or false 사용
 		if (result == null) {
-			log.info("[MemberController /api/member/search/{memberID}] : 회원 조회 실패 : " + memberID);
+			log.info("[/api/member/search/{memberID}] [회원 조회 성공] [{}]",memberID);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} else {
-			log.info("[MemberController /api/member/search/{memberID}] : 회원 조회 성공 : " + memberID);
+			log.warn("[/api/member/search/{memberID}] [회원 조회 실패] [{}]", memberID);
 			
 			result.setMemberPW("");
 			
@@ -81,7 +81,7 @@ public class MemberController {
 	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(
 			@ModelAttribute PageRequestDTO pageRequestDTO) {
 
-		log.info("[MemberController /api/member/member-list] : 회원 리스트 조회 ");
+		log.info("[/api/member/member-list] [회원 리스트 조회]");
 
 		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getMemberList2(pageRequestDTO);
 
@@ -95,7 +95,7 @@ public class MemberController {
 	@DeleteMapping("/delete/{mnum}")
 	public ResponseEntity<Long> removeAdmin(@PathVariable Long mnum, HttpServletRequest request) {
 
-		log.info("[MemberController /api/member/delete/{mnum}] : 회원 탈퇴 : " + mnum);
+		log.info("[/api/member/delete/{mnum}] [회원 탈퇴] [{}]", mnum);
 
 		// 추후 주석 해제 예정
 
@@ -114,10 +114,10 @@ public class MemberController {
 		Long result = memberService.remove(mnum);
 
 		if (result > 0) {
-			log.info("[MemberController /api/member/delete/{mnum}] : 회원 탈퇴 성공 : " + mnum);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			log.info("[api/member/delete/{mnum}] [회원 탈퇴 성공] [{}]", mnum);
+			return new ResponseEntity<>(mnum, HttpStatus.OK);
 		} else {
-			log.warn("[MemberController /api/member/delete/{mnum}] : 회원 탈퇴 실패: " + mnum);
+			log.warn("[/api/member/delete/{mnum}] [회원 탈퇴 실패] [{}]", mnum);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -127,7 +127,7 @@ public class MemberController {
 	@PutMapping("/update")
 	public ResponseEntity<Long> updateAdmin(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
 
-		log.info("[MemberController /api/member/update] : 회원 수정 : " + memberDTO.getMemberID());
+		log.info("[/api/member/update] [회원 수정] [{}]", memberDTO.getMemberID());
 
 		// 추후 주석 해제 예정
 
@@ -145,10 +145,10 @@ public class MemberController {
 		Long result = memberService.update(memberDTO);
 
 		if (result > 0) {
-			log.info("[MemberController /api/member/delete/{mnum}] : 회원 수정 성공 : " + memberDTO.getMemberID());
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			log.info("[/api/member/delete/{mnum}] [회원 수정 성공] [{}]", memberDTO.getMemberID());
+			return new ResponseEntity<>(memberDTO.getMnum(), HttpStatus.OK);
 		} else {
-			log.warn("[MemberController /api/member/delete/{mnum}] : 회원 수정 실패: " + memberDTO.getMemberID());
+			log.warn("[/api/member/delete/{mnum}] [회원 수정 실패] [{}]", memberDTO.getMemberID());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 

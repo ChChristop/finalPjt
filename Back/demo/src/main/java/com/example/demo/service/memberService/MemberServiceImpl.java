@@ -44,13 +44,12 @@ public class MemberServiceImpl implements MemberService {
 			
 			memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
 			
-			memberDTO.setAteCount(get.size());
-			log.info("[MemberServiceImpl] : findMember 성공 : " + memberDTO.getMemberID());
+			log.info("[MemberServiceImpl] [findMember 성공] [{}] ", memberDTO.getMemberID());
 
 			return memberDTO;
 
 		} catch (Exception e) {
-			log.warn("[MemberServiceImpl] : findMember 실패 : " + memberDTO.getMemberID());
+			log.warn("[MemberServiceImpl] [findMember 실패] [{}] ", memberDTO.getMemberID());
 
 			return memberDTO;
 		}
@@ -68,15 +67,14 @@ public class MemberServiceImpl implements MemberService {
 			ObjectMapperToDTO objectMapperToDTO = new ObjectMapperToDTO(get,memberDTO,MemberDTO.class);
 			
 			memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
-			
-			memberDTO.setAteCount(get.size());
-			
-			log.info("[MemberServiceImpl] : findMember 성공 : " + memberDTO.getMemberID());
 
+			
+			log.info("[MemberServiceImpl] [findMember 성공] [{}]", memberDTO.getMemberID());
+			
 			return memberDTO;
 
 		} catch (Exception e) {
-			log.warn("[MemberServiceImpl] : findMember 실패 : " + memberDTO.getMemberID());
+			log.warn("[MemberServiceImpl] [findMember 실패] [{}]",memberDTO.getMemberID());
 
 			return memberDTO;
 		}
@@ -96,13 +94,13 @@ public class MemberServiceImpl implements MemberService {
 
 			memberDAO.addMember(member);
 			result = member.getMnum();
-			log.info("[MemberServiceImpl] : register 성공 : " + memberDTO.getMemberID());
+			log.info("[MemberServiceImpl] [register 성공] [{}]", memberDTO.getMemberID());
 
 			return result;
 
 		} catch (Exception e) {
 
-			log.warn("[MemberServiceImpl] : register 실패 : " + memberDTO.getMemberID());
+			log.warn("[MemberServiceImpl] [register 실패] [{}]", memberDTO.getMemberID());
 
 			return result;
 		}
@@ -127,18 +125,18 @@ public class MemberServiceImpl implements MemberService {
 			refrigeratorDAO.deleteIngredientByMnumr(mnum);
 			result = memberDAO.removeMemberbyMnum(mnum);
 
-			log.info("[MemberServiceImpl] : remove 성공 : " + mnum);
-			return mnum;
+			log.info("[MemberServiceImpl] [remove 성공] [{}]", mnum);
+			return result;
 
 		} catch (Exception e) {
-			log.warn("[MemberServiceImpl] : remove 실패 : " + mnum);
+			log.warn("[MemberServiceImpl] [remove 실패] [{}] ", mnum);
 			return result;
 		}
 
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public Long update(MemberDTO memberDTO) {
 
 		memberDTO.setMemberPW(passwordEncoder.encode(memberDTO.getMemberPW()));
@@ -146,13 +144,13 @@ public class MemberServiceImpl implements MemberService {
 		MemberVO member = dtoTOvo(memberDTO);
 
 		try {
-			memberDAO.updateAdminByMnum(member);
+			Long result = memberDAO.updateMemberByMnum(member);
 			memberDAO.updateModDateByMnum(memberDTO.getMnum());
-			log.info("[MemberServiceImpl] : update 성공 : " + memberDTO.getMnum());
-			return (long) member.getMnum();
+			log.info("[MemberServiceImpl] [update 성공] [{}] ", memberDTO.getMnum());
+			return result;
 
 		} catch (Exception e) {
-			log.warn("[MemberServiceImpl] : update 실패 : " + memberDTO.getMnum());
+			log.warn("[MemberServiceImpl] [update 실패] [{}]",+ memberDTO.getMnum());
 			return 0L;
 		}
 
@@ -184,12 +182,9 @@ public class MemberServiceImpl implements MemberService {
 			fn = (map) -> voTOdto(map);
 			count = memberDAO.countMemberAllList(pageRequestDTO);
 
-			log.info("[MemberServiceImpl] : getMemberList 성공");
 			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
-		} catch (Exception e) {
-			log.info("[MemberServiceImpl] : getMemberList 실패");
-			return null;
-		}
+			
+		} catch (Exception e)  {return null;}
 
 	}
 
@@ -213,16 +208,10 @@ public class MemberServiceImpl implements MemberService {
 			Function<Map<String, Object>, MemberDTO> fn = (map) -> mapTOdto(map);
 
 			int count = memberDAO.countMemberAllList(pageRequestDTO);
-
-			log.info("[MemberServiceImpl] : getMemberList2 성공");
 			
 			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("[MemberServiceImpl] : getMemberList2 실패");
-			return null;
-		}
+		} catch (Exception e) {return null;}
 	}
 
 	@Override
@@ -233,14 +222,10 @@ public class MemberServiceImpl implements MemberService {
 			
 			List<Map<String, Object>> result = memberDAO.topUser();
 			
-			log.info("[MemberServiceImpl] [topUser 성공]");
-			
 			return result;
 			
 		}catch(Exception e) {
-			
-			log.info("[MemberServiceImpl] [topUser 실패]");
-			
+						
 			return null;
 		}
 	

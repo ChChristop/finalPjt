@@ -35,13 +35,13 @@ public class AllPermitURI {
 	@PostMapping("/register")
 	public ResponseEntity<Long> addAdmin(@RequestBody MemberDTO memberDTO) {
 
-		log.info("[AllPermitURI /api/register] : 진입 : " + memberDTO.getMemberID());
+		log.info("[/api/register] [회원 등록] [{}]", memberDTO.getMemberID());
 
 		// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
 		Long result = memberService.register(memberDTO);
 		
-		if(result > 0) log.info("[AllPermitURI /api/register] : 회원 가입 성공 : " + memberDTO.getMemberID());
-		else log.warn("[AllPermitURI /api/register] : 회원 가입 실패 : " + memberDTO.getMemberID());
+		if(result > 0) log.info("[/api/register] [회원 가입 성공] [{}]", memberDTO.getMemberID());
+		else log.warn("[/api/register] [회원 가입 실패] [{}]", memberDTO.getMemberID());
 		
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -51,7 +51,7 @@ public class AllPermitURI {
 	@GetMapping("/id-check/{memberID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String memberID) {
 		
-		log.info("[AllPermitURI /id-check/{memberID}] : 진입 : " + memberID);
+		log.info("[/api/id-check/{memberID}] [ID 중복 체크] [{}]", memberID);
 
 		// 회원 아이디 중복 체크 true or false 사용
 		boolean result = memberService.checkMemberID(memberID);

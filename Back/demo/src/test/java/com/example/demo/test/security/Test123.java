@@ -1,10 +1,7 @@
 package com.example.demo.test.security;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.IngredientsDAO;
 import com.example.demo.dao.MemberDAO;
-import com.example.demo.vo.IngredientsVO;
 
 @SpringBootTest
 public class Test123 {
@@ -30,6 +26,17 @@ public class Test123 {
 	
 	@Autowired
 	private IngredientsDAO ingredientsDAO;
+	
+	@Test
+	public void test() {
+		
+		List<Map<String,Object>> result = memberDAO.findMemberbyMemberID("abcd@abc.com");
+		
+		for(Map<String,Object> i : result) {
+			System.out.println(i.get("ateCount"));
+		}
+	
+	}
 
 
 	
