@@ -27,15 +27,15 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
 		
 		try {
 			
-		refrigeratorDAO.addIngredientToRefrigerator(vo);
+		long result = refrigeratorDAO.addIngredientToRefrigerator(vo);
 		
-		log.info("[RefrigeratorServiceImpl] : 성공 : " + refrigeratorDTO.getIname());
-		
-		return vo.getRefrenum();
+		log.info("[RefrigeratorServiceImpl] [register 성공] [{}]", refrigeratorDTO.getIname());
+			
+		return (result==1)? vo.getRefrenum() : 0L ;
 		
 		}catch(Exception e) {
 			
-			log.warn("[RefrigeratorServiceImpl] : 실패 : " + refrigeratorDTO.getIname());
+			log.warn("[RefrigeratorServiceImpl] [register 실패] [{}]", refrigeratorDTO.getIname());
 			
 			return 0L;
 		}
@@ -49,15 +49,15 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
 		
 		try {
 			
-		refrigeratorDAO.updateIngredientByRefrigerator(vo);
+		long result = refrigeratorDAO.updateIngredientByRefrigerator(vo);
 		
-		log.info("[RefrigeratorServiceImpl] : update 성공 : " + refrigeratorDTO.getRefrenum());
+		log.info("[RefrigeratorServiceImpl] [update 성공] [{}]", refrigeratorDTO.getRefrenum());
 
-		return vo.getRefrenum();
+		return result;
 		
 		}catch(Exception e) {
 			
-			log.warn("[RefrigeratorServiceImpl] : update 실패 : " + refrigeratorDTO.getRefrenum());
+			log.warn("[RefrigeratorServiceImpl] [update 실패] [{}]", refrigeratorDTO.getRefrenum());
 			
 			return 0L;
 		}
@@ -69,16 +69,16 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
 		
 		try {
 			
-		refrigeratorDAO.deleteIngredientByRefrigerator(refrenum);
+		long result = refrigeratorDAO.deleteIngredientByRefrigerator(refrenum);
 		
-		log.info("[RefrigeratorServiceImpl] : remove 성공 : " + refrenum);
+		log.info("[RefrigeratorServiceImpl] [remove 성공] [{}]", refrenum);
 		
-		return refrenum;
+		return result;
 		
 		
 		}catch(Exception e) {
 			
-			log.warn("[RefrigeratorServiceImpl] : remove 실패 : " + refrenum);
+			log.warn("[RefrigeratorServiceImpl]  [remove 성공] [{}]", refrenum);
 			
 			return 0L;
 		}
@@ -92,11 +92,11 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
 			
 		List<RefrigeratorDTO> result = refrigeratorDAO.findRefrigeratorDAObyMnum(mnum);
 		
-		log.info("[RefrigeratorServiceImpl] : findRefreigeratorListbyMnum 성공 : " + mnum);
+		log.info("[RefrigeratorServiceImpl] [findRefreigeratorListbyMnum 성공] [{}]", mnum);
 		
 		return result;
 		}catch(Exception e) {
-			log.warn("[RefrigeratorServiceImpl] : findRefreigeratorListbyMnum 실패 : " + mnum);
+			log.warn("[RefrigeratorServiceImpl] [findRefreigeratorListbyMnum 실패] [{}]", mnum);
 			return null;
 		}
 	}

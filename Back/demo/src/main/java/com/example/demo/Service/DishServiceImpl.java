@@ -101,7 +101,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		pointDAO.registerPoint(vo);
 		
-		log.info("[goDishLike] [진입] [{}]", mnum);
+		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		pointDAO.registerPoint(vo);
 		
-		log.info("[goDishLike] [진입] [{}]", mnum);
+		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		pointDAO.registerPoint(vo);
 		
-		log.info("[commAdd] [완료] [{}]", dishComm.getMnum());
+		log.info("[DishServiceImpl] [commAdd] [{}]", dishComm.getMnum());
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		pointDAO.registerPoint(vo);
 		
-		log.info("[commDelete] [완료] [{}]", dishComm.getMnum());
+		log.info("[DishServiceImpl] [commDelete] [{}]", dishComm.getMnum());
 	}
 
 	@Override
