@@ -120,6 +120,7 @@ public class RestTestController {
 	    	 result = result.replaceAll("육수","");
 	    	 result = result.replaceAll("양념","");
 	    	 result = result.replaceAll("재료","");
+	    	 result = result.replaceAll("다진","");
 	    	 
 	    	 
 	    	 System.out.println("result::: " + result);

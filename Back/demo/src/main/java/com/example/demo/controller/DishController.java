@@ -65,16 +65,20 @@ public class DishController {
 			//조리 재료
 			//조회를 위한 재료는 다시 재가공 필요! 
 			
+//			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
+//			ingSTR = ingSTR.replace("재료","");
+//			ingSTR = ingSTR.replaceAll("\n",", ");
+//			List<String> ingList = new ArrayList<>();
+//			for(int i = 0; i<ingSTR.split(",").length; i++) {
+//				ingList.add(ingSTR.split(",")[i]);
+//
+//			}
+			
 			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
 			ingSTR = ingSTR.replace("재료","");
 			ingSTR = ingSTR.replaceAll("\n",", ");
-			List<String> ingList = new ArrayList<>();
-			for(int i = 0; i<ingSTR.split(",").length; i++) {
-				ingList.add(ingSTR.split(",")[i]);
-
-			}
 			
-			map.put("ingredient", ingList); 
+			map.put("ingredient", ingSTR); 
 			
 			//조리방법 불러오기 
 			List<String> recipe = new ArrayList<>();
@@ -417,15 +421,17 @@ public class DishController {
 		//조리 재료
 		//조회를 위한 재료는 다시 재가공 필요! 
 		
+//		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
+//		ingSTR = ingSTR.replace("재료","");
+//		ingSTR = ingSTR.replaceAll("\n",", ");
+//		List<String> ingList = new ArrayList<>();
+//		for(int i = 0; i<ingSTR.split(",").length; i++) {
+//			ingList.add(ingSTR.split(",")[i]);
+//		}
 		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
 		ingSTR = ingSTR.replace("재료","");
 		ingSTR = ingSTR.replaceAll("\n",", ");
-		List<String> ingList = new ArrayList<>();
-		for(int i = 0; i<ingSTR.split(",").length; i++) {
-			ingList.add(ingSTR.split(",")[i]);
-		}
-		
-		map.put("ingredient", ingList); 
+		map.put("ingredient", ingSTR); 
 		
 		//조리방법 불러오기 
 		List<String> recipe = new ArrayList<>();

@@ -29,6 +29,12 @@ public class MainServiceImpl implements MainService {
 		return mainDao.recipeAuto(iname);
 	}
 
+	@Override
+	public List<Map<String, Object>> ingAllReco(int mnum) {
+	
+		return mainDao.ingAllReco(mnum);
+	}
+
 
 	
 }

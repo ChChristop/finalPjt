@@ -32,7 +32,8 @@ public class MainController {
 		return result;
 	}
 	/*
-	 * 재료 누르면 관련 메뉴 추천
+	 * 재료 누르면 관련 메뉴 추천(재료 1개에 관해) 
+	 * 이거 안쓸수도 있음
 	 */
 	@GetMapping("/recipe/{iname}")
 	public List<Map<String, Object>> recipeAuto(@PathVariable String iname){
@@ -42,16 +43,16 @@ public class MainController {
 		return result;
 	}
 	/*
-	 * 유통기한 임박 식품 관련 메뉴 추천
+	 * 유통기한 임박 식품 관련 메뉴 추천 (전체 메뉴)
 	 */
-//	@GetMapping("/recipe/{iname}")
-//	public List<Map<String, Object>> shortFood(){
+	@GetMapping("/recipe/reco/{mnum}")
+	public List<Map<String, Object>> ingAllReco(@PathVariable int mnum){
+		
+		List<Map<String, Object>> result = mainService.ingAllReco(mnum); 
 		
 		
-		
-		
-//		return null;
-//	}
+		return result;
+	}
 	
 
 	
