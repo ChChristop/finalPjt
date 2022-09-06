@@ -51,13 +51,13 @@ public class AdminServiceImpl implements AdminService {
 			// totalpage 조건 없음
 			int count = adminDAO.countAdminAllList(pageRequestDTO);
 			
-			log.info("[AdminServiceImpl] : getAdminList : 성공");
+			log.info("[AdminServiceImpl] [getAdminList] [성공]");
 			
 			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
 		
 		}catch(Exception e) {
 
-			log.warn("[AdminServiceImpl] : getAdminList : 실패");
+			log.warn("[AdminServiceImpl] [getAdminList] [실패]");
 			
 			e.printStackTrace();
 			
@@ -79,11 +79,11 @@ public class AdminServiceImpl implements AdminService {
 
 		try {
 			
-		adminDAO.addAdmin(admin);
+		long anum = adminDAO.addAdmin(admin);
 		
-		result = admin.getAnum();
+		result = (anum==1)?admin.getAnum():0;
 		
-		log.info("[AdminServiceImpl] : register : 성공");
+		log.info("[AdminServiceImpl] [register] [성공]");
 		
 		return result;
 		
@@ -91,7 +91,7 @@ public class AdminServiceImpl implements AdminService {
 			
 			result = 0;
 			
-			log.info("[AdminServiceImpl] : register : 실패");
+			log.info("[AdminServiceImpl] [register] [실패] ");
 			
 			return result;
 		}
@@ -110,13 +110,13 @@ public class AdminServiceImpl implements AdminService {
 
 			adminDTO = voTOdto(admin);
 
-			log.info("[AdminServiceImpl] : findAdmin : 성공");
+			log.info("[AdminServiceImpl] [findAdmin] [성공]");
 			
 			return adminDTO;
 
 		} else {
 			
-			log.info("[AdminServiceImpl] : findAdmin : 실패");
+			log.info("[AdminServiceImpl] [findAdmin] [실패]");
 			
 			return null;
 		}
@@ -136,13 +136,13 @@ public class AdminServiceImpl implements AdminService {
 
 			adminDTO = voTOdto(admin);
 
-			log.info("[AdminServiceImpl] : findAdmin : 성공");
+			log.info("[AdminServiceImpl] [findAdmin] [성공]");
 			
 			return adminDTO;
 
 		} else {
 			
-			log.info("[AdminServiceImpl] : findAdmin : 실패");
+			log.info("[AdminServiceImpl] [findAdmin] [실패]");
 			
 			return null;
 		}
@@ -162,20 +162,19 @@ public class AdminServiceImpl implements AdminService {
 	public long remove(long anum) {
 		Long result;
 		
-		try {
-			
-		log.info("[AdminServiceImpl] : remove : 성공");
-			
-		result = adminDAO.removeAdminByAnum(anum);
+		try {result = adminDAO.removeAdminByAnum(anum);}catch(Exception e) {result = 0L;}
 		
-		}catch(Exception e) {
+		if(result == 1) {
 			
-			log.info("[AdminServiceImpl] : remove : 실패");
+			log.info("[AdminServiceImpl] [remove] [성공]");
+			return anum;
+			
+		}else {
 			
 			result = 0L;
-			
+			log.info("[AdminServiceImpl] [remove] [실패]");
+			return result;
 		}
-		return (result == 1) ? anum : 0;
 	}
 
 	// 관리자 수정 메서드
@@ -191,17 +190,20 @@ public class AdminServiceImpl implements AdminService {
 		
 		try {
 			
-		adminDAO.updateAdminByAnum(admin);
+		result = adminDAO.updateAdminByAnum(admin);
 		adminDAO.updateModDateByAnum(adminDTO.getAnum());
-		result = admin.getAnum();
-		log.info("[AdminServiceImpl] : update : 성공");
-		return result;
-		}catch(Exception e) {
+
+		}catch(Exception e) {result = 0L;}
+		
+		if(result>0) {
 			
-			log.info("[AdminServiceImpl] : update : 실패");
+			log.info("[AdminServiceImpl] [update] [성공]");
+			return admin.getAnum();
 			
-			result = 0L;
-			return result;
+		}else {
+			
+			log.info("[AdminServiceImpl] [update] [실패]");
+			return 0L;
 		}
 		
 	

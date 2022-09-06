@@ -60,7 +60,7 @@ public interface MemberDAO {
 	@Update("UPDATE MEMBER "
 			+ "SET  MEMBERPW=#{memberPW}, NICKNAME=#{nickname}, PHONENUMBER=#{phoneNumber} "
 			+ "WHERE MNUM=#{mnum} ")
-	Long updateAdminByMnum(MemberVO member);
+	Long updateMemberByMnum(MemberVO member);
 	
 	//식별자로 회원 최종 접속시간 업데이트
 	@Update("UPDATE MEMBER "
@@ -83,4 +83,10 @@ public interface MemberDAO {
 	int countMemberAllList(PageRequestDTO pageReuqestDTO);
 	
 	List<Map<String, Object>> topUser();
+	
+	//회원 정보 수정
+	@Update("UPDATE MEMBER "
+			+ "SET MEMBERPW=#{memberPW}"
+			+ "WHERE MEMBERID=#{memberID} ")
+	Long changeMemberPwByID(MemberVO member);
 }

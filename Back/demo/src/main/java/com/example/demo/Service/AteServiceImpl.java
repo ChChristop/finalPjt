@@ -40,7 +40,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		pointDAO.registerPoint(vo);
 
-		log.info("[add] [진입] [{}]", ate.getMnum());
+		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
 
 	}
 
@@ -78,7 +78,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		pointDAO.registerPoint(vo);
 
-		log.info("[delete] [진입] [{}]", mnum);
+		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
 
 	}
 

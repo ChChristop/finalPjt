@@ -46,13 +46,15 @@ public class LoginController {
 		String refreshToken = (String) request.getAttribute("refreshToken");
 
 		String id = (String) request.getAttribute("id");
-		
-		log.info("[LoginController /api/login/admin] : 진입 : " + id);
 
 		String ip = (String) request.getHeader("X-FORWARDED-FOR");
 		
 		AdminDTO adminDTO = (AdminDTO) request.getAttribute("adminDTO");
-
+		
+		if(adminDTO == null) {
+			log.warn("[/api/login/admin] [관리자 로그인 실패] [{}] ", id);
+			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
+		}
 
 		if (ip == null)
 			ip = request.getRemoteAddr();
@@ -62,12 +64,12 @@ public class LoginController {
 		if (!checkToken) {
 
 			jwtTokkenDAO.createJWTTokenInDB(id, refreshToken, ip);
-
 		}
-
 			adminDAO.updateLastAceesDateByAdminID(id);
 			
-
+		
+		log.info("[/api/login/admin] [관리자 로그인 성공] [{}] ", id);
+		
 		return new ResponseEntity<>(adminDTO, HttpStatus.OK);
 
 	}
@@ -84,6 +86,11 @@ public class LoginController {
 		
 		MemberDTO memberDTO = (MemberDTO) request.getAttribute("memberDTO");
 		
+		if(memberDTO == null) {
+			log.warn("[/api/login/admin] [회원 로그인 실패] [{}] ", id);
+			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
+		}
+		
 		List<RefrigeratorDTO> refre = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
 		
 		memberDTO.setRefrigerator(refre);
@@ -93,7 +100,7 @@ public class LoginController {
 //		log.info("[LoginController /api/login/member] : 냉장고 리스트 얻는 중 : " + memberDTO.getMemberID());
 //		
 //		memberDTO.setRefrigerator(reuslt);
-
+		
 		if (ip == null)
 			ip = request.getRemoteAddr();
 		
@@ -106,11 +113,11 @@ public class LoginController {
 
 			memberDAO.updateLastAceesDATEByMemberID(id);	
 			
-		log.info("[LoginController /api/login/member] : RefershToken DB 저장 : " + memberDTO.getMemberID());
+		log.info("[/api/login/member] [RefershToken DB 저장] [{}]", memberDTO.getMemberID());
 		
-		log.info("[LoginController /api/login/member] : 로그인 성공 : " + memberDTO.getMemberID());
+		log.info("[/api/login/member] [로그인 성공] [{}] ", memberDTO.getMemberID());
 			
-		return new ResponseEntity<>(memberDTO, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
 	}
 
 	@Transactional(rollbackFor = { RuntimeException.class, Error.class })
@@ -127,9 +134,9 @@ public class LoginController {
 			memberDAO.updateLastAceesDATEByMemberID(id);
 		}
 		
-		log.info("로그아웃 성공");
+		log.info("[/api/logout/{id}] [로그아웃 성공] [{}]", id);
 
-		return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(id, HttpStatus.OK);
 	}
 
 }

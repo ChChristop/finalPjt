@@ -25,6 +25,8 @@ public class PointServiceImpl implements PointService {
 		
 		if(result.size()<1) return new ArrayList<PointDTO>();
 		
+		log.info("[PointServiceImpl] [userPoint] [{}]",mnum);
+		
 		return result;
 	}
 

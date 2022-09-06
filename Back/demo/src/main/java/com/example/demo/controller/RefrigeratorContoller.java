@@ -37,7 +37,7 @@ public class RefrigeratorContoller {
 	@GetMapping("/list/{mnum}")
 	public ResponseEntity<List<RefrigeratorDTO>> refreList(@PathVariable long mnum, HttpServletRequest request) {
 
-		log.info("[RefrigeratorContoller /api/refre/list/{mnum}] : 냉장고 조회 : " + mnum);
+		log.info("[api/refre/list/{mnum}] [냉장고 조회] " + mnum);
 
 //		//잠시 주석
 //		long getNumber = (long) request.getAttribute("GetNumber");
@@ -55,7 +55,7 @@ public class RefrigeratorContoller {
 		if (result == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-		log.info("[RefrigeratorContoller /api/refre/list/{mnum}] : 냉장고 성공 : " + mnum);
+		log.info("[api/refre/list/{mnum}] [냉장고 성공] : " + mnum);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -65,8 +65,7 @@ public class RefrigeratorContoller {
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseEntity<Long> refreAdd(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
 
-		log.info("[RefrigeratorContoller /api/add] : 냉장고 재료 추가 : " + refrigeratorDTO.getMnum() + "/"
-				+ refrigeratorDTO.getIname());
+		log.info("[/api/refre/add] [냉장고 재료 추가] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 
 		// 잠시 주석
 //		
@@ -91,12 +90,10 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.register(refrigeratorDTO);
 
 		if (result > 0) {
-			log.info("[RefrigeratorContoller /api/add] : 냉장고 재료 성공 : " + refrigeratorDTO.getMnum() + "/"
-					+ refrigeratorDTO.getIname());
+			log.info("[/api/refre/add] [냉장고 재료 추가 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			log.warn("[RefrigeratorContoller /api/add] : 냉장고 재료 실패 : " + refrigeratorDTO.getMnum() + "/"
-					+ refrigeratorDTO.getIname());
+			log.warn("[/api/refre/add] [냉장고 재료 추가 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -107,7 +104,7 @@ public class RefrigeratorContoller {
 	public ResponseEntity<Long> refreRemove(@PathVariable long refrenum, @PathVariable long mnum,
 			HttpServletRequest request) {
 
-		log.info("[RefrigeratorContoller /api/removal/{mnum}/{refrenum}] : 냉장고 재료 삭제 : " + mnum + "/" + refrenum);
+		log.info("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제] [{}/{}]",mnum,refrenum);
 
 		// 잠시 주석
 //		long getNumber = (long) request.getAttribute("GetNumber");
@@ -123,10 +120,10 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.remove(refrenum);
 
 		if (result > 0) {
-			log.info("[RefrigeratorContoller /api/removal/{mnum}/{refrenum}] : 냉장고 재료 삭제 : " + mnum + "/" + refrenum);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			log.info("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제 성공] [{}/{}]",mnum,refrenum);
+			return new ResponseEntity<>(refrenum, HttpStatus.OK);
 		} else {
-			log.warn("[RefrigeratorContoller /api/removal/{mnum}/{refrenum}] : 냉장고 재료 삭제 : " + mnum + "/" + refrenum);
+			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제 실패] [{}/{}]",mnum,refrenum);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -137,8 +134,7 @@ public class RefrigeratorContoller {
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseEntity<Long> refreUpdate(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
 
-		log.info("[RefrigeratorContoller /api/update : 냉장고 재료 수정 : " + refrigeratorDTO.getMnum() + "/"
-				+ refrigeratorDTO.getRefrenum());
+		log.info("[/api/refre/update] [냉장고 재료 수정] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 
 		// 잠시 주석
 //		long getNumber = (long) request.getAttribute("GetNumber");
@@ -162,12 +158,10 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.update(refrigeratorDTO);
 
 		if (result > 0) {
-			log.info("[RefrigeratorContoller /api/update : 냉장고 재료 수정 성공 : " + refrigeratorDTO.getMnum() + "/"
-					+ refrigeratorDTO.getRefrenum());
+			log.info("[/api/refre/update] [냉장고 재료 수정 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(refrigeratorDTO.getRefrenum(), HttpStatus.OK);
 		} else {
-			log.warn("[RefrigeratorContoller /api/update : 냉장고 재료 수정 실패 : " + refrigeratorDTO.getMnum() + "/"
-					+ refrigeratorDTO.getRefrenum());
+			log.warn("[/api/refre/update] [냉장고 재료 수정 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
