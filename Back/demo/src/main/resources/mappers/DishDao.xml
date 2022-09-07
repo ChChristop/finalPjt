@@ -10,7 +10,7 @@
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
-	<insert id="commAdd" parameterType="map">
+	<insert id="commAdd" parameterType="map" >
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
     </insert>
@@ -301,7 +301,7 @@
 		db.att_file_no_mk
 		from dish d  
  		right join dishDB db
-		on db.RCP_SEQ = d.RCP_SEQ limit 0,10
+		on db.RCP_SEQ = d.RCP_SEQ limit 0,30
 	</select>
 
 	<select id="dishLike" parameterType="int" resultType="int">

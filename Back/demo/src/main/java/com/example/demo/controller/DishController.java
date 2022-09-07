@@ -54,7 +54,8 @@ public class DishController {
 			Map<String, Object> map = new HashMap<>();
 			
 			map.put("hit", resultMap.get("hit")); //조회수
-			
+			map.put("writer", resultMap.get("writer")); //작성자
+			map.put("date", resultMap.get("date")); //작성시간
 			map.put("dish_num", resultMap.get("rcp_seq")); //고유번호
 			map.put("dish_name", resultMap.get("rcp_nm"));  //음식명
 			map.put("cookery", resultMap.get("rcp_way2")); //조리방법
@@ -63,17 +64,6 @@ public class DishController {
 			
 			
 			//조리 재료
-			//조회를 위한 재료는 다시 재가공 필요! 
-			
-//			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
-//			ingSTR = ingSTR.replace("재료","");
-//			ingSTR = ingSTR.replaceAll("\n",", ");
-//			List<String> ingList = new ArrayList<>();
-//			for(int i = 0; i<ingSTR.split(",").length; i++) {
-//				ingList.add(ingSTR.split(",")[i]);
-//
-//			}
-			
 			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
 			ingSTR = ingSTR.replace("재료","");
 			ingSTR = ingSTR.replaceAll("\n",", ");
@@ -137,9 +127,16 @@ public class DishController {
 		dishComm.setMnum(mnum);
 		dishComm.setRCP_SEQ(RCP_SEQ);
 		
-		dishService.commAdd(dishComm);
+		String str = "";
+		int i = dishService.commAdd(dishComm);
 		
-		return "댓글이 등록되었습니다.";
+		if(i > 0) {
+			str = "댓글이 등록되었습니다.";
+		}else {
+			str = "댓글 등록에 실패하였습니다.";
+		}
+		
+		return str;
 	}
 	
 	/*
@@ -151,9 +148,16 @@ public class DishController {
 		dishComm.setMnum(mnum);
 		dishComm.setRCP_SEQ(RCP_SEQ);
 		
-		dishService.commDelete(dishComm);
+		String str = "";
+		int i = dishService.commDelete(dishComm);
 		
-		return "댓글이 삭제되었습니다.";
+		if(i > 0) {
+			str = "댓글이 삭제되었습니다.";
+		}else {
+			str = "댓글 삭제에 실패하였습니다.";
+		}
+		
+		return str;
 	}
 	
 	/*
@@ -165,10 +169,19 @@ public class DishController {
 		dishComm.setMnum(mnum);
 		dishComm.setRCP_SEQ(RCP_SEQ);
 		
-		dishService.commEdit(dishComm);
+		String str = "";
+		int i = dishService.commEdit(dishComm);
 		
-		return "댓글이 수정되었습니다.";
+		if(i > 0) {
+			str = "댓글이 수정되었습니다.";
+		}else {
+			str = "댓글 수정에 실패하였습니다.";
+		}
+		
+		return str;
+
 	}
+	
 	/*
 	 * 레시피 검색 기능
 	 * 검색 일치 내용이 없을 경우 ?
@@ -180,10 +193,7 @@ public class DishController {
 		
 		return dishList;
 	}
-	
-	
-
-	
+		
 	/*
 	 * 음식 추가
 	 */
@@ -275,11 +285,18 @@ public class DishController {
 
 		dish.setRCP_SEQ(Integer.toString(num));
 		
+		String str = "";
 		
-		dishService.add(dish, mnum);
+		int i = dishService.add(dish, mnum);
 		
+		if(i > 0) {
+			str = dish.getRCP_SEQ() + "이 등록되었습니다.";
+		}else {
+			str = "글 등록에 실패하였습니다.";
+		}
 		
-		return dish.getRCP_SEQ() + "이 등록되었습니다.";
+		return str;
+		
 	}
 	/*
 	 * 음식 정보 수정하기
@@ -372,9 +389,19 @@ public class DishController {
 		
 		dish.setRCP_SEQ(Integer.toString(RCP_SEQ));
 		
-		dishService.edit(dish, dish1, RCP_SEQ, mnum);
+	
+		String str = "";
 		
-		return dish.getRCP_SEQ() +"이 수정되었습니다.";
+		int i = dishService.edit(dish, dish1, RCP_SEQ, mnum);
+		
+		if(i > 0) {
+			str = dish.getRCP_SEQ() + "이 수정되었습니다.";
+		}else {
+			str = "글 수정에 실패하였습니다.";
+		}
+		
+		return str;
+		
 	}
 
 	
@@ -496,9 +523,18 @@ public class DishController {
 	public String delete(@PathVariable int RCP_SEQ) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
-		dishService.delete(RCP_SEQ);
+		String str = "";
 		
-		return "글이 삭제되었습니다.";
+		int i = dishService.delete(RCP_SEQ);
+		
+		if(i>0) {
+			str = "글이 삭제되었습니다.";
+		}else {
+			str = "글 삭제에 실패하였습니다.";
+		}
+		
+		
+		return str;
 	}
 	
 	/*

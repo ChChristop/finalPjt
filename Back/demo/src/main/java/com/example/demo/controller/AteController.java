@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class AteController {
 	@Value("${a.imgdir}")
 	String fdir;
 	
+	LocalDateTime now = LocalDateTime.now();
+	
+	String ip = Constants.IP_PORT;
+	
 	/*
 	 * 먹음 등록 
 	 * mnum : 회원정보 필요
@@ -44,23 +49,27 @@ public class AteController {
 	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, 
 			@PathVariable int mnum, 
 			@RequestParam("file") MultipartFile file) throws Exception {
-	
-			
+
 			ate.setRCP_SEQ(RCP_SEQ);
 			ate.setMnum(mnum);
 		
-			
 			File dest = new File(fdir + "/" + file.getOriginalFilename());
 			
 			file.transferTo(dest);
 			
-			ate.setAte_picture("/img/" + dest.getName());
-			
-			ateService.add(ate);
-			
-	
 
-		return ate.getAte_num() + "이 등록되었습니다.";
+			ate.setAte_picture(ip+"/ate/" + dest.getName());
+			
+			String str = "";
+			int i = ateService.add(ate);
+			
+			if(i>0) {
+				str = ate.getAte_num() + "이 등록되었습니다.";
+			}else {
+				str ="글 등록에 실패하였습니다. ";
+			}
+			
+		return str;
 	}
 	
 	/*
@@ -110,18 +119,26 @@ public class AteController {
 	@PutMapping("/edit/{ate_num}/{mnum}")
 	public String edit(@ModelAttribute Ate ate,
 			@RequestParam("file") MultipartFile file) throws Exception{
+		String str = "";
 		
 		if (file.getSize() > 0) {
 			File dest = new File(fdir + "/" + file.getOriginalFilename());
+			System.out.println(dest.getName());
 			file.transferTo(dest);
 
-			ate.setAte_picture("/img/" + dest.getName());
+			ate.setAte_picture(ip+"/ate/" + dest.getName());
 
-		ateService.editAte(ate);
-		
+			
+			
+			int i = ateService.editAte(ate);
+			
+			if(i>0) {
+				str = "글 수정되었습니다.";
+			}else {
+				str = "글 수정에 실패하였습니다.";
+			}	
 	}
-	
-		return "글 수정되었습니다.";
+		return str;
 	}
 	/*
 	 * 먹음 게시물 조회
@@ -144,10 +161,18 @@ public class AteController {
 	public String delete(@PathVariable int ate_num) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
-		ateService.delete(ate_num);
+		String str = "";
+		
+		int i = ateService.delete(ate_num);
+		
+		if(i>0) {
+			str = "글이 삭제되었습니다.";
+		}else {
+			str = "글 삭제에 실패하였습니다.";
+		}
 		
 		
-		return "글이 삭제되었습니다.";
+		return str;
 	}
 	/*
 	 * 먹음 좋아요 등록 / 취소 
@@ -184,9 +209,16 @@ public class AteController {
 		dishComm.setMnum(mnum);
 		dishComm.setAte_num(ate_num);
 		
-		ateService.commAdd(dishComm);
+		String str = "";
+		int i = ateService.commAdd(dishComm);
 		
-		return "댓글이 등록되었습니다.";
+		if(i>0) {
+			str = "댓글이 등록되었습니다.";
+		}else {
+			str = "댓글 등록에 실패하였습니다.";
+		}
+		
+		return str;
 	}
 	
 	/*
@@ -197,10 +229,16 @@ public class AteController {
 		
 		dishComm.setMnum(mnum);
 		dishComm.setAte_num(ate_num);
+		String str = "";
+		int i = ateService.commDelete(dishComm);
 		
-		ateService.commDelete(dishComm);
+		if(i>0) {
+			str = "댓글이 삭제되었습니다.";
+		}else {
+			str = "댓글 삭제에 실패하였습니다.";
+		}
 		
-		return "댓글이 삭제되었습니다.";
+		return str;
 	}
 	
 	/*
@@ -211,11 +249,18 @@ public class AteController {
 		
 		dishComm.setMnum(mnum);
 		dishComm.setAte_num(ate_num);
-		String ip = Constants.IP_PORT;
+
+		String str = "";
+		int i =  ateService.commEdit(dishComm);
 		
-		ateService.commEdit(dishComm);
+		if(i>0) {
+			str = "댓글이 수정되었습니다.";
+		}else {
+			str = "댓글 수정에 실패하였습니다.";
+		}
 		
-		return "댓글이 수정되었습니다.";
+		return str;
+		
 	}
 	
 	

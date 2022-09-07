@@ -32,8 +32,10 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void add(DishDB dish, int mnum) {
+	public int add(DishDB dish, int mnum) {
 		
+		
+		//여기 나중에 하나로 묶어
 		dishDao.add(dish);
 		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
@@ -43,12 +45,16 @@ public class DishServiceImpl implements DishService {
 		String num = Integer.toString(dnum);
 		String result = restTestController.RegexCheck(obj);
 		restTestController.goDish_ing(result,num);
+		
+		
+		return '1';
 	}
 
 
 	@Override
-	public void edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
+	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
 		
+		//여기 나중에 하나로 묶어
 		dishDao.edit(dish);
 		dishDao.editInfo(dish1, rCP_SEQ, mnum);
 		dishDao.deleIng(rCP_SEQ);
@@ -58,6 +64,7 @@ public class DishServiceImpl implements DishService {
 		String result = restTestController.RegexCheck(obj);
 		restTestController.goDish_ing(result,num);
 		
+		return '1';
 	}
 	
 	@Override
@@ -74,9 +81,10 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void delete(int RCP_SEQ) {
+	public int delete(int RCP_SEQ) {
 		
-		dishDao.delete(RCP_SEQ);
+		
+		return dishDao.delete(RCP_SEQ);
 	}
 
 
@@ -106,21 +114,22 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
-	public void commAdd(DishComm dishComm) {
+	public int commAdd(DishComm dishComm) {
 		
-		dishDao.commAdd(dishComm);
+		return dishDao.commAdd(dishComm);
 	}
 
 	@Override
-	public void commDelete(DishComm dishComm) {
+	public int commDelete(DishComm dishComm) {
 		
-		dishDao.commDelete(dishComm);
+		return dishDao.commDelete(dishComm);
 	}
 
 	@Override
-	public void commEdit(DishComm dishComm) {
+	public int commEdit(DishComm dishComm) {
 		
-		dishDao.commEdit(dishComm);
+		
+		return dishDao.commEdit(dishComm);
 	}
 
 	@Override

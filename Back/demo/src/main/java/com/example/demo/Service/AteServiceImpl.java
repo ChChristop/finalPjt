@@ -20,9 +20,10 @@ public class AteServiceImpl implements AteService {
 	AteDao ateDao;
 
 	@Override
-	public void add(Ate ate) {
+	public int add(Ate ate) {
 		
-		ateDao.add(ate);
+		
+		return ateDao.add(ate);
 	}
 
 	@Override
@@ -40,14 +41,16 @@ public class AteServiceImpl implements AteService {
 	}
 
 	@Override
-	public void editAte(Ate ate) {
+	public int editAte(Ate ate) {
 		
-		ateDao.editAte(ate);
+		
+		return ateDao.editAte(ate);
 	}
 
 	@Override
-	public void delete(int ate_num) {
-		ateDao.delete(ate_num);
+	public int delete(int ate_num) {
+		
+		return ateDao.delete(ate_num);
 		
 	}
 
@@ -76,21 +79,24 @@ public class AteServiceImpl implements AteService {
 	}
 
 	@Override
-	public void commAdd(DishComm dishComm) {
+	public int commAdd(DishComm dishComm) {
 		
-		ateDao.commAdd(dishComm);
+		
+		return ateDao.commAdd(dishComm);
 	}
 
 	@Override
-	public void commDelete(DishComm dishComm) {
+	public int commDelete(DishComm dishComm) {
 		
-		ateDao.commDelete(dishComm);
+		
+		return ateDao.commDelete(dishComm);
 	}
 
 	@Override
-	public void commEdit(DishComm dishComm) {
+	public int commEdit(DishComm dishComm) {
 		
-		ateDao.commEdit(dishComm);
+	
+		return 	ateDao.commEdit(dishComm);
 	}
 
 	@Override
