@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+ package com.example.demo.controller;
 
 import java.io.File;
 import java.util.HashMap;
@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.service.AteService;
 import com.example.demo.vo.Ate;
 
@@ -60,7 +62,7 @@ public class AteController {
 	}
 
 	/*
-	 * 먹음 게시글 전체 불러오기
+	 * 먹음 게시글 전체 불러오기 -> 이동 또는 권한 조정 예정
 	 */
 	@GetMapping("/get")
 	public List<Ate> get() {
@@ -69,7 +71,7 @@ public class AteController {
 	}
 
 	/*
-	 * 먹음 게시글 한개 불러오기
+	 * 먹음 게시글 한개 불러오기 -> 이동 또는 권한 조정 예정
 	 */
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
@@ -153,25 +155,5 @@ public class AteController {
 		return str;
 	}
 
-	@GetMapping("/getList/{mnum}")
-	public ResponseEntity<List<Ate>> getUserList(@PathVariable long mnum, HttpServletRequest request) {
-		
-		log.info("[/api/getList/{mnum}] [먹음 리스트 조회] ] [{}]", mnum);
-		
-		//jwt 인증정보와 요청 회원 번호와 다를 때 
-
-		//		  long getNumber = (long) request.getAttribute("GetNumber");
-//		  
-//		  if (mnum != getNumber) {
-//
-//		  return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
-		  
-		 
-		List<Ate> result = ateService.getAllList(mnum);
-
-		log.info("[/api/getList/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
-		
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-
 }
+

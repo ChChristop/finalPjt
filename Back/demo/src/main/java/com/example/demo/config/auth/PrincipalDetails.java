@@ -45,7 +45,7 @@ public class PrincipalDetails implements UserDetails {
 
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
-		//관리자 권한 설정
+		// 관리자 권한 설정
 		if (check) {
 
 			adminDTO.getRole().stream().forEach(role -> {
@@ -54,9 +54,9 @@ public class PrincipalDetails implements UserDetails {
 			;
 
 			return authorities;
-		//회원 권한 설정
-		} else {	
-			
+			// 회원 권한 설정
+		} else {
+
 			authorities.add(new SimpleGrantedAuthority(memberDTO.getRole()));
 
 			return authorities;
@@ -66,12 +66,12 @@ public class PrincipalDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return (check)?adminDTO.getAdminPW():memberDTO.getMemberPW();
+		return (check) ? adminDTO.getAdminPW() : memberDTO.getMemberPW();
 	}
 
 	@Override
 	public String getUsername() {
-		return (check)?adminDTO.getAdminID():memberDTO.getMemberID();
+		return (check) ? adminDTO.getAdminID() : memberDTO.getMemberID();
 	}
 
 	@Override

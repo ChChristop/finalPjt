@@ -1,7 +1,6 @@
 package com.example.demo.test.security;
 
-import java.util.List;
-import java.util.Map;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.IngredientsDAO;
 import com.example.demo.dao.MemberDAO;
+import com.example.demo.vo.MemberVO;
 
 @SpringBootTest
 public class Test123 {
@@ -27,62 +27,19 @@ public class Test123 {
 	@Autowired
 	private IngredientsDAO ingredientsDAO;
 	
-	@Test
-	public void test() {
-		
-		List<Map<String,Object>> result = memberDAO.findMemberbyMemberID("abcd@abc.com");
-		
-		for(Map<String,Object> i : result) {
-			System.out.println(i.get("ateCount"));
-		}
-	
-	}
-
 
 	
 //	@Test
-//	public void testInputIngr() {
+//	public void test() {
 //		
-//		String path = "D:\\abc.txt";
+//		List<Map<String,Object>> result = memberDAO.findMemberbyMemberID("abcd@abc.com");
 //		
-//		
-//		try {
-//			String str = "";
-//			BufferedReader bfr = new BufferedReader(new FileReader(path));
-//			
-//			while((str=bfr.readLine()) != null) {
-//				
-////				System.out.println(str);
-//				
-//				String[] result = new String[4];
-//				
-//				String[] s=  str.split("	");
-//				
-//				for(int i = 0; i < s.length; i++) {
-//					result[i] = s[i];
-//					
-//				}
-//					
-////				System.out.println(Arrays.toString(result));
-//			
-//				
-//			
-////				
-////				ingredientsDAO.addIngredients(in);
-//				
-//			}
-//			
-//			bfr.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch(IOException e) {
-//			e.printStackTrace();
+//		for(Map<String,Object> i : result) {
+//			System.out.println(i.get("ateCount"));
 //		}
-//		
-//		
-//		
+//	
 //	}
+
 //
 //	@Test
 //	public void testMemerDAO() {
@@ -105,7 +62,7 @@ public class Test123 {
 //	@Test
 //	public void testEncode() {
 //		
-//	IntStream.rangeClosed(1, 100).forEach((i)->{
+//	IntStream.rangeClosed(1, 50).forEach((i)->{
 //		
 //			AdminVO admin = AdminVO.builder()
 //					.adminID("final"+i)
@@ -118,5 +75,21 @@ public class Test123 {
 //			adminDAO.addAdmin(admin);
 //	});
 //	}
-	
+
+	@Test
+	public void testEncode() {
+		
+	IntStream.rangeClosed(1, 300).forEach((i)->{
+		
+			MemberVO member = MemberVO.builder()
+					.memberID("aa"+i+"@abc.com")
+					.nickname("aa"+i)
+					.memberPW(passwordEncoder.encode("1234"))
+					.role("MEMBER")
+					.phoneNumber("01012345678")
+					.build();
+			
+			memberDAO.addMember(member);
+	});
+	}
 }

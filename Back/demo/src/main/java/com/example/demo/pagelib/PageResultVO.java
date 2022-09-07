@@ -1,7 +1,6 @@
 package com.example.demo.pagelib;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -10,10 +9,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PageResultDTO<VO,DTO> {
-	
+public class  PageResultVO<VO> {
+
 	//DTO 리스트
-	private List<DTO> dtoList;
+	private List<VO> dtoList;
 	
 	//총 페이지 번호
 	private int totalPage;
@@ -33,9 +32,9 @@ public class PageResultDTO<VO,DTO> {
 	//페이지 번호 목록
 	private List<Integer> pageList;
 	
-	public PageResultDTO(List<VO> result, Function<VO,DTO> fn, PageRequestDTO pageRequestDTO, int totalpage){
+	public PageResultVO(List<VO> result, PageRequestDTO pageRequestDTO, int totalpage){
 
-		dtoList = result.stream().map(fn).collect(Collectors.toList());
+		this.dtoList = result;
 		
 		this.page = pageRequestDTO.getPage()+1;
 		
@@ -64,9 +63,4 @@ public class PageResultDTO<VO,DTO> {
 		
 	}
 	
-	
-	
-	
-
-
 }

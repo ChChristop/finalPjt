@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AdminDTO;
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.adminService.AdminService;
-import com.example.demo.vo.AdminVO;
+import com.example.demo.service.memberService.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminController {
 
 	private final AdminService adminService;
+	
+	private final MemberService memberService;
 
 	// 관리자 아이디 중복 체크 URI
 	@GetMapping("/checkID/{adminID}")
@@ -45,25 +48,25 @@ public class AdminController {
 	}
 
 	// 관리자 아이디로 관리자 조회
-	@GetMapping("/adminID/{adminId}")
-	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminId) {
+	@GetMapping("/adminID/{adminID}")
+	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminID) {
 
-		log.info("[/api/admin/adminID/{adminId}] [진입] [{}]", adminId);
+		log.info("[/api/admin/adminID/{adminId}] [진입] [{}]", adminID);
 
 		AdminDTO result = null;
 
 		try {
-			long anum = Long.parseLong(adminId);
+			long anum = Long.parseLong(adminID);
 			result = adminService.findAdmin(anum);
 		} catch (Exception e) {
-			result = adminService.findAdmin(adminId);
+			result = adminService.findAdmin(adminID);
 		}
 
 		if (result == null) {
-			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 실패] [{}]", adminId);
+			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 실패] [{}]", adminID);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} else {
-			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 성공] [{}]", adminId);
+			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 성공] [{}]", adminID);
 			result.setAdminPW("");
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
@@ -139,4 +142,19 @@ public class AdminController {
 
 	}
 
+	
+	// 회원 리스트 조회
+	@GetMapping("/member-list")
+	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(
+			@ModelAttribute PageRequestDTO pageRequestDTO) {
+
+		log.info("[/api/member/member-list] [회원 리스트 조회]");
+
+		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getMemberList2(pageRequestDTO);
+
+		if (result == null)
+			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }

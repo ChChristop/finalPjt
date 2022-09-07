@@ -1,5 +1,7 @@
 package com.example.demo.test.mail;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,32 +19,32 @@ public class MailTest {
 	@Autowired
 	private MemberService memberService;
 	
-//	@Test
-//	public void test() {
-//		
-////		boolean result = mailService.sendMail("kimwpdyd@naver.com");
-//		
-//		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraW13cGR5ZEBuYXZlci5jb20iLCJleHAiOjE2NjI1MzY4ODIsIm1lbWJlcklEIjoia2ltd3BkeWRAbmF2ZXIuY29tIn0.EGD0UZLVBpDztDsynrN4jpxSrSQpeTDz6gQwMqPn9gmWfd6drjUT4ELRZo1Vw38ps6NmsKygtbAHaSJIAjHy-w";
-//
-//		String result = mailService.checkToken(token);
-//		
-//		System.out.println(result);
-//	}
-	
-	
 	@Test
 	public void test() {
 		
-		MemberDTO memberDTO = MemberDTO.builder()
-				.memberID("kimwpdyd@naver.com")
-				.memberPW("4568")
-				.build();
+//		boolean result = mailService.sendMail("kimwpdyd@naver.com");
+//		
+		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraW13cGR5ZEBuYXZlci5jb20iLCJtbnVtIjoiMTc2IiwiZXhwIjoxNjYyNjE2MjQwLCJtZW1iZXJJRCI6ImtpbXdwZHlkQG5hdmVyLmNvbSJ9.8Ml2MVwrsyUu9G9aHNVF94x1MMNxpdzU2U_ypSRLAaEz80NP2ti-YMs8LhCOe_HNXxAsWzaoeqXEiyuGQbgYPg";
+
+		String result[] = mailService.checkToken(token);
 		
-		
-		boolean result = memberService.changePW(memberDTO);
-		
-		System.out.println(result);
-		
+		System.out.println(Arrays.toString(result));
 	}
+	
+	
+//	@Test
+//	public void test() {
+//		
+//		MemberDTO memberDTO = MemberDTO.builder()
+//				.memberID("kimwpdyd@naver.com")
+//				.memberPW("4568")
+//				.build();
+//		
+//		
+//		boolean result = memberService.changePW(memberDTO);
+//		
+//		System.out.println(result);
+//		
+//	}
 	
 }

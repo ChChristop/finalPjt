@@ -3,6 +3,10 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Map;
 
+import com.example.demo.dto.DishCommDTO;
+import com.example.demo.dto.DishLikeDTO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
@@ -82,6 +86,14 @@ public interface DishService {
 	*/
 	public List<Map<String, Object>> topDish();
 
+	/*
+	  유저 댓글 조회 
+	*/
+	public PageResultVO<DishCommDTO> getCommListbyMnum(PageRequestDTO dto, long mnum);
 	
+	/*
+	  유저 좋아요 조회
+	*/
+	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO dto, long mnum);
 	
 }

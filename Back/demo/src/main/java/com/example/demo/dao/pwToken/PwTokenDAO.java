@@ -24,6 +24,6 @@ public interface PwTokenDAO {
 	public void updatePwToken(PwTokenVO pwTokenVO);
 	
 	@Delete("DELETE FROM CHANGEPW WHERE MNUM = #{mnum}")
-	public void deletePwToken(PwTokenVO pwTokenVO);
+	public void deletePwToken(long mnum);
 
 }

@@ -8,11 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.AteDao;
 import com.example.demo.dao.point.PointDAO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
 import com.example.demo.vo.point.PointDescription;
 import com.example.demo.vo.point.UserPointVO;
 
-import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -114,4 +115,37 @@ public class AteServiceImpl implements AteService, PointDescription {
 		return result;
 	}
 
+	@Override
+	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
+	
+		// 기준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+		
+		List<Ate> result = null;
+	
+		int count = 0;
+
+		try {
+
+			// 조회 메서드
+			result = ateDao.getAteListbyUser(pageRequestDTO,mnum);
+			
+			if(result.size()<1) return null;
+			
+			count = ateDao.ateCount(mnum);
+
+			return new PageResultVO<>(result,pageRequestDTO,count);
+			
+		} catch (Exception e)  {
+			
+			e.printStackTrace();
+			return null;}
+	}
+
+	
 }

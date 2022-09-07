@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,102 +27,187 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/")
 @RequiredArgsConstructor
 public class AllPermitURI {
-	
+
 	private final MemberService memberService;
-	
+
 	private final DishService dishService;
-	
+
 	private final MailService mailService;
-	
+
 	// 회원 등록 URI
 	@PostMapping("/register")
 	public ResponseEntity<Long> addAdmin(@RequestBody MemberDTO memberDTO) {
+		try {
+			log.info("[/api/register] [회원 등록] [{}]", memberDTO.getMemberID());
 
-		log.info("[/api/register] [회원 등록] [{}]", memberDTO.getMemberID());
+			// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
+			Long result = memberService.register(memberDTO);
 
-		// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
-		Long result = memberService.register(memberDTO);
-		
-		if(result > 0) log.info("[/api/register] [회원 가입 성공] [{}]", memberDTO.getMemberID());
-		else log.warn("[/api/register] [회원 가입 실패] [{}]", memberDTO.getMemberID());
-		
+			if (result > 0) {
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+				log.info("[/api/register] [회원 가입 성공] [{}]", memberDTO.getMemberID());
+
+				return new ResponseEntity<>(result, HttpStatus.OK);
+
+			} else {
+
+				log.warn("[/api/register] [회원 가입 실패] [{}]", memberDTO.getMemberID());
+
+				return new ResponseEntity<>(0L, HttpStatus.ACCEPTED);
+
+			}
+		} catch (Exception e) {
+
+			log.warn("[/api/register] [회원 가입 실패(서버)] [{}]", memberDTO.getMemberID());
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
+
 	// 회원 아이디 중복 체크 URI
 	@GetMapping("/id-check/{memberID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String memberID) {
-		
-		log.info("[/api/id-check/{memberID}] [ID 중복 체크] [{}]", memberID);
 
-		// 회원 아이디 중복 체크 true or false 사용
-		boolean result = memberService.checkMemberID(memberID);
+		try {
 
-		return (result) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.OK);
+			log.info("[/api/id-check/{memberID}] [ID 중복 체크] [{}]", memberID);
+
+			// 회원 아이디 중복 체크 true or false 사용
+			boolean result = memberService.checkMemberID(memberID);
+
+			return (result) ? new ResponseEntity<>(true, HttpStatus.OK)
+					: new ResponseEntity<>(false, HttpStatus.ACCEPTED);
+
+		} catch (Exception e) {
+
+			return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
 
-	
 	@GetMapping("/topUser")
-	public ResponseEntity<List<Map<String,Object>>> topUser(){
+	public ResponseEntity<List<Map<String, Object>>> topUser() {
 		
-		log.info("[/topUser] [탑 유저 조회]");
-		
-		List<Map<String,Object>> result = memberService.topUser();
-		
-		return new ResponseEntity<>(result,  HttpStatus.OK);
+		try {
+
+			log.info("[/topUser] [탑 유저 조회]");
+
+			List<Map<String, Object>> result = memberService.topUser();
+
+			if (result.size() == 0) {
+				
+				log.info("[/topUser] [탑 유저 조회 실패]");
+				
+				return new ResponseEntity<>(new ArrayList<>(), HttpStatus.ACCEPTED);
+			}
+
+			return new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			log.info("[/topUser] [탑 유저 조회 실패(서버)]");
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
+
 	@GetMapping("/topDish")
-	public ResponseEntity<List<Map<String,Object>>> topDish(){
+	public ResponseEntity<List<Map<String, Object>>> topDish() {
 		
-		log.info("[/topDish] [탑 레시피 조회]");
-		
-		List<Map<String,Object>> result = dishService.topDish();
-		
-		return new ResponseEntity<>(result,  HttpStatus.OK);
+		try {
+			
+			log.info("[/topDish] [탑 레시피 조회]");
+
+			List<Map<String, Object>> result = dishService.topDish();
+
+			if (result.size() == 0) {
+				log.warn("[/topDish] [탑 레시피 조회 실패(서버)]");
+				return new ResponseEntity<>(new ArrayList<>(), HttpStatus.ACCEPTED);
+			}
+
+			return new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.warn("[/topDish] [탑 레시피 조회 실패(서버)]");
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	//비밀번호 재설정 이메일 발송
+
+	// 비밀번호 재설정 이메일 발송
 	@PostMapping("/account/email/send")
-	public boolean sendEmail(@RequestBody Map<String,String> memberID) {
-		
-		String email = memberID.get("memberID");
-		
-		log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송] [{}]",email);
-		
-		boolean result = mailService.sendMail(email);
-		
-		return result;
+	public ResponseEntity<Boolean> sendEmail(@RequestBody Map<String, String> memberID) {
+
+		try {
+			
+			String email = memberID.get("memberID");
+
+			log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송] [{}]", email);
+
+			boolean result = mailService.sendMail(email);
+
+			if (!result) {
+
+				log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송 실패] [{}]", email);
+
+				return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
+
+			}
+
+			return new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송 실패(서버)] [{}]", memberID);
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	//토큰 유효성 확인
+
+	// 토큰 유효성 확인
 	@PostMapping("/account/email/check-token")
-	public ResponseEntity<String> checkToken(@RequestBody PwTokenVO pwTokenVO) {
-		
-		String result = mailService.checkToken(pwTokenVO.getPwToken());
-		
-		log.info("[/account/email/check-token] [비밀번호 토큰 확인] [{}]",pwTokenVO.getPwToken());
-		
-		if(result.equals("No Token") || result.equals("No validity"))
-		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-		
-		return new ResponseEntity<String>(result,HttpStatus.OK);
+	public ResponseEntity<String[]> checkToken(@RequestBody PwTokenVO pwTokenVO) {
+		try {
+			
+		String result[] = mailService.checkToken(pwTokenVO.getPwToken());
+
+			log.info("[/account/email/check-token] [비밀번호 토큰 확인] [{}]", pwTokenVO.getPwToken());
+
+			if (result.length == 0) {
+
+				log.info("[/account/email/check-token] [비밀번호 토큰 확인 실패] [{}]", pwTokenVO.getPwToken());
+
+				return new ResponseEntity<>(new String[] {}, HttpStatus.ACCEPTED);
+			}
+
+			return new ResponseEntity<>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+
+			log.info("[/account/email/check-token] [비밀번호 토큰 확인 실패(서버)] [{}]", pwTokenVO.getPwToken());
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	
-	//비밀번호 변경
+
+	// 비밀번호 변경
 	@PostMapping("/account/email/changePW")
 	public ResponseEntity<Boolean> changePW(@RequestBody MemberDTO memberDTO) {
-		
-		boolean result = memberService.changePW(memberDTO);
-		
-		log.info("[/account/email/changePW] [비밀번호 변경] [{}]", memberDTO.getMemberID());
-		
-		return new ResponseEntity<Boolean>(result,HttpStatus.OK);
+		try {
+
+			boolean result = memberService.changePW(memberDTO);
+
+			if (!result) {
+				log.info("[/account/email/changePW] [비밀번호 변경 실패] [{}]", memberDTO.getMemberID());
+				return new ResponseEntity<Boolean>(result, HttpStatus.ACCEPTED);
+			}
+			
+			log.info("[/account/email/changePW] [비밀번호 변경] [{}]", memberDTO.getMemberID());
+
+			return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+
+		} catch (Exception e) {
+			log.info("[/account/email/changePW] [비밀번호 변경 실패(서버)] [{}]", memberDTO.getMemberID());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
-
-

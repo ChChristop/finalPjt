@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
 
 public interface AteService {
@@ -25,6 +27,8 @@ public interface AteService {
 	public void goAteDislike(int ate_num, int mnum);
 	
 	public List<Ate> getAllList(long mnum);
+	
+	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO,long mnum);
 
 
 }

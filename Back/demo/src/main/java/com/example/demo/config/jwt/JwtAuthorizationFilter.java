@@ -50,14 +50,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		log.info("[JwtAuthorizationFilter] : 진입");
 
-		// boolean requestURI =
-		// request.getRequestURI().matches("(/api/member.+)|(/api/admin.+)|(/api/logout/.+)|(/api/refre/.+)");
+		 boolean requestURI =
+		 request.getRequestURI().matches(
+				 "(/api/member.+)"
+				 + "|(/api/admin.+)"
+				 + "|(/api/logout/.+)"
+				 + "|(/api/refre/.+)"
+				 + "|(/api/ate/(?!get).+)"
+				 + "|(/api/dish/(?!get)(?!search).+)"
+				 
+				 );
 
-		boolean requestURI = request.getRequestURI().matches("(/api/admin.+)|(/api/logout/.+)|(/api/refre/.+)");
 
 		// 권한 필요 없는 요청이면 jwt 확인 필요 없음.
 		if (!(requestURI)) {
-			log.info("[JwtAuthorizationFilter] : 권한 필요 없는 주소 : " + request.getRequestURI());
+			log.info("[JwtAuthorizationFilter] [권한 필요 없는 주소] [{}]", request.getRequestURI());
 			chain.doFilter(request, response);
 
 			return;
@@ -67,7 +74,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		System.out.println(request.getRequestURI() + " requestURI " + requestURI);
 
-		log.info("[JwtAuthorizationFilter] : Header JWTToken 확인 중 " + jwtHeader);
+		log.info("[JwtAuthorizationFilter] [Header JWTToken check] [{}]", jwtHeader);
 
 		String jwtRefreshHeader = request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING) != null
 				? request.getHeader(JwtProperties.REFRESHKEY_HEADER_STRING)
@@ -76,7 +83,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		// Header에 jwt token에 있는지 확인
 		if (jwtHeader == null || !((String) jwtHeader).startsWith(JwtProperties.TOKEN_PREFIX)) {
 
-			log.warn("[JwtAuthorizationFilter] : Header에 JWTToken 없음");
+			log.warn("[JwtAuthorizationFilter] [No Header JWTToken]");
 
 			chain.doFilter(request, response);
 
@@ -105,13 +112,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 			if (checkJWTToken.length != 0) {
 
-				log.info("[JwtAuthorizationFilter] : JWTToken 확인 중 : " + jwtToken);
+				log.info("[JwtAuthorizationFilter] [WTToken 확인 중] ,[{}]",  jwtToken);
 
 				principalDetails = check(checkJWTToken, ip, false);
 
 				if (principalDetails == null) {
 
-					log.warn("[JwtAuthorizationFilter] : JWTToken 인증 실패 : " + jwtToken);
+					log.warn("[JwtAuthorizationFilter] [JWTToken 인증 실패] [{}]", jwtToken);
 
 				}
 
@@ -122,13 +129,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			// Access 토근이 유효하지 않다면 refreshToken 조회
 			if (checkRefreshToken.length != 0) {
 
-				log.info("[JwtAuthorizationFilter] : JWTRefreshToken 확인 중 : " + jwtRefreahToken);
+				log.info("[JwtAuthorizationFilter] [JWTRefreshToken 확인 중] [{}]" , jwtRefreahToken);
 
 				principalDetails = check(checkRefreshToken, ip, true);
 
 				if (principalDetails == null) {
 
-					log.warn("[JwtAuthorizationFilter] : JWTRefreshToken 인증 실패 : " + jwtRefreahToken);
+					log.warn("[JwtAuthorizationFilter] [JWTRefreshToken 인증 실패] ,[{}]",jwtRefreahToken);
 
 					throw new Exception();
 
@@ -138,7 +145,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 				// Refresh Token 유효시 새로운 Access Token 발급
 
-				log.info("[JwtAuthorizationFilter] : JWTToken 재발급 : " + newJWTToken);
+				log.info("[JwtAuthorizationFilter] [JWTToken 재발급] [{}]", newJWTToken);
 
 				response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, newJWTToken);
 
@@ -153,7 +160,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		} catch (Exception e) {
 
-			log.warn("[JwtAuthorizationFilter] : 인증 실패");
+			log.warn("[JwtAuthorizationFilter] [인증 실패]");
 
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}

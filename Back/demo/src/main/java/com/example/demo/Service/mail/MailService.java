@@ -68,7 +68,7 @@ public class MailService {
 				.memberID(vo.getMemberID())
 				.build();			
 
-		String id = dto.getMemberID();
+		String[] id = {dto.getMemberID(),Long.toString(dto.getMnum())};
 		
 		String jwtToken = createToken(id);
 		
@@ -82,7 +82,7 @@ public class MailService {
 			msg.setSubject("냉장고 계정 암호 재설정","UTF-8");
 			
 			String htmlStr = " <div style=\"margin-left: 3rem; padding: 3rem;\">";
-				htmlStr += "<h1>"+id.split("@")[0];
+				htmlStr += "<h1>"+id[0].split("@")[0];
 				htmlStr += " 냉장고 계정 암호 재설정 안내 </h1>";
 				htmlStr += "<br>";
 				htmlStr += "<div>";
@@ -96,7 +96,7 @@ public class MailService {
 				htmlStr += "</div>";
 				
 				msg.setText(htmlStr,"UTF-8","html");
-				msg.addRecipients(RecipientType.TO, id);;
+				msg.addRecipients(RecipientType.TO, id[0]);;
 			
 			javaMailSender.send(msg);
 			
@@ -123,21 +123,23 @@ public class MailService {
 	}
 	
 	//토큰 생성
-	public String createToken(String id) {
+	public String createToken(String[] id) {
 	
-		String jwtToken = JWT.create().withSubject(id)
+		String jwtToken = JWT.create().withSubject(id[0])
 				.withExpiresAt(new Date(System.currentTimeMillis() + 86400000))
-				.withClaim("memberID", id)
+				.withClaim("memberID", id[0])
+				.withClaim("mnum",id[1])
 				.sign(Algorithm.HMAC512(changePW));
 		
 		return jwtToken;
 	}
 	
 	//토큰 유효성 체크
-	public String checkToken(String token) {
+	public String[] checkToken(String token) {
+		
 		
 		if (token == "") {
-			return "No Token";
+			return new String[] {};
 		}
 
 		String key = this.changePW;
@@ -147,15 +149,19 @@ public class MailService {
 			JWT.require(Algorithm.HMAC512(key)).build().verify(token).getExpiresAt();
 
 			//토큰의 ID가 유효한지
-			String getID = JWT.require(Algorithm.HMAC512(key)).build().verify(token).getClaim("memberID").asString();
+			String[] getID = new String[2]; 
+					
+			getID[0] = JWT.require(Algorithm.HMAC512(key)).build().verify(token).getClaim("memberID").asString();		
 			
-			pwTokenDAO.checkPwTokenbyID(getID);
+			pwTokenDAO.checkPwTokenbyID(getID[0]);
+		
+			getID[1] = JWT.require(Algorithm.HMAC512(key)).build().verify(token).getClaim("mnum").asString() ;
 
 			return getID;
 
 		} catch (Exception e) {
 			
-			return "No validity";
+			return new String[] {};
 		}
 	}
 	

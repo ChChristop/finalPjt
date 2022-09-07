@@ -7,8 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.dao.DishCommDAO;
 import com.example.demo.dao.DishDao;
+import com.example.demo.dao.DishLikeDAO;
 import com.example.demo.dao.point.PointDAO;
+import com.example.demo.dto.DishCommDTO;
+import com.example.demo.dto.DishLikeDTO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
@@ -26,6 +32,10 @@ public class DishServiceImpl implements DishService, PointDescription {
 	DishDao dishDao;
 	
 	private final PointDAO pointDAO;
+	
+	private final DishCommDAO dishCommDAO;
+	
+	private final DishLikeDAO dishLikeDAO;
 
 	@Override
 	public List<Map<String, Object>> get() {
@@ -187,6 +197,77 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		return result;
 	}
+
+	//유저 댓글 조회
+	@Override
+	public PageResultVO<DishCommDTO> getCommListbyMnum(PageRequestDTO pageRequestDTO, long mnum) {
+		
+		// 기준
+				if (pageRequestDTO.getBasis() == "pk") {
+
+					pageRequestDTO.setBasis("mnum");
+				}
+
+				pageRequestDTO.setterChange();
+				
+				List<DishCommDTO> result = null;
+			
+				int count = 0;
+
+				try {
+
+					// 조회 메서드
+					result = dishCommDAO.dishCommListbyMnum(pageRequestDTO,mnum);
+					
+					if(result.size()<1) return null;
+					
+					count = dishCommDAO.dishCommCountbyMnum(mnum);
+
+					return new PageResultVO<>(result,pageRequestDTO,count);
+					
+				} catch (Exception e)  {
+					
+					e.printStackTrace();
+					
+					return null;}
+			
+	}
+
+	//유저 좋아요
+	@Override
+	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO pageRequestDTO, long mnum) {
+		// 기준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+		
+		List<DishLikeDTO> result = null;
+	
+		int count = 0;
+
+		try {
+
+			// 조회 메서드
+			result = dishLikeDAO.dishLikeListbyMnum(pageRequestDTO,mnum);
+			
+			if(result.size()<1) return null;
+			
+			count = dishLikeDAO.dishLikeCountbyMnum(mnum);
+
+			return new PageResultVO<>(result,pageRequestDTO,count);
+			
+		} catch (Exception e)  {
+			
+			e.printStackTrace();
+			
+			return null;}
+
+	}
+	
+	
 	
 	
 

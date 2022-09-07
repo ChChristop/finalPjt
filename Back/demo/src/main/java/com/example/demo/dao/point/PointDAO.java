@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.dto.PointDTO;
+import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.vo.point.UserPointVO;
 
 @Mapper
@@ -17,8 +18,10 @@ public interface PointDAO {
 			+ "VALUES(#{mnum},#{pointID},#{point},#{RCP_SEQ})")
 	public void registerPoint(UserPointVO vo);
 
+	public List<PointDTO> findUserPointbyMnum(PageRequestDTO dto,long mnum);
 	
-	@Select("SELECT * FROM USERPOINT U LEFT OUTER JOIN POINT P "
-			+ "ON U.POINTID = P.POINTID WHERE U.MNUM = #{mnum}")
-	public List<PointDTO> findUserPointbyMnum(long mnum);
+	public List<PointDTO> findUserPoint7dbyMnum(PageRequestDTO dto,long mnum);
+	
+	@Select("SELECT COUNT(*) FROM USERPOINT WHERE MNUM = #{mnum}")
+	public int pointCountbyMnum(long mnum);
 }
