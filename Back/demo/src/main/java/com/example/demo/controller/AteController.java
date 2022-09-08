@@ -194,7 +194,7 @@ public class AteController {
 	 * 먹음 좋아요 등록 / 취소 유저 번호도 같이 받아야해!
 	 */
 	@PostMapping("/like/{ate_num}/{mnum}")
-	public String goAteLike(@PathVariable int ate_num, @PathVariable int mnum) {
+	public String goDishLike(@PathVariable int ate_num, @PathVariable int mnum) {
 
 		String str = "";
 		// 좋아요 안누른 상태면, 좋아요 등록

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-	
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.example.demo.dao.DishDao">
 
 	<select id="getNum" parameterType="map" resultType="int">
@@ -151,7 +150,7 @@
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
-		select * from dish_comm where RCP_SEQ = #{RCP_SEQ};
+		select * from dish_comm;
 	</select>
 	
 	<select id="search" parameterType="map" resultType="map">

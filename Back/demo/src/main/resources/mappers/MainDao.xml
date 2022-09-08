@@ -12,25 +12,16 @@
 	d.iname = r.iname where r.mnum = #{mnum} order by r.`expiration date`, r.iname) re on db.RCP_SEQ = re.RCP_SEQ
 	</select>
 	
-	<select id="ingAllReco_9999" parameterType="map" resultType="map">
+	<!-- 포이치 구문 사용하자!<select id="ingAllReco_9999" parameterType="map" resultType="map">
 	select * from (select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10) ing1
 	union distinct
 	select * from (select * from dish_ing where iname like concat('%',#{ing2},'%') limit 0,10) ing2
 	union distinct
 	select * from (select * from dish_ing where iname like concat('%',#{ing3},'%') limit 0,10) ing3
-	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing4},'%') limit 0,10) ing4
-	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing5},'%') limit 0,10) ing5
-	</select>  
+	</select>  -->
 	
 	
 	
-	<!-- 포이치 구문 사용하자!
-	<select id="ingAllReco_9999" parameterType="map" resultType="map">
-	select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10 
-	</select> 
-	-->
 	
 	
 	<select id="recipeAuto" parameterType="String" resultType="map">

@@ -29,7 +29,7 @@
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
-		select * from ate_comm where ate_num = #{ate_num};
+		select * from ate_comm;
 	</select>
 	
 	<insert id="commAdd" parameterType="map">

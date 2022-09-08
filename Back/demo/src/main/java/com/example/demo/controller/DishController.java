@@ -485,9 +485,10 @@ public class DishController {
 				str = "liked";
 			}	
 			
-
+		
+		//프론트에서 받을때 주의!
 		Map<String,Object> resultMap = dishService.getOne(RCP_SEQ);
-		System.out.println("얍 :::: ");
+		
 	
 		Map<String, Object> map = new HashMap<>();
 	
@@ -530,14 +531,12 @@ public class DishController {
 				manualIdNum = String.valueOf(i+1);
 			}
 			manualId += manualIdNum;
-
 			if(!resultMap.get(manualId).toString().isEmpty()) {
 				String manualStr = resultMap.get(manualId).toString();
 				manualStr = manualStr.replace("\n","");
 				recipe.add(i,manualStr);
 			}
-			}
-		
+		}
 		map.put("recipe", recipe); //조리방법
 		
 		List<String> imgList = new ArrayList<>();
