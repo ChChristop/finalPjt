@@ -112,7 +112,7 @@ public class AteController {
 			str = "liked";
 		}
 
-		Ate result = ateService.getOne(ate_num);
+		Map<String, Object> result = ateService.getOne(ate_num);
 		List<DishComm> commList = ateService.commGet(ate_num);
 		
 		resultMap.put("commList", commList);
