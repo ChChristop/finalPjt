@@ -5,9 +5,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,7 +41,8 @@ public class AteController {
 	@Value("${a.imgdir}")
 	String fdir;
 	
-	LocalDateTime now = LocalDateTime.now();
+	@Value("${AteuploadPath}")
+	String uploadPath;
 	
 	String ip = Constants.IP_PORT;
 	
@@ -52,13 +57,11 @@ public class AteController {
 
 			ate.setRCP_SEQ(RCP_SEQ);
 			ate.setMnum(mnum);
-		
-			File dest = new File(fdir + "/" + file.getOriginalFilename());
 			
-			file.transferTo(dest);
+			String savedName = file.getOriginalFilename();
+			savedName = uploadFile(savedName, file.getBytes());
 			
-
-			ate.setAte_picture(ip+"/ate/" + dest.getName());
+			ate.setAte_picture(ip+"/ate/" + savedName);
 			
 			String str = "";
 			int i = ateService.add(ate);
@@ -72,6 +75,16 @@ public class AteController {
 		return str;
 	}
 	
+	private String uploadFile(String originalName, byte[] fileData) throws Exception {
+		
+		UUID uuid = UUID.randomUUID();
+		String savedName = uuid.toString()+"_"+originalName;
+		File target = new File(uploadPath, savedName);
+		
+		FileCopyUtils.copy(fileData, target);
+	
+		return savedName;
+	}
 	/*
 	 * 먹음 게시글 전체 불러오기
 	 */
@@ -119,17 +132,17 @@ public class AteController {
 	@PutMapping("/edit/{ate_num}/{mnum}")
 	public String edit(@ModelAttribute Ate ate,
 			@RequestParam("file") MultipartFile file) throws Exception{
+		
 		String str = "";
 		
-		if (file.getSize() > 0) {
-			File dest = new File(fdir + "/" + file.getOriginalFilename());
-			System.out.println(dest.getName());
-			file.transferTo(dest);
-
-			ate.setAte_picture(ip+"/ate/" + dest.getName());
 
 			
+			String savedName = file.getOriginalFilename();
+			savedName = uploadFile(savedName, file.getBytes());
 			
+			ate.setAte_picture(ip+"/ate/" + savedName);
+
+
 			int i = ateService.editAte(ate);
 			
 			if(i>0) {
@@ -137,7 +150,7 @@ public class AteController {
 			}else {
 				str = "글 수정에 실패하였습니다.";
 			}	
-	}
+	
 		return str;
 	}
 	/*

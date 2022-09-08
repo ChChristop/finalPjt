@@ -21,6 +21,8 @@ public class MainController {
 	@Autowired
 	MainService mainService;
 	
+	
+	
 	/*
 	 * 전체 재료 다 갖고오기
 	 */
@@ -53,8 +55,6 @@ public class MainController {
 		
 		return result;
 	}
-	
-
 	
 
 }

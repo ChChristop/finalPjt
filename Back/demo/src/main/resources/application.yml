@@ -28,7 +28,8 @@ file:
 a.imgdir: C:/final/finalPjt/Back/demo/src/main/webapp/ate/
 dish.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/dish/img/
 ate.imgdir: C:/Dev/MyWorkspace/demo2/src/main/webapp/ate/img/ 
-    
+AteuploadPath: C:/final/finalPjt/Back/demo/src/main/webapp/ate/
+DishDBuploadPath: C:/final/finalPjt/Back/demo/src/main/webapp/dishDB/   
     
 server:
   port: 8080
