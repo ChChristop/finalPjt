@@ -42,7 +42,7 @@ public class LoginController {
 	@Transactional(rollbackFor = { RuntimeException.class, Error.class })
 	@PostMapping("/api/login/admin")
 	public ResponseEntity<AdminDTO> adminLogin(HttpServletRequest request) {
-
+	
 		String refreshToken = (String) request.getAttribute("refreshToken");
 
 		String id = (String) request.getAttribute("id");
@@ -50,11 +50,6 @@ public class LoginController {
 		String ip = (String) request.getHeader("X-FORWARDED-FOR");
 		
 		AdminDTO adminDTO = (AdminDTO) request.getAttribute("adminDTO");
-		
-		if(adminDTO == null) {
-			log.warn("[/api/login/admin] [관리자 로그인 실패] [{}] ", id);
-			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
-		}
 
 		if (ip == null)
 			ip = request.getRemoteAddr();
@@ -86,21 +81,12 @@ public class LoginController {
 		
 		MemberDTO memberDTO = (MemberDTO) request.getAttribute("memberDTO");
 		
-		if(memberDTO == null) {
-			log.warn("[/api/login/admin] [회원 로그인 실패] [{}] ", id);
-			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
-		}
+		log.info("[/api/login/admin] [회원 로그인] [{}] ", id);
 		
 		List<RefrigeratorDTO> refre = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
 		
 		memberDTO.setRefrigerator(refre);
 
-//		List<RefrigeratorDTO>reuslt = refrigeratorDAO.findRefrigeratorDAObyMnum(memberDTO.getMnum());
-//		
-//		log.info("[LoginController /api/login/member] : 냉장고 리스트 얻는 중 : " + memberDTO.getMemberID());
-//		
-//		memberDTO.setRefrigerator(reuslt);
-		
 		if (ip == null)
 			ip = request.getRemoteAddr();
 		
@@ -118,12 +104,15 @@ public class LoginController {
 		log.info("[/api/login/member] [로그인 성공] [{}] ", memberDTO.getMemberID());
 			
 		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+		
 	}
 
 	@Transactional(rollbackFor = { RuntimeException.class, Error.class })
 	@GetMapping("/api/logout/{id}")
 	public ResponseEntity<String> logout(@PathVariable String id) {
 
+		try {
+			
 		jwtTokkenDAO.refreshTokenRemove(id);
 		
 		boolean check = AdminCheck.check;
@@ -137,6 +126,13 @@ public class LoginController {
 		log.info("[/api/logout/{id}] [로그아웃 성공] [{}]", id);
 
 		return new ResponseEntity<>(id, HttpStatus.OK);
+		
+		}catch(Exception e) {
+			
+			log.info("[/api/logout/{id}] [로그아웃 실패] [{}]", id);
+			
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

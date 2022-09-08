@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class PageResultDTO<VO,DTO> {
 	
 	//DTO 리스트

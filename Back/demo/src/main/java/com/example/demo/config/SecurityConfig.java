@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import javax.servlet.Filter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -15,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
 
+import com.example.demo.config.jwt.CustomLoginFailHandler;
 import com.example.demo.config.jwt.JwtAuthenticationFilter;
 import com.example.demo.config.jwt.JwtAuthorizationFilter;
 import com.example.demo.dao.AdminDAO;
@@ -60,14 +63,21 @@ public class SecurityConfig {
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
+
 				/*
 				 * .antMatchers("/api/logout/**") .hasAnyRole("MEMBER","ADMIN")
 				 * .antMatchers("/api/admin/**") .hasRole("ADMIN")
-				 * .antMatchers("/api/member/member-list") .hasAnyRole("ADMIN")
 				 * .antMatchers("/api/member/**") .hasAnyRole("MEMBER","ADMIN")
 				 * .antMatchers("/api/refre/**") .hasAnyRole("MEMBER")
+				 * .antMatchers("/api/dish/comm/**") .hasAnyRole("MEMBER","ADMIN")
+				 * .antMatchers("/api/dish/like/**") .hasAnyRole("MEMBER","ADMIN")
+				 * .antMatchers("/api/dish/add/**") .hasAnyRole("ADMIN")
+				 * .antMatchers("/api/dish/edit/**") .hasAnyRole("ADMIN")
+				 * .antMatchers("/api/dish/delete/**") .hasAnyRole("ADMIN")
+				 * .antMatchers("/api/ate/get/**") .permitAll()
+				 * .antMatchers("/api/ate/**") .hasAnyRole("MEMBER","ADMIN")
 				 */
-	     	
+	    
 		    .anyRequest().permitAll();
 
 		return http.build();
@@ -78,11 +88,18 @@ public class SecurityConfig {
 		public void configure(HttpSecurity http) throws Exception {
 
 			//비회원이 게시물 읽을 때는 jwt 확인 하지 않게 하기
+			
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+			
+			JwtAuthenticationFilter loginFilter = new JwtAuthenticationFilter("/api/login/**",authenticationManager);
+			loginFilter.setAuthenticationFailureHandler(new CustomLoginFailHandler());
+			
 			http
-					.addFilterBefore(new JwtAuthenticationFilter("/api/login/**",authenticationManager),UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(loginFilter,UsernamePasswordAuthenticationFilter.class)
 					;
+			
 //					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
+
 		}
 	}
 

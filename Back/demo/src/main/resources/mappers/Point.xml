@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.dao.point.PointDAO">
+
+	<select id="findUserPointbyMnum" resultType="PointDTO">
+	
+	SELECT * FROM USERPOINT U LEFT OUTER JOIN POINT P 
+	
+	ON U.POINTID = P.POINTID 
+	
+	WHERE U.MNUM = #{mnum}
+	
+	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
+	
+	</select>
+	
+	<!-- 현재날짜 기준 7일 활동 내역 미구현-->
+	<select id="findUserPoint7dbyMnum" resultType="PointDTO">
+	
+	SELECT * FROM USERPOINT U LEFT OUTER JOIN POINT P 
+	
+	ON U.POINTID = P.POINTID 
+	
+	WHERE U.MNUM = #{mnum} AND
+	
+	DATE > (CURDATE()-INTERVAL 7 DAY)
+	
+	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
+	
+	</select>
+	
+
+</mapper>

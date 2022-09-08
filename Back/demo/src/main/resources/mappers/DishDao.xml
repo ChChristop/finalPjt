@@ -4,17 +4,17 @@
 <mapper namespace="com.example.demo.dao.DishDao">
 
 	<select id="getNum" parameterType="map" resultType="int">
-			select max(RCP_SEQ)+1 from dishDB
+			select max(convert(RCP_SEQ, SIGNED))+1 RCP_SEQ from dishDB ORDER BY RCP_SEQ
 	</select> 
 	<insert id="addInfo" parameterType="map">
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
-	<insert id="commAdd" parameterType="map">
+
+	<insert id="commAdd" parameterType="map" >
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
     </insert>
-    
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -302,7 +302,7 @@
 		db.att_file_no_mk
 		from dish d  
  		right join dishDB db
-		on db.RCP_SEQ = d.RCP_SEQ
+		on db.RCP_SEQ = d.RCP_SEQ limit 0,30
 	</select>
 
 	<select id="dishLike" parameterType="int" resultType="int">
@@ -426,10 +426,17 @@
 		DELETE FROM dish_like
 		WHERE RCP_SEQ=#{RCP_SEQ} and mnum=#{mnum} 		
 	</delete>
+	<delete id="deleIng" parameterType="Integer">
+		delete from dish_ing where RCP_SEQ = #{RCP_SEQ}
+	</delete>
 	
 	<select id="topDish" resultType="map">
-		SELECT D.WRITER, D.RCP_SEQ, D.DATE, D.HIT, COUNT(C.MNUM) AS commCount
+		SELECT D.WRITER, D.RCP_SEQ, D.DATE, D.HIT
 		
+		,B.RCP_NM, B.ATT_FILE_NO_MAIN
+		
+		,COUNT(C.MNUM) AS commCount
+
 	    ,(SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) AS DISH_LIKE
 	    
 	    ,(SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) AS ATE
@@ -438,6 +445,8 @@
 	    + COUNT(C.MNUM) * 5 + (SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) * 1) as rank_dish
 	
 		FROM DISH D LEFT OUTER JOIN dish_comm C ON D.RCP_SEQ = C.RCP_SEQ
+        
+					LEFT OUTER JOIN DISHDB B ON D.RCP_SEQ = B.RCP_SEQ
 	   
 	    group by D.RCP_SEQ
 	   

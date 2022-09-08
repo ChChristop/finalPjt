@@ -32,6 +32,8 @@ public interface MemberService {
 	
 	List<Map<String, Object>> topUser();
 	
+	boolean changePW(MemberDTO memberDTO);
+	
 	default MemberVO dtoTOvo(MemberDTO memberDTO) {
 		
 		MemberVO member = MemberVO.builder()

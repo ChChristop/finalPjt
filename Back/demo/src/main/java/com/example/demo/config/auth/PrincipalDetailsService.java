@@ -92,8 +92,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 				return new PrincipalDetails(memberDTO);
 				
 			}catch(Exception e) {
-				e.printStackTrace();
-				
+						
 				return null;
 			}
 	

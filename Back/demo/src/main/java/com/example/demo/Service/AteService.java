@@ -1,20 +1,24 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 
 public interface AteService {
 
-	public void add(Ate ate);
+	public int add(Ate ate);
 
 	public List<Ate> get();
 
 	public Ate getOne(int ate_num);
 
-	public void editAte(Ate ate);
+	public int editAte(Ate ate);
 
-	public void delete(int ate_num, int mnum);
+	public int delete(int ate_num, int mnum);
 
 	public void upHit(int ate_num);
 
@@ -25,6 +29,18 @@ public interface AteService {
 	public void goAteDislike(int ate_num, int mnum);
 	
 	public List<Ate> getAllList(long mnum);
+	
+	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO,long mnum);
+
+	public int commAdd(DishComm dishComm);
+
+	public int commDelete(DishComm dishComm);
+
+	public int commEdit(DishComm dishComm);
+
+	public List<DishComm> commGet(int ate_num);
+
+	public List<Map<String, Object>> search(String select);
 
 
 }

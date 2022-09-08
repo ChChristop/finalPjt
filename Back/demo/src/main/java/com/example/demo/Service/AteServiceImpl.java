@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.AteDao;
 import com.example.demo.dao.point.PointDAO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 import com.example.demo.vo.point.PointDescription;
 import com.example.demo.vo.point.UserPointVO;
 
-import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,12 +27,13 @@ public class AteServiceImpl implements AteService, PointDescription {
 	AteDao ateDao;
 
 	private final PointDAO pointDAO;
+	
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void add(Ate ate) {
+	public int add(Ate ate) {
 
-		ateDao.add(ate);
+		int result = ateDao.add(ate);
 
 		UserPointVO vo = new UserPointVO();
 
@@ -42,7 +46,9 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
 
+		return result;
 	}
+
 
 	@Override
 	public List<Ate> get() {
@@ -59,16 +65,16 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
-	public void editAte(Ate ate) {
+	public int editAte(Ate ate) {
 
-		ateDao.editAte(ate);
+		return ateDao.editAte(ate);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void delete(int ate_num, int mnum) {
+	public int delete(int ate_num, int mnum) {
 
-		ateDao.delete(ate_num,mnum);
+		int result = ateDao.delete(ate_num,mnum);
 
 		UserPointVO vo = new UserPointVO();
 
@@ -79,7 +85,8 @@ public class AteServiceImpl implements AteService, PointDescription {
 		pointDAO.registerPoint(vo);
 
 		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
-
+		
+		return result;
 	}
 
 	@Override
@@ -114,4 +121,70 @@ public class AteServiceImpl implements AteService, PointDescription {
 		return result;
 	}
 
+	@Override
+	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
+	
+		// 기준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+		
+		List<Ate> result = null;
+	
+		int count = 0;
+
+		try {
+
+			// 조회 메서드
+			result = ateDao.getAteListbyUser(pageRequestDTO,mnum);
+			
+			if(result.size()<1) return null;
+			
+			count = ateDao.ateCount(mnum);
+
+			return new PageResultVO<>(result,pageRequestDTO,count);
+			
+		} catch (Exception e)  {
+			
+			e.printStackTrace();
+			return null;}
+	}
+
+	@Override
+	public int commAdd(DishComm dishComm) {
+		
+		
+		return ateDao.commAdd(dishComm);
+	}
+
+	@Override
+	public int commDelete(DishComm dishComm) {
+		
+		
+		return ateDao.commDelete(dishComm);
+	}
+
+	@Override
+	public int commEdit(DishComm dishComm) {
+		
+	
+		return 	ateDao.commEdit(dishComm);
+	}
+
+	@Override
+	public List<DishComm> commGet(int ate_num) {
+		
+		return ateDao.commGet(ate_num);
+	}
+
+	@Override
+	public List<Map<String, Object>> search(String select) {
+
+		return ateDao.search(select);
+	}
+
+	
 }

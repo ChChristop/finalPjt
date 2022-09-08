@@ -83,4 +83,10 @@ public interface MemberDAO {
 	int countMemberAllList(PageRequestDTO pageReuqestDTO);
 	
 	List<Map<String, Object>> topUser();
+	
+	//회원 정보 수정
+	@Update("UPDATE MEMBER "
+			+ "SET MEMBERPW=#{memberPW}"
+			+ "WHERE MEMBERID=#{memberID} ")
+	Long changeMemberPwByID(MemberVO member);
 }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.MemberDAO;
 import com.example.demo.dao.RefrigeratorDAO;
+import com.example.demo.dao.pwToken.PwTokenDAO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
@@ -30,6 +31,8 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberDAO memberDAO;
 
 	private final RefrigeratorDAO refrigeratorDAO;
+	
+	private final PwTokenDAO pwTokenDAO;
 
 	@Override
 	public MemberDTO findMember(long mnum) {
@@ -230,5 +233,28 @@ public class MemberServiceImpl implements MemberService {
 		}
 	
 	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean changePW(MemberDTO memberDTO) {
+		
+		MemberVO vo = MemberVO.builder()
+				.memberID(memberDTO.getMemberID())
+				.memberPW(passwordEncoder.encode(memberDTO.getMemberPW()))
+				.mnum(memberDTO.getMnum())
+				.build();
+		
+		long result = memberDAO.changeMemberPwByID(vo);
+		
+		if(result == 0) {
+			log.warn("[MemberServiceImpl] [changePW 실패] [memberDTO.getMeberID()]");
+			return false;
+		}
+		
+		pwTokenDAO.deletePwToken(vo.getMnum());
+		log.info("[MemberServiceImpl] [changePW 성공] [memberDTO.getMeberID()]");
+		return true;
+	}
+	
 
 }

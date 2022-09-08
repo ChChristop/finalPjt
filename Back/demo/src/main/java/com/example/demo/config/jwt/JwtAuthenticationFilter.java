@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,7 +24,6 @@ import com.example.demo.config.auth.PrincipalDetails;
 import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
 
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 //로그인 인증관련 필터
@@ -108,11 +108,14 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		}
 
 		// 세션 생성
+	
+			
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		
-		log.info("[JwtAuthneticationFilter] : authentication 객체 생성 : " + authentication.getName());
-
+		log.info("[JwtAuthneticationFilter] [authentication 객체 생성] [{}] ", authentication.getName());
+		
 		return authentication;
+
 	}
 
 	@Override
