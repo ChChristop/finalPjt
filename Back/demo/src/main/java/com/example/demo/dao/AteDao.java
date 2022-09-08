@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
+import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.vo.Ate;
 import com.example.demo.vo.DishComm;
 
@@ -19,7 +21,7 @@ public interface AteDao {
 
 	public int editAte(Ate ate);
 
-	public int delete(int ate_num);
+	public int delete(int ate_num, int mnum);
 
 	public void upHit(int ate_num);
 
@@ -38,5 +40,12 @@ public interface AteDao {
 	public List<DishComm> commGet(int ate_num);
 
 	public List<Map<String, Object>> search(String select);
+	
+	public List<Ate> getAllList(long mnum);
+	
+	public List<Ate> getAteListbyUser(PageRequestDTO dto, long mnum);
+	
+	@Select("SELECT COUNT(*) FROM ATE WHERE MNUM=#{mnum}")
+	public int ateCount(long mnum);
 	
 }

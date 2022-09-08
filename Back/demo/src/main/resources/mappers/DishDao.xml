@@ -11,6 +11,7 @@
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
+
 	<insert id="commAdd" parameterType="map" >
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
@@ -429,6 +430,30 @@
 	<delete id="deleIng" parameterType="Integer">
 		delete from dish_ing where RCP_SEQ = #{RCP_SEQ}
 	</delete>
+	
+	<select id="topDish" resultType="map">
+		SELECT D.WRITER, D.RCP_SEQ, D.DATE, D.HIT
+		
+		,B.RCP_NM, B.ATT_FILE_NO_MAIN
+		
+		,COUNT(C.MNUM) AS commCount
+
+	    ,(SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) AS DISH_LIKE
+	    
+	    ,(SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) AS ATE
+	    
+		,((SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) * 20 
+	    + COUNT(C.MNUM) * 5 + (SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) * 1) as rank_dish
+	
+		FROM DISH D LEFT OUTER JOIN dish_comm C ON D.RCP_SEQ = C.RCP_SEQ
+        
+					LEFT OUTER JOIN DISHDB B ON D.RCP_SEQ = B.RCP_SEQ
+	   
+	    group by D.RCP_SEQ
+	   
+	   order by rank_dish DESC LIMIT 0,50;
+	
+	</select>
 	
 	
 	

@@ -85,6 +85,19 @@
 		
 	</delete>
 	
+	<select id="getAllList" resultType="Ate">
+		SELECT * FROM ATE
+		WHERE mnum = #{mnum}
+	</select>
+	
+	<select id="getAteListbyUser" resultType="Ate">
+		SELECT * FROM ATE
+		WHERE MNUM = #{mnum}
+		ORDER BY ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
+	
+	</select>
+	
+	
 	
 	
 </mapper>

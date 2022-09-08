@@ -5,23 +5,41 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.controller.RestTestController;
+import com.example.demo.dao.DishCommDAO;
 import com.example.demo.dao.DishDao;
+import com.example.demo.dao.DishLikeDAO;
+import com.example.demo.dao.point.PointDAO;
+import com.example.demo.dto.DishCommDTO;
+import com.example.demo.dto.DishLikeDTO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
+import com.example.demo.vo.point.PointDescription;
+import com.example.demo.vo.point.UserPointVO;
 
-import groovy.util.logging.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@Slf4j
-public class DishServiceImpl implements DishService {
+@lombok.extern.slf4j.Slf4j
+@RequiredArgsConstructor
+public class DishServiceImpl implements DishService, PointDescription {
 
 	@Autowired
 	DishDao dishDao;
+	
+	private final PointDAO pointDAO;
+	
+	private final DishCommDAO dishCommDAO;
+	
+	private final DishLikeDAO dishLikeDAO;
 	@Autowired
 	RestTestController restTestController;
+
 
 	@Override
 	public List<Map<String, Object>> get() {
@@ -96,15 +114,37 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void goDishLike(int RCP_SEQ, int mnum) {
 	
 		dishDao.goDishLike(RCP_SEQ,mnum);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(LIKE_PLUS);
+		vo.setPoint(LIKE_POINT);
+		vo.setRCP_SEQ(RCP_SEQ);
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void goDishDislike(int RCP_SEQ, int mnum) {
 		
 		dishDao.goDishDislike(RCP_SEQ,mnum);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(LIKE_MINUS);
+		vo.setPoint(LIKE_POINT * -1);
+		vo.setRCP_SEQ(RCP_SEQ);
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
 	}
 
 	@Override
@@ -114,22 +154,49 @@ public class DishServiceImpl implements DishService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int commAdd(DishComm dishComm) {
 		
-		return dishDao.commAdd(dishComm);
+		int result = dishDao.commAdd(dishComm);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(dishComm.getMnum());
+		vo.setPointID(COMMENT_PLUS);
+		vo.setPoint(COMMENT_POINT);
+		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [commAdd] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int commDelete(DishComm dishComm) {
 		
-		return dishDao.commDelete(dishComm);
+		int result = dishDao.commDelete(dishComm);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(dishComm.getMnum());
+		vo.setPointID(COMMENT_MINUS);
+		vo.setPoint(COMMENT_POINT * -1);
+		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [commDelete] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
+
 
 	@Override
 	public int commEdit(DishComm dishComm) {
 		
-		
 		return dishDao.commEdit(dishComm);
+
 	}
 
 	@Override
@@ -145,5 +212,82 @@ public class DishServiceImpl implements DishService {
 		return dishDao.search(select,searchI);
 	}
 
+
+	@Override
+	public List<Map<String, Object>> topDish() {
+		
+		List<Map<String, Object>> result = dishDao.topDish();
+		
+		return result;
+	}
+
+	//유저 댓글 조회
+	@Override
+	public PageResultVO<DishCommDTO> getCommListbyMnum(PageRequestDTO pageRequestDTO, long mnum) {
+		
+		// 기준
+				if (pageRequestDTO.getBasis() == "pk") {
+
+					pageRequestDTO.setBasis("mnum");
+				}
+
+				pageRequestDTO.setterChange();
+				
+				List<DishCommDTO> result = null;
+			
+				int count = 0;
+
+				try {
+
+					// 조회 메서드
+					result = dishCommDAO.dishCommListbyMnum(pageRequestDTO,mnum);
+					
+					if(result.size()<1) return null;
+					
+					count = dishCommDAO.dishCommCountbyMnum(mnum);
+
+					return new PageResultVO<>(result,pageRequestDTO,count);
+					
+				} catch (Exception e)  {
+					
+					e.printStackTrace();
+					
+					return null;}
+			
+	}
+
+	//유저 좋아요
+	@Override
+	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO pageRequestDTO, long mnum) {
+		// 기준
+		if (pageRequestDTO.getBasis() == "pk") {
+
+			pageRequestDTO.setBasis("mnum");
+		}
+
+		pageRequestDTO.setterChange();
+		
+		List<DishLikeDTO> result = null;
+	
+		int count = 0;
+
+		try {
+
+			// 조회 메서드
+			result = dishLikeDAO.dishLikeListbyMnum(pageRequestDTO,mnum);
+			
+			if(result.size()<1) return null;
+			
+			count = dishLikeDAO.dishLikeCountbyMnum(mnum);
+
+			return new PageResultVO<>(result,pageRequestDTO,count);
+			
+		} catch (Exception e)  {
+			
+			e.printStackTrace();
+			
+			return null;}
+
+	}
 	
 }

@@ -12,4 +12,6 @@ public class DishComm{
 	private String content;
 	private String editdate;
 	
+
 }
+

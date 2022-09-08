@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -14,27 +16,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AdminDTO;
+import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.service.adminService.AdminService;
-import com.example.demo.vo.AdminVO;
+import com.example.demo.service.memberService.MemberService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
 	private final AdminService adminService;
+	
+	private final MemberService memberService;
 
 	// 관리자 아이디 중복 체크 URI
 	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
-		log.info("/checkID/{adminID} 진입");
+		log.info("[/api/admin/checkID/{adminID}] [진입] [{}]", adminID);
+
 		// 관리자 아이디 중복 체크 true or false 사용
 		boolean result = adminService.CheckadminID(adminID);
 
@@ -42,23 +48,25 @@ public class AdminController {
 	}
 
 	// 관리자 아이디로 관리자 조회
-	@GetMapping("/adminID/{adminId}")
-	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminId) {
+	@GetMapping("/adminID/{adminID}")
+	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminID) {
+
+		log.info("[/api/admin/adminID/{adminId}] [진입] [{}]", adminID);
 
 		AdminDTO result = null;
 
 		try {
-			long anum = Long.parseLong(adminId);
+			long anum = Long.parseLong(adminID);
 			result = adminService.findAdmin(anum);
 		} catch (Exception e) {
-			result = adminService.findAdmin(adminId);
+			result = adminService.findAdmin(adminID);
 		}
 
-		// 관리자 아이디 중복 체크 true or false 사용
 		if (result == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		}
-		else {
+			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 실패] [{}]", adminID);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} else {
+			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 성공] [{}]", adminID);
 			result.setAdminPW("");
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
@@ -66,10 +74,12 @@ public class AdminController {
 
 	// 관리자 리스트 조회
 	@GetMapping("/admin-list")
-	public ResponseEntity<PageResultDTO<AdminVO, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
+	public ResponseEntity<PageResultDTO<Map<String,Object>, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
 			Model mopdel) {
 
-		PageResultDTO<AdminVO, AdminDTO> result = adminService.getAmindList(pageRequestDTO);
+		log.info("[/api/admin/admin-list] [진입]");
+
+		PageResultDTO<Map<String,Object>, AdminDTO> result = adminService.getAdminList(pageRequestDTO);
 
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
@@ -79,12 +89,19 @@ public class AdminController {
 
 	public ResponseEntity<Long> addAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("Controller /register 접근");
+		log.info("[/api/admin/register] [진입] [{}]", adminDTO.getAdminID());
 
-		// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
+		// 정상적으로 등록됐으면 관리자 식별자 리턴;
 		Long result = adminService.register(adminDTO);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[/api/admin/register] [회원 가입 성공] [{}]", adminDTO.getAdminID());
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[/api/admin/register] [회원 가입 실패] [{}]", adminDTO.getAdminID());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		}
 	}
 
 	// 관리자 삭제 URI, 관리자 삭제 시 연관된 게시글, 댓글 삭제도 이루어져야 할지 회의 필요
@@ -92,24 +109,52 @@ public class AdminController {
 	@DeleteMapping("/delete/{anum}")
 	public ResponseEntity<Long> removeAdmin(@PathVariable Long anum) {
 
-		log.info("Delete admin by anum : " + anum);
+		log.info("[/api/delete/{anum}] [진입] [{}]", anum);
 
 		// 정상적으로 삭제됐으면 anum 리턴, 아니면 0
 		Long result = adminService.remove(anum);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[/api/admin/delete/{anum}] [관리자 삭제 성공] [{}]",anum);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[/api/admin/delete/{anum}] [관리자 삭제 실패] [{}]", anum);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 	// 관리자 수정 URI
 	@PutMapping("/update")
-
 	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("Update admin : " + adminDTO);
+		log.info("[/api/admin/update] [진입] [{}]",adminDTO.getAdminID());
 
 		Long result = adminService.update(adminDTO);
 
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		if (result > 0) {
+			log.info("[/api/admin/update] [관리자 수정 성공] [{}]",adminDTO.getAdminID());
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			log.warn("[/api/admin/update] : [관리자 수정 실패] [{}] ",adminDTO.getAdminID());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
+	
+	// 회원 리스트 조회
+	@GetMapping("/member-list")
+	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(
+			@ModelAttribute PageRequestDTO pageRequestDTO) {
+
+		log.info("[/api/member/member-list] [회원 리스트 조회]");
+
+		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getMemberList2(pageRequestDTO);
+
+		if (result == null)
+			new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }

@@ -33,7 +33,7 @@ import groovy.util.logging.Slf4j;
 @RequestMapping("/api/dish")
 @Slf4j
 public class DishController {
-	
+
 	@Autowired
 	DishService dishService;
 	
@@ -133,6 +133,7 @@ public class DishController {
 		dishComm.setMnum(mnum);
 		dishComm.setRCP_SEQ(RCP_SEQ);
 		
+
 		String str = "";
 		int i = dishService.commAdd(dishComm);
 		
@@ -144,6 +145,7 @@ public class DishController {
 		
 		return str;
 	}
+
 	
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
@@ -512,7 +514,9 @@ public class DishController {
 		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
 		ingSTR = ingSTR.replace("재료","");
 		ingSTR = ingSTR.replaceAll("\n",", ");
+
 		map.put("ingredient", ingSTR); 
+
 		
 		//조리방법 불러오기 
 		List<String> recipe = new ArrayList<>();
@@ -626,6 +630,7 @@ public class DishController {
 		
 		return str;
 	}
+	
 	
 
 }

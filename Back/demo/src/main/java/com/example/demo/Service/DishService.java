@@ -3,6 +3,10 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Map;
 
+import com.example.demo.dto.DishCommDTO;
+import com.example.demo.dto.DishLikeDTO;
+import com.example.demo.pagelib.PageRequestDTO;
+import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
@@ -52,6 +56,7 @@ public interface DishService {
 	/*
 	 * 음식 게시물 댓글 - 추가 
 	 */
+
 	public int commAdd(DishComm dishComm);
 	/*
 	 * 음식 게시물 댓글 - 삭제
@@ -61,6 +66,7 @@ public interface DishService {
 	 * 음식 게시물 댓글 - 수정
 	 */
 	public int commEdit(DishComm dishComm);
+
 	/*
 	 * 음식 게시물 댓글 - 전체 가져오기 
 	 */
@@ -69,7 +75,20 @@ public interface DishService {
 	 * 레시피 게시물 검색 기능
 	 */
 	public List<Map<String, Object>> search(String select, String searchI);
-
 	
+	/*
+	   top 50 게시글 
+	*/
+	public List<Map<String, Object>> topDish();
+
+	/*
+	  유저 댓글 조회 
+	*/
+	public PageResultVO<DishCommDTO> getCommListbyMnum(PageRequestDTO dto, long mnum);
+	
+	/*
+	  유저 좋아요 조회
+	*/
+	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO dto, long mnum);
 	
 }

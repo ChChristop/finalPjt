@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-        
-        
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
 <mapper namespace="com.example.demo.dao.AdminDAO">
-    <select id="getAdminList" resultType="AdminVO">
-   		  SELECT ANUM, ADMINID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM ADMIN
-   
-    	<where>
-			<if test= 'type == "i"'>
+	<select id="getAdminList" resultType="Map">
+		SELECT A.anum, A.adminID, A.nickName, A.phoneNumber, A.date, A.lastAccessDate, A.role as role 
+		,COUNT(D.WRITER) AS dishCount
+		FROM ADMIN A LEFT OUTER JOIN DISH D ON A.ANUM = D.WRITER
+		<where>
+			<if test='type == "i"'>
 				ADMINID like CONCAT('%',#{searchThings},'%')
 			</if>
 			<if test='type == "n"'>
@@ -18,35 +18,41 @@
 				ADMINID like CONCAT('%',#{searchThings},'%') 
 				OR NICKNAME like CONCAT('%',#{searchThings},'%')
 			</if>
-			
+
 		</where>
-		
+		group by ANUM
 		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
-		
 	</select>
-    
-    
-    
-  
-    
-    	<select id="countAdminAllList" resultType="int">
-		
+
+	<select id="countAdminAllList" resultType="int">
 		SELECT COUNT(*) FROM ADMIN
-		
 		<where>
-		<choose>
-			<when test='type == "i"'>
+			<choose>
+				<when test='type == "i"'>
 				ADMINID like CONCAT('%',#{searchThings},'%')
 			</when>
-			<when test='type == "n"'>
+				<when test='type == "n"'>
 				NICKNAME like CONCAT('%',#{searchThings},'%')
 			</when>
-			<when test='type == "in"'>
+				<when test='type == "in"'>
 				ADMINID like CONCAT('%',#{searchThings},'%') 
 				OR NICKNAME like CONCAT('%',#{searchThings},'%')
 			</when>
-		</choose>
+			</choose>
 		</where>
-
+	</select>
+	
+	<!-- 특정 관리자 식별자로 조회 DISH table 포함 -->
+	<select id="findAdminIdByAnum" resultType="map">
+		SELECT A.ANUM, A.ADMINID, A.ADMINPW, A.NICKNAME, A.ROLE, A.DATE, A.MODDATE, A.LASTACCESSDATE, COUNT(D.DISH) 
+		FROM ADMIN A LEFT OUTER JOIN DISH D
+		WHERE A.ANUM = #{anum}
+	</select>
+	
+	<!-- 특정 관리자 ID로 조회 DISH table 포함 -->
+	<select id="findAdminIdByID" resultType="map">
+		SELECT A.ANUM, A.ADMINID, A.ADMINPW, A.NICKNAME, A.ROLE, A.DATE, A.MODDATE, A.LASTACCESSDATE, COUNT(D.DISH) 
+		FROM ADMIN A LEFT OUTER JOIN DISH D
+		WHERE A.ADMINID = #{adminID}
 	</select>
 </mapper>

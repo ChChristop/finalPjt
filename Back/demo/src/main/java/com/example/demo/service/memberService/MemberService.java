@@ -1,5 +1,6 @@
 package com.example.demo.service.memberService;
 
+import java.util.List;
 import java.util.Map;
 
 import com.example.demo.dto.MemberDTO;
@@ -25,9 +26,13 @@ public interface MemberService {
 	
 	Long update(MemberDTO memberDTO);
 	
-	PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO);
+	PageResultDTO<MemberVO, MemberDTO> getMemberList(PageRequestDTO pageRequestDTO);
 	
-	PageResultDTO<Map<String,Object>, MemberDTO>  getAmindList2(PageRequestDTO pageRequestDTO);
+	PageResultDTO<Map<String,Object>, MemberDTO>  getMemberList2(PageRequestDTO pageRequestDTO);
+	
+	List<Map<String, Object>> topUser();
+	
+	boolean changePW(MemberDTO memberDTO);
 	
 	default MemberVO dtoTOvo(MemberDTO memberDTO) {
 		
@@ -69,19 +74,7 @@ public interface MemberService {
 		
 		MemberDTO memberDTO = objectMapper.convertValue(member, MemberDTO.class);
 		
-		
-//		MemberDTO memberDTO = MemberDTO.builder()
-//				.mnum(Long.valueOf(String.valueOf(member.get("MNUM"))))
-//				.memberID((String)member.get("MEMBERID"))
-//				.nickname((String)member.get("NICKNAME"))
-//				.phoneNumber((String)member.get("PHONENUMBER"))
-//				.role((String) member.get("ROLE"))
-//				.lastAccessDate((LocalDateTime)member.get("DATE"))
-//				.date((LocalDateTime)member.get("DATE"))
-//				.modDate((LocalDateTime)member.get("MODATE"))
-//				.ateCount(Integer.valueOf(String.valueOf(member.get("ateCount"))))
-//				.build();
-		
+
 		return memberDTO;
 	}
 

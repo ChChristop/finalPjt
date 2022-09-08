@@ -52,7 +52,8 @@ public interface DishDao {
 
 	public List<Map<String, Object>> search(String select, String searchI);
 
+	public List<Map<String, Object>> topDish();
+
 	public void deleIng(int rCP_SEQ);
-	
-	
+
 }

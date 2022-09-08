@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,94 +16,295 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.DishCommDTO;
+import com.example.demo.dto.DishLikeDTO;
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.dto.PointDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
+import com.example.demo.pagelib.PageResultVO;
+import com.example.demo.service.AteService;
+import com.example.demo.service.DishService;
 import com.example.demo.service.memberService.MemberService;
-import com.example.demo.vo.MemberVO;
+import com.example.demo.service.point.PointService;
+import com.example.demo.vo.Ate;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
 
 	private final MemberService memberService;
+	
+	private final PointService pointService;
+	
+	private final AteService ateService;
+	
+	private final DishService dishService;
 
 	// 회원 아이디 또는 회원 식별자로 회원 조회
 	@GetMapping("/search/{memberID}")
 	public ResponseEntity<MemberDTO> searchMember(@PathVariable String memberID) {
-		
-		log.info(" 회원 조회 중 " + memberID);
-		
+
+		log.info("[/api/member/search/{memberID}] [회원 조회] [{}]", memberID);
+
 		MemberDTO result = null;
 
 		try {
 			long mnum = Long.parseLong(memberID);
 			result = memberService.findMember(mnum);
+
 		} catch (Exception e) {
 			result = memberService.findMember(memberID);
 		}
 
 		// 회원 아이디 중복 체크 true or false 사용
 		if (result == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			log.info("[/api/member/search/{memberID}] [회원 조회 성공] [{}]",memberID);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} else {
+			log.warn("[/api/member/search/{memberID}] [회원 조회 실패] [{}]", memberID);
+			
 			result.setMemberPW("");
+			
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 
-//	// 회원 리스트 조회
-//	@GetMapping("/member-list")
-//	public ResponseEntity<PageResultDTO<MemberVO, MemberDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO) {
-//
-//		log.info("회원 리스트 조회 ------------------------- ");
-//		
-//		PageResultDTO<MemberVO, MemberDTO> result = memberService.getAmindList(pageRequestDTO);
-//
-//		return new ResponseEntity<>(result, HttpStatus.OK);
-//	}
-	
-	// 회원 리스트 조회
-	@GetMapping("/member-list")
-	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(@ModelAttribute PageRequestDTO pageRequestDTO) {
 
-		log.info("회원 리스트 조회 ------------------------- ");
-		
-		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getAmindList2(pageRequestDTO);
-
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	
-	
-	//회원 삭제 URI
+	// 회원 삭제 URI
 	@DeleteMapping("/delete/{mnum}")
-	public ResponseEntity<Long> removeAdmin(@PathVariable Long mnum) {
+	public ResponseEntity<Long> removeAdmin(@PathVariable Long mnum, HttpServletRequest request) {
 
-		log.info("Delete member by mnum : " + mnum);
+		log.info("[/api/member/delete/{mnum}] [회원 탈퇴] [{}]", mnum);
+
+		// 추후 주석 해제 예정
+
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (mnum != getNumber) {
+		 * 
+		 * log.warn("/api/member/delete/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + mnum);
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
 
 		// 정상적으로 삭제됐으면 anum 리턴, 아니면 0
 		Long result = memberService.remove(mnum);
 
+		if (result > 0) {
+			log.info("[api/member/delete/{mnum}] [회원 탈퇴 성공] [{}]", mnum);
+			return new ResponseEntity<>(mnum, HttpStatus.OK);
+		} else {
+			log.warn("[/api/member/delete/{mnum}] [회원 탈퇴 실패] [{}]", mnum);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
+	// 회원 수정 URI
+	@PutMapping("/update")
+	public ResponseEntity<Long> updateAdmin(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
+
+		log.info("[/api/member/update] [회원 수정] [{}]", memberDTO.getMemberID());
+
+		// 추후 주석 해제 예정
+
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (memberDTO.getMnum() != getNumber) {
+		 * 
+		 * log.warn("/api/member/delete/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + memberDTO.getMnum());
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
+
+		Long result = memberService.update(memberDTO);
+
+		if (result > 0) {
+			log.info("[/api/member/delete/{mnum}] [회원 수정 성공] [{}]", memberDTO.getMemberID());
+			return new ResponseEntity<>(memberDTO.getMnum(), HttpStatus.OK);
+		} else {
+			log.warn("[/api/member/delete/{mnum}] [회원 수정 실패] [{}]", memberDTO.getMemberID());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+	}
+	
+	// 포인트 조회
+	@GetMapping("/point-list/{mnum}")
+	public ResponseEntity<PageResultVO<PointDTO>> userPoint(
+			@PathVariable long mnum, PageRequestDTO pageRequestDTO){
+		
+		log.info("[/api/point-list/{mnum}] [유저 포인트 조회] [{}]",mnum);
+		
+		// 추후 주석 해제 예정
+
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (mnum != getNumber) {
+		 * 
+		 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + mnum);
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
+		
+		PageResultVO<PointDTO> result =  pointService.userPoint(pageRequestDTO,mnum);
+		
+		if(result == null) return new ResponseEntity<>(new PageResultVO<PointDTO>(),HttpStatus.ACCEPTED);
+		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	// 회원 수정 URI
-		@PutMapping("/update")
-		public ResponseEntity<Long> updateAdmin(@RequestBody MemberDTO memberDTO) {
+	//7일 이내 활동 내역
+	@GetMapping("/activity-history/{mnum}")
+	public ResponseEntity<PageResultVO<PointDTO>> activityHistory(
+			@PathVariable long mnum, PageRequestDTO pageRequestDTO){
+		
+		log.info("[/api/member/activity-history/{mnum}] [유저 활동 내역 조회] [{}]",mnum);
+		
+		// 추후 주석 해제 예정
 
-			log.info("회원 정보 업데이트 : " + memberDTO.getMemberID());
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (mnum != getNumber) {
+		 * 
+		 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + mnum);
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
+		
+		PageResultVO<PointDTO> result =  pointService.userPointby7d(pageRequestDTO,mnum);
+		
+		if(result == null) return new ResponseEntity<>(new PageResultVO<PointDTO>(),HttpStatus.ACCEPTED);
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	//좋아요 조회
+	@GetMapping("/like-list/{mnum}")
+	public ResponseEntity<PageResultVO<DishLikeDTO>> likeList(
+			@PathVariable long mnum, PageRequestDTO pageRequestDTO){
+		
+		log.info("[/api/member/like-list/{mnum}] [유저 좋아요 조회] [{}]",mnum);	
+		
+		// 추후 주석 해제 예정
 
-			Long result = memberService.update(memberDTO);
+		/*
+		 * long getNumber = (long) request.getAttribute("GetNumber");
+		 * 
+		 * if (mnum != getNumber) {
+		 * 
+		 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+		 * "요청 회원번호 :" + mnum);
+		 * 
+		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 */
+		
+		PageResultVO<DishLikeDTO> result = dishService.getLikeListbyMnum(pageRequestDTO, mnum);
+		
+		
+		
+		if(result == null) return new ResponseEntity<>(new PageResultVO<DishLikeDTO>(),HttpStatus.ACCEPTED);
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	//댓글 조회
+		@GetMapping("/dishcomm-list/{mnum}")
+		public ResponseEntity<PageResultVO<DishCommDTO>> commList(
+				@PathVariable long mnum, PageRequestDTO pageRequestDTO){
+			
+			log.info("[/api/member/dishcomm-list/{mnum}] [유저 댓글 내역 조회] [{}]",mnum);
+			
+			// 추후 주석 해제 예정
 
+			/*
+			 * long getNumber = (long) request.getAttribute("GetNumber");
+			 * 
+			 * if (mnum != getNumber) {
+			 * 
+			 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+			 * "요청 회원번호 :" + mnum);
+			 * 
+			 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+			 */
+			
+			PageResultVO<DishCommDTO> result  = dishService.getCommListbyMnum(pageRequestDTO, mnum);
+			
+			if(result == null) return new ResponseEntity<>(new PageResultVO<DishCommDTO>(),HttpStatus.ACCEPTED);
+			
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
+		
+		//먹음 리스트 조회(페이지 처리 안한 것)
+		@GetMapping("/getList/{mnum}")
+		public ResponseEntity<List<Ate>> getUserList(@PathVariable long mnum, HttpServletRequest request) {
+			
+			log.info("[/api/getList/{mnum}] [먹음 리스트 조회] ] [{}]", mnum);
+			
+			
+			// 추후 주석 해제 예정
 
+			/*
+			 * long getNumber = (long) request.getAttribute("GetNumber");
+			 * 
+			 * if (mnum != getNumber) {
+			 * 
+			 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+			 * "요청 회원번호 :" + mnum);
+			 * 
+			 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+			 */	  
+			 
+			List<Ate> result = ateService.getAllList(mnum);
 
+			log.info("[/api/getList/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
+			
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+		
+		//먹음 리스트 조회(페이지 처리 한 것)
+		@GetMapping("/ate-list/{mnum}")
+		public ResponseEntity<PageResultVO<Ate>> getUserList2(@PathVariable long mnum, HttpServletRequest request,
+				PageRequestDTO pageRequestDTO) {
+			
+			log.info("[/api/member/ate-list/{mnum}] [먹음 리스트 조회] ] [{}]", mnum);
+			
+			
+			// 추후 주석 해제 예정
+
+			/*
+			 * long getNumber = (long) request.getAttribute("GetNumber");
+			 * 
+			 * if (mnum != getNumber) {
+			 * 
+			 * log.warn("/point/{mnum} 접근 : " + "jwt 회원번호 :" + getNumber +
+			 * "요청 회원번호 :" + mnum);
+			 * 
+			 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+			 */
+			
+			PageResultVO<Ate> result = ateService.getUserAteList(pageRequestDTO,mnum);
+
+			if(result == null) return new ResponseEntity<>(new PageResultVO<Ate>(),HttpStatus.ACCEPTED);
+			
+			log.info("[/api/getList2/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
+			
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
 	
 
 }
