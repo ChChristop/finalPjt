@@ -10,13 +10,42 @@
 		ate_picture=#{ate_picture}, ate_content=#{ate_content}
 	</insert>
 
-	<select id="get" parameterType="Integer" resultType="Ate">
-		select * from ate
+	<select id="get" parameterType="Integer" resultType="map">
+		select a.*, db.RCP_NM from dishDB db right join ate a on db.RCP_SEQ = a.RCP_SEQ
+	</select>
+	
+	<select id="search" parameterType="String" resultType="map">
+		select a.* , db.RCP_NM
+        from dishDB db
+        right join ate a 
+        on a.RCP_SEQ = db.RCP_SEQ
+        where 
+        db.RCP_NM like concat('%',#{select},'%') 
+        or a.mnum like concat('%',#{select},'%')  
 	</select>
 	
 	<select id="getOne" parameterType="Integer" resultType="Ate">
 		select * from ate where ate_num=#{ate_num}
 	</select>
+	
+	<select id="commGet" parameterType="Integer" resultType="map">
+		select * from ate_comm;
+	</select>
+	
+	<insert id="commAdd" parameterType="map">
+		insert into ate_comm set 
+		mnum=#{mnum}, ate_num=#{ate_num}, content=#{content}
+    </insert>
+	
+	<delete id="commDelete" parameterType="map">
+		DELETE FROM ate_comm WHERE ate_num = #{ate_num} and mnum = #{mnum}
+	</delete>
+	
+	<update id="commEdit" parameterType="map">
+		UPDATE ate_comm
+		SET content=#{content}, editdate=now()
+		WHERE mnum=#{mnum} and ate_num = #{ate_num}
+	</update>
 	
 	
 	<update id="editAte" parameterType="map">
@@ -29,6 +58,7 @@
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM ate WHERE ate_num = #{ate_num} and mnum =#{mnum};
 	</delete>
+	
 	
 	<update id="upHit" parameterType="Integer">
 		UPDATE ate

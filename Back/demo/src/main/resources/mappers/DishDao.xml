@@ -4,17 +4,17 @@
 <mapper namespace="com.example.demo.dao.DishDao">
 
 	<select id="getNum" parameterType="map" resultType="int">
-			select max(RCP_SEQ)+1 from dishDB
+			select max(convert(RCP_SEQ, SIGNED))+1 RCP_SEQ from dishDB ORDER BY RCP_SEQ
 	</select> 
 	<insert id="addInfo" parameterType="map">
 		insert into dish set
 		writer=#{mnum}, RCP_SEQ = #{dnum}
 	</insert>
-	<insert id="commAdd" parameterType="map">
+
+	<insert id="commAdd" parameterType="map" >
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
     </insert>
-    
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
 		keyProperty="dnum">
@@ -302,7 +302,7 @@
 		db.att_file_no_mk
 		from dish d  
  		right join dishDB db
-		on db.RCP_SEQ = d.RCP_SEQ
+		on db.RCP_SEQ = d.RCP_SEQ limit 0,30
 	</select>
 
 	<select id="dishLike" parameterType="int" resultType="int">
@@ -425,6 +425,9 @@
 	<delete id="goDishDislike" parameterType="Integer">
 		DELETE FROM dish_like
 		WHERE RCP_SEQ=#{RCP_SEQ} and mnum=#{mnum} 		
+	</delete>
+	<delete id="deleIng" parameterType="Integer">
+		delete from dish_ing where RCP_SEQ = #{RCP_SEQ}
 	</delete>
 	
 	<select id="topDish" resultType="map">

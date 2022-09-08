@@ -4,13 +4,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.pagelib.PageRequestDTO;
-import com.example.demo.pagelib.PageResultVO;
+import com.example.demo.common.Constants;
 import com.example.demo.service.AteService;
 import com.example.demo.vo.Ate;
+import com.example.demo.vo.DishComm;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +37,12 @@ public class AteController {
 
 	@Value("${a.imgdir}")
 	String fdir;
+	
+	@Value("${AteuploadPath}")
+	String uploadPath;
+	
+	String ip = Constants.IP_PORT;
+	
 
 	/*
 	 * 먹음 등록 mnum : 회원정보 필요
@@ -47,18 +51,36 @@ public class AteController {
 	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, @PathVariable int mnum,
 			@RequestParam("file") MultipartFile file) throws Exception {
 
-		ate.setRCP_SEQ(RCP_SEQ);
-		ate.setMnum(mnum);
 
-		File dest = new File(fdir + "/" + file.getOriginalFilename());
-
-		file.transferTo(dest);
-
-		ate.setAte_picture("/img/" + dest.getName());
-
-		ateService.add(ate);
-
-		return ate.getAte_num() + "이 등록되었습니다.";
+			ate.setRCP_SEQ(RCP_SEQ);
+			ate.setMnum(mnum);
+			
+			String savedName = file.getOriginalFilename();
+			savedName = uploadFile(savedName, file.getBytes());
+			
+			ate.setAte_picture(ip+"/ate/" + savedName);
+			
+			String str = "";
+			int i = ateService.add(ate);
+			
+			if(i>0) {
+				str = ate.getAte_num() + "이 등록되었습니다.";
+			}else {
+				str ="글 등록에 실패하였습니다. ";
+			}
+			
+		return str;
+	}
+	
+	private String uploadFile(String originalName, byte[] fileData) throws Exception {
+		
+		UUID uuid = UUID.randomUUID();
+		String savedName = uuid.toString()+"_"+originalName;
+		File target = new File(uploadPath, savedName);
+		
+		FileCopyUtils.copy(fileData, target);
+	
+		return savedName;
 	}
 
 	/*
@@ -71,7 +93,12 @@ public class AteController {
 	}
 
 	/*
+<<<<<<< HEAD
 	 * 먹음 게시글 한개 불러오기 -> 이동 또는 권한 조정 예정
+=======
+	 * 먹음 게시글 한개 불러오기
+	 * 댓글도 같이 불러옴 
+>>>>>>> 39bd7c5b1b1377bdf68ad80dc9733ddbad2bba64
 	 */
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
@@ -92,6 +119,10 @@ public class AteController {
 
 		Ate result = ateService.getOne(ate_num);
 
+		List<DishComm> commList = ateService.commGet(ate_num);
+		
+		resultMap.put("commList", commList);
+
 		resultMap.put("result", result);
 		resultMap.put("liked", str);
 
@@ -103,31 +134,65 @@ public class AteController {
 	 */
 
 	@PutMapping("/edit/{ate_num}/{mnum}")
-	public String edit(@ModelAttribute Ate ate, @RequestParam("file") MultipartFile file) throws Exception {
+	public String edit(@ModelAttribute Ate ate,
+			@RequestParam("file") MultipartFile file) throws Exception{
+		
+		String str = "";
+		
 
-		if (file.getSize() > 0) {
-			File dest = new File(fdir + "/" + file.getOriginalFilename());
-			file.transferTo(dest);
+			
+			String savedName = file.getOriginalFilename();
+			savedName = uploadFile(savedName, file.getBytes());
+			
+			ate.setAte_picture(ip+"/ate/" + savedName);
 
-			ate.setAte_picture("/img/" + dest.getName());
 
-			ateService.editAte(ate);
-
-		}
-
-		return "글 수정되었습니다.";
+			int i = ateService.editAte(ate);
+			
+			if(i>0) {
+				str = "글 수정되었습니다.";
+			}else {
+				str = "글 수정에 실패하였습니다.";
+			}	
+	
+		return str;
 	}
+	/*
+	 * 먹음 게시물 조회
+	 * 검색 일치 내용이 없을 경우 ?
+	 * 수정 : @RequestParam명은 나중에 수정
+	 */
+	@GetMapping("/search")
+	public List<Map<String, Object>> search(@RequestParam String select) {
+		
+		List<Map<String, Object>> ateList = ateService.search(select);
+		
+		return ateList;
+	}
+	
+
 
 	/*
 	 * 먹음 게시글 삭제하기(글 번호도 같이 보내주세요)
 	 */
-	@DeleteMapping("/delete/{ate_num}/{mnum}")
-	public String delete(@PathVariable int ate_num, @PathVariable int mnum) {
-		// 정말 삭제하시겠습니까? 질문 하는거...(팝업)
 
-		ateService.delete(ate_num,mnum);
+	@DeleteMapping("/delete/{ate_num}/{munm}")
+	public String delete(@PathVariable int ate_num,@PathVariable int mnum) {
+		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
+		
+		String str = "";
+		
+		int i = ateService.delete(ate_num,mnum);
+		
+		if(i>0) {
+			str = "글이 삭제되었습니다.";
+		}else {
+			str = "글 삭제에 실패하였습니다.";
+		}
+		
+		
+		return str;
 
-		return "글이 삭제되었습니다.";
 	}
 
 	/*
@@ -154,6 +219,71 @@ public class AteController {
 
 		return str;
 	}
+
+	
+	/*
+	 * 댓글 추가 
+	 */
+	@PostMapping("/comm/add/{mnum}/{ate_num}")
+	public String commAdd(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+		
+		String str = "";
+		int i = ateService.commAdd(dishComm);
+		
+		if(i>0) {
+			str = "댓글이 등록되었습니다.";
+		}else {
+			str = "댓글 등록에 실패하였습니다.";
+		}
+		
+		return str;
+	}
+	
+	/*
+	 * 댓글 삭제(작성한 사람만 삭제 가능)  
+	 */
+	@DeleteMapping("/comm/delete/{mnum}/{ate_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+		String str = "";
+		int i = ateService.commDelete(dishComm);
+		
+		if(i>0) {
+			str = "댓글이 삭제되었습니다.";
+		}else {
+			str = "댓글 삭제에 실패하였습니다.";
+		}
+		
+		return str;
+	}
+	
+	/*
+	 * 댓글 수정(작성한 사람만 수정 가능)  
+	 */
+	@PutMapping("/comm/edit/{mnum}/{ate_num}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+		
+		dishComm.setMnum(mnum);
+		dishComm.setAte_num(ate_num);
+
+		String str = "";
+		int i =  ateService.commEdit(dishComm);
+		
+		if(i>0) {
+			str = "댓글이 수정되었습니다.";
+		}else {
+			str = "댓글 수정에 실패하였습니다.";
+		}
+		
+		return str;
+		
+	}
+	
 
 }
 

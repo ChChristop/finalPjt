@@ -19,13 +19,26 @@ public class DishDBServiceImpl implements DishDBService {
 
 
 	@Override
-	public void dbGO(Map<String, Object> nodeMapData) {
+	public void dbGO(Map<String, Object> nodeMapData, int mnum) {
+		//중복 체크 먼저
+		int count = dishDBDao.checkNum(nodeMapData);
 		
-		dishDBDao.dbGO(nodeMapData);
+		if(count == 0) {
+		
+			dishDBDao.dbGO(nodeMapData);
+			dishDBDao.dbGoInfo(nodeMapData,mnum);
+	
+		}
 		
 		
-		dishDBDao.dbGoInfo();
 		
+	}
+
+
+	@Override
+	public void ingAdd(Map<String, Object> ingMap) {
+	
+		dishDBDao.ingAdd(ingMap);
 	}
 
 	

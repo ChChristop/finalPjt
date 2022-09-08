@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.controller.RestTestController;
 import com.example.demo.dao.DishCommDAO;
 import com.example.demo.dao.DishDao;
 import com.example.demo.dao.DishLikeDAO;
@@ -36,6 +37,9 @@ public class DishServiceImpl implements DishService, PointDescription {
 	private final DishCommDAO dishCommDAO;
 	
 	private final DishLikeDAO dishLikeDAO;
+	@Autowired
+	RestTestController restTestController;
+
 
 	@Override
 	public List<Map<String, Object>> get() {
@@ -46,11 +50,39 @@ public class DishServiceImpl implements DishService, PointDescription {
 	}
 
 	@Override
-	public void add(DishDB dish, int mnum) {
+	public int add(DishDB dish, int mnum) {
 		
+		
+		//여기 나중에 하나로 묶어
 		dishDao.add(dish);
+		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
 		dishDao.addInfo(dnum, mnum);
+		
+		Object obj = dish.getRCP_PARTS_DTLS();
+		String num = Integer.toString(dnum);
+		String result = restTestController.RegexCheck(obj);
+		restTestController.goDish_ing(result,num);
+		
+		
+		return '1';
+	}
+
+
+	@Override
+	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
+		
+		//여기 나중에 하나로 묶어
+		dishDao.edit(dish);
+		dishDao.editInfo(dish1, rCP_SEQ, mnum);
+		dishDao.deleIng(rCP_SEQ);
+		
+		Object obj = dish.getRCP_PARTS_DTLS();
+		String num = Integer.toString(rCP_SEQ);
+		String result = restTestController.RegexCheck(obj);
+		restTestController.goDish_ing(result,num);
+		
+		return '1';
 	}
 	
 	@Override
@@ -59,12 +91,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 		return dishDao.getOne(RCP_SEQ);
 	}  
 
-	@Override
-	public void edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
-		
-		dishDao.edit(dish);
-		dishDao.editInfo(dish1, rCP_SEQ, mnum);
-	}
 
 	@Override
 	public void upHit(int RCP_SEQ) {
@@ -73,22 +99,12 @@ public class DishServiceImpl implements DishService, PointDescription {
 	}
 
 	@Override
-	public void delete(int RCP_SEQ) {
+	public int delete(int RCP_SEQ) {
 		
-		dishDao.delete(RCP_SEQ);
+		
+		return dishDao.delete(RCP_SEQ);
 	}
 
-	@Override
-	public void delPicture(int dnum) {
-		dishDao.delPicture(dnum);
-		
-	}
-
-	@Override
-	public void editPicture(Map<String, Object> param) {
-		dishDao.editPicture(param);
-		
-	}
 
 	@Override
 	public int dishLike(int mnum, int RCP_SEQ) {
@@ -139,9 +155,9 @@ public class DishServiceImpl implements DishService, PointDescription {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void commAdd(DishComm dishComm) {
+	public int commAdd(DishComm dishComm) {
 		
-		dishDao.commAdd(dishComm);
+		int result = dishDao.commAdd(dishComm);
 		
 		UserPointVO vo = new UserPointVO();
 		vo.setMnum(dishComm.getMnum());
@@ -152,13 +168,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 		pointDAO.registerPoint(vo);
 		
 		log.info("[DishServiceImpl] [commAdd] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void commDelete(DishComm dishComm) {
+	public int commDelete(DishComm dishComm) {
 		
-		dishDao.commDelete(dishComm);
+		int result = dishDao.commDelete(dishComm);
 		
 		UserPointVO vo = new UserPointVO();
 		vo.setMnum(dishComm.getMnum());
@@ -169,12 +187,16 @@ public class DishServiceImpl implements DishService, PointDescription {
 		pointDAO.registerPoint(vo);
 		
 		log.info("[DishServiceImpl] [commDelete] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
 
+
 	@Override
-	public void commEdit(DishComm dishComm) {
+	public int commEdit(DishComm dishComm) {
 		
-		dishDao.commEdit(dishComm);
+		return dishDao.commEdit(dishComm);
+
 	}
 
 	@Override
@@ -189,6 +211,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		return dishDao.search(select,searchI);
 	}
+
 
 	@Override
 	public List<Map<String, Object>> topDish() {
@@ -266,10 +289,5 @@ public class DishServiceImpl implements DishService, PointDescription {
 			return null;}
 
 	}
-	
-	
-	
-	
-
 	
 }

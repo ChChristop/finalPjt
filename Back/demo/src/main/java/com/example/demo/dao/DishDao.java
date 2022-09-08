@@ -22,7 +22,7 @@ public interface DishDao {
 
 	public void upHit(int RCP_SEQ);
 
-	public void delete(int RCP_SEQ);
+	public int delete(int RCP_SEQ);
 
 	public void pictures(int dnum);
 
@@ -42,17 +42,18 @@ public interface DishDao {
 
 	public void editInfo(Dish dish1, int rCP_SEQ, int mnum);
 
-	public void commAdd(DishComm dishComm);
+	public int commAdd(DishComm dishComm);
 
-	public void commDelete(DishComm dishComm);
+	public int commDelete(DishComm dishComm);
 
-	public void commEdit(DishComm dishComm);
+	public int commEdit(DishComm dishComm);
 
 	public List<DishComm> commGet(int rCP_SEQ);
 
 	public List<Map<String, Object>> search(String select, String searchI);
-	
+
 	public List<Map<String, Object>> topDish();
-	
-	
+
+	public void deleIng(int rCP_SEQ);
+
 }

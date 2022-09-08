@@ -63,6 +63,7 @@ public class SecurityConfig {
 		.apply(new MyCustomDsl())
 		.and()
 	    .authorizeRequests()
+
 				/*
 				 * .antMatchers("/api/logout/**") .hasAnyRole("MEMBER","ADMIN")
 				 * .antMatchers("/api/admin/**") .hasRole("ADMIN")
@@ -87,6 +88,7 @@ public class SecurityConfig {
 		public void configure(HttpSecurity http) throws Exception {
 
 			//비회원이 게시물 읽을 때는 jwt 확인 하지 않게 하기
+			
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			
 			JwtAuthenticationFilter loginFilter = new JwtAuthenticationFilter("/api/login/**",authenticationManager);
@@ -97,6 +99,7 @@ public class SecurityConfig {
 					;
 			
 //					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
+
 		}
 	}
 

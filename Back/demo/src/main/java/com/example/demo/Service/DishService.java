@@ -16,7 +16,7 @@ public interface DishService {
 	/*
 	 * 음식 추가 
 	 */
-	public void add(DishDB dish, int mnum);
+	public int add(DishDB dish, int mnum);
 	/*
 	 * 음식 전체 리스트 불러오기 
 	 */
@@ -28,7 +28,7 @@ public interface DishService {
 	/*
 	 * 음식 정보 수정하기
 	 */
-	public void edit(DishDB dish, Dish dish1, int rCP_SEQ, int mnum);
+	public int edit(DishDB dish, Dish dish1, int rCP_SEQ, int mnum);
 	/*
 	 *  조회수 +1
 	 */
@@ -36,14 +36,7 @@ public interface DishService {
 	/*
 	 * 음식 정보 삭제하기 
 	 */
-	public void delete(int RCP_SEQ);
-	/*
-	 * 사진 수정하려면 그냥 기존 사진 삭제하기
-	 */
-	public void delPicture(int dnum);
-	
-	public void editPicture(Map<String, Object> param);
-	
+	public int delete(int RCP_SEQ);
 	/*
 	 * 본 게시물 좋아요 눌렀나 확인
 	 */
@@ -63,15 +56,17 @@ public interface DishService {
 	/*
 	 * 음식 게시물 댓글 - 추가 
 	 */
-	public void commAdd(DishComm dishComm);
+
+	public int commAdd(DishComm dishComm);
 	/*
 	 * 음식 게시물 댓글 - 삭제
 	 */
-	public void commDelete(DishComm dishComm);
+	public int commDelete(DishComm dishComm);
 	/*
 	 * 음식 게시물 댓글 - 수정
 	 */
-	public void commEdit(DishComm dishComm);
+	public int commEdit(DishComm dishComm);
+
 	/*
 	 * 음식 게시물 댓글 - 전체 가져오기 
 	 */
