@@ -35,7 +35,7 @@ public class AteServiceImpl implements AteService {
 	}
 
 	@Override
-	public Ate getOne(int ate_num) {
+	public Map<String, Object> getOne(int ate_num) {
 
 		return ateDao.getOne(ate_num);
 	}

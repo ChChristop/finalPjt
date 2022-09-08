@@ -24,8 +24,8 @@
         or a.mnum like concat('%',#{select},'%')  
 	</select>
 	
-	<select id="getOne" parameterType="Integer" resultType="Ate">
-		select * from ate where ate_num=#{ate_num}
+	<select id="getOne" parameterType="Integer" resultType="map">
+		select a.*, db.RCP_NM from dishDB db right join ate a on db.RCP_SEQ = a.RCP_SEQ where ate_num=#{ate_num}
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
