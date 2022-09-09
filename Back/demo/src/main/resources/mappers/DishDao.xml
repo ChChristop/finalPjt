@@ -402,7 +402,7 @@
 	<update id="commEdit" parameterType="map">
 		UPDATE dish_comm
 		SET content=#{content}, editdate=now()
-		WHERE mnum=#{mnum} and RCP_SEQ = #{RCP_SEQ}
+		WHERE mnum=#{mnum} and dc_num = #{dc_num}
 	</update>
 		
 	<delete id="delete" parameterType="Integer">
@@ -410,7 +410,7 @@
 	</delete>
 	
 	<delete id="commDelete" parameterType="map">
-		DELETE FROM dish_comm WHERE RCP_SEQ = #{RCP_SEQ} and mnum = #{mnum}
+		DELETE FROM dish_comm WHERE dc_num = #{dc_num} and mnum = #{mnum}
 	</delete>
 	
 	<delete id="delPicture" parameterType="Integer">

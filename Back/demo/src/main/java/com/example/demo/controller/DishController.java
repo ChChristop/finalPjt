@@ -150,11 +150,13 @@ public class DishController {
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
 	 */
-	@DeleteMapping("/comm/delete/{mnum}/{RCP_SEQ}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable String RCP_SEQ) {
+	@DeleteMapping("/comm/delete/{mnum}/{dc_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int dc_num) {
+		
+		// 중간에 수정으로 인해서 RCP_SEQ 구해오기
 		
 		dishComm.setMnum(mnum);
-		dishComm.setRCP_SEQ(RCP_SEQ);
+		dishComm.setDc_num(dc_num);
 		
 		String str = "";
 		int i = dishService.commDelete(dishComm);
@@ -171,11 +173,11 @@ public class DishController {
 	/*
 	 * 댓글 수정(작성한 사람만 수정 가능)  
 	 */
-	@PutMapping("/comm/edit/{mnum}/{RCP_SEQ}")
-	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable String RCP_SEQ) {
+	@PutMapping("/comm/edit/{mnum}/{dc_num}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int dc_num) {
 		
 		dishComm.setMnum(mnum);
-		dishComm.setRCP_SEQ(RCP_SEQ);
+		dishComm.setDc_num(dc_num);
 		
 		String str = "";
 		int i = dishService.commEdit(dishComm);
@@ -502,15 +504,6 @@ public class DishController {
 		
 		
 		//조리 재료
-		//조회를 위한 재료는 다시 재가공 필요! 
-		
-//		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
-//		ingSTR = ingSTR.replace("재료","");
-//		ingSTR = ingSTR.replaceAll("\n",", ");
-//		List<String> ingList = new ArrayList<>();
-//		for(int i = 0; i<ingSTR.split(",").length; i++) {
-//			ingList.add(ingSTR.split(",")[i]);
-//		}
 		String ingSTR = resultMap.get("rcp_parts_dtls").toString();
 		ingSTR = ingSTR.replace("재료","");
 		ingSTR = ingSTR.replaceAll("\n",", ");

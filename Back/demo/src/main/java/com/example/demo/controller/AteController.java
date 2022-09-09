@@ -240,11 +240,11 @@ public class AteController {
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
 	 */
-	@DeleteMapping("/comm/delete/{mnum}/{ate_num}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+	@DeleteMapping("/comm/delete/{mnum}/{ac_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
 		
 		dishComm.setMnum(mnum);
-		dishComm.setAte_num(ate_num);
+		dishComm.setAc_num(ac_num);
 		String str = "";
 		int i = ateService.commDelete(dishComm);
 		
@@ -260,11 +260,11 @@ public class AteController {
 	/*
 	 * 댓글 수정(작성한 사람만 수정 가능)  
 	 */
-	@PutMapping("/comm/edit/{mnum}/{ate_num}")
-	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+	@PutMapping("/comm/edit/{mnum}/{ac_num}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
 		
 		dishComm.setMnum(mnum);
-		dishComm.setAte_num(ate_num);
+		dishComm.setAc_num(ac_num);
 
 		String str = "";
 		int i =  ateService.commEdit(dishComm);

@@ -38,13 +38,13 @@
     </insert>
 	
 	<delete id="commDelete" parameterType="map">
-		DELETE FROM ate_comm WHERE ate_num = #{ate_num} and mnum = #{mnum}
+		DELETE FROM ate_comm WHERE ac_num = #{ac_num} and mnum = #{mnum}
 	</delete>
 	
 	<update id="commEdit" parameterType="map">
 		UPDATE ate_comm
 		SET content=#{content}, editdate=now()
-		WHERE mnum=#{mnum} and ate_num = #{ate_num}
+		WHERE mnum=#{mnum} and ac_num = #{ac_num}
 	</update>
 	
 	
