@@ -171,7 +171,7 @@ public class AteController {
 	 * 먹음 게시글 삭제하기(글 번호도 같이 보내주세요)
 	 */
 
-	@DeleteMapping("/delete/{ate_num}/{munm}")
+	@DeleteMapping("/delete/{ate_num}/{mnum}")
 	public String delete(@PathVariable int ate_num,@PathVariable int mnum) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
