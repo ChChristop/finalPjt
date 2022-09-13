@@ -37,14 +37,12 @@
 	</logger>
 	<logger name="com.example.demo" level="info" additivity="false">
 		<appender-ref ref="CONSOLE" />
-		<!--
 		<appender-ref ref="LOGSTASH" />
-		-->
 	</logger>
 
 
 	<!-- root는 전역으로 INFO 레벨 이상인 로그만 남기고 있다.-->
-	<root level="OFF"></root>
+	<root level="off"></root>
 
 
 </configuration>

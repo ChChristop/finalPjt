@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.service.DishService;
+import com.example.demo.service.elastic.ElasticSearch;
 import com.example.demo.service.mail.MailService;
 import com.example.demo.service.memberService.MemberService;
 import com.example.demo.vo.pwToken.PwTokenVO;
@@ -33,6 +34,8 @@ public class AllPermitURI {
 	private final DishService dishService;
 
 	private final MailService mailService;
+	
+	private final ElasticSearch elaService;
 
 	// 회원 등록 URI
 	@PostMapping("/register")
@@ -208,6 +211,17 @@ public class AllPermitURI {
 			log.info("[/account/email/changePW] [비밀번호 변경 실패(서버)] [{}]", memberDTO.getMemberID());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	
+	@GetMapping("/keyword")
+	public ResponseEntity<List<String>> keyword(){
+		
+		List<String> result  = elaService.search();
+		
+		return new ResponseEntity<List<String>>(result,HttpStatus.OK);
+		
+		
 	}
 
 }

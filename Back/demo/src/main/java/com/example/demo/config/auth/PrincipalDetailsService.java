@@ -15,9 +15,6 @@ import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.service.function.ObjectMapperToDTO;
 import com.example.demo.vo.AdminVO;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +33,6 @@ public class PrincipalDetailsService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		log.info("[PrincipalDetailsService] : 진입 : " + username);
 		
 		boolean check = AdminCheck.check;
 		
@@ -65,7 +60,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 				.build();
 		
 		
-		log.info("[PrincipalDetails(adminDTO)] : 진입 : " + adminDTO.getAdminID());
+		log.info("[PrincipalDetails(adminDTO)] [진입] [{}]", adminDTO.getAdminID());
 		
 		return new PrincipalDetails(adminDTO);
 		
@@ -87,7 +82,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 					throw new UsernameNotFoundException("Check ID");
 				}
 				
-				log.info("[PrincipalDetails(memberDTO)] : 진입 : " + memberDTO.getMemberID());
+				log.info("[PrincipalDetails(memberDTO)] [진입] [{}]", memberDTO.getMemberID());
 				
 				return new PrincipalDetails(memberDTO);
 				
@@ -95,8 +90,9 @@ public class PrincipalDetailsService implements UserDetailsService{
 						
 				return null;
 			}
-	
 		}
-		
 	}
-}
+	}
+	
+		
+

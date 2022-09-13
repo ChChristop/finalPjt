@@ -26,12 +26,13 @@ import com.example.demo.service.DishService;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
+import com.github.javaparser.utils.Log;
 
 import groovy.util.logging.Slf4j;
 
 @RestController
 @RequestMapping("/api/dish")
-@Slf4j
+@lombok.extern.slf4j.Slf4j
 public class DishController {
 
 	@Autowired
@@ -196,6 +197,8 @@ public class DishController {
 	 */
 	@GetMapping("/search")
 	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
+		
+		log.info("[/api/dish/search] [검색어] [{}]",searchI);
 		
 		List<Map<String, Object>> dishList = dishService.search(select,searchI);
 		
