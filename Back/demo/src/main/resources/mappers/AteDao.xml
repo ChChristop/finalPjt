@@ -11,7 +11,12 @@
 	</insert>
 
 	<select id="get" parameterType="Integer" resultType="map">
-		select a.*, db.RCP_NM from dishDB db right join ate a on db.RCP_SEQ = a.RCP_SEQ
+	SELECT A.RCP_NM, A.RCP_SEQ
+,(SELECT COUNT(*) FROM ATE_LIKE WHERE RCP_SEQ = A.RCP_SEQ) AS LIKE_COUNT
+,B.*
+FROM dishdb A
+JOIN ATE B
+ON A.RCP_SEQ = B.RCP_SEQ
 	</select>
 	
 	<select id="search" parameterType="String" resultType="map">
@@ -25,11 +30,34 @@
 	</select>
 	
 	<select id="getOne" parameterType="Integer" resultType="map">
-		select a.*, db.RCP_NM from dishDB db right join ate a on db.RCP_SEQ = a.RCP_SEQ where ate_num=#{ate_num}
+	select 
+		db.RCP_NM, 
+		atepluslike.* 
+		from  dishDB db 
+		right join 
+			(select 
+			a.ate_num, 
+			a.mnum, 
+			a.RCP_SEQ, 
+			a.ate_date, 
+			a.ate_picture, 
+			a.ate_content, 
+			a.ate_hit, 
+			a.ate_editdate, 
+			ifnull(ac.like_count,0) like_count from 
+				(select 
+				count(*) like_count, 
+				ate_num 
+				from ate_like 
+				group by ate_num) ac 
+				right join ate a 
+				on ac.ate_num = a.ate_num) atepluslike
+		on db.RCP_SEQ = atepluslike.RCP_SEQ
+		where ate_num=#{ate_num}
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
-		select * from ate_comm where ate_num = #{ate_num};
+		select * from ate_comm where ate_num = #{ate_num}
 	</select>
 	
 	<insert id="commAdd" parameterType="map">
@@ -75,13 +103,13 @@
 		set 
 		ate_num=#{ate_num}, 
 		mnum=#{mnum}, 
-		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num} and mnum=#{mnum})
+		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num})
 	</insert>
 	
 	<delete id="goAteDislike" parameterType="Integer">
 		DELETE FROM ate_like
 		WHERE ate_num=#{ate_num} and mnum=#{mnum} and
-		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num} and mnum=#{mnum})
+		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num})
 		
 	</delete>
 	

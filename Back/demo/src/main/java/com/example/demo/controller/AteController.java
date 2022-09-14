@@ -34,9 +34,6 @@ public class AteController {
 
 	@Autowired
 	AteService ateService;
-
-	@Value("${a.imgdir}")
-	String fdir;
 	
 	@Value("${AteuploadPath}")
 	String uploadPath;
