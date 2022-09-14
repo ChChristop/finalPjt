@@ -82,8 +82,8 @@
 	SELECT
 		d.writer,
 		d.url,
-		d.dish_like,
-		d.ate,
+		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
+		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
 		d.date,
 		d.t_time,
 		d.m_ingredient,
@@ -239,8 +239,8 @@
 		SELECT
 		d.writer,
 		d.url,
-		d.dish_like,
-		d.ate,
+		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
+		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
 		d.date,
 		d.t_time,
 		d.m_ingredient,

@@ -64,11 +64,19 @@ public class DishController {
 			map.put("dish_name", resultMap.get("rcp_nm"));  //음식명
 			map.put("cookery", resultMap.get("rcp_way2")); //조리방법
 			map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
-			
+			map.put("dish_like", resultMap.get("dish_like")); // 좋아요 개수
+			map.put("ate", resultMap.get("ate")); //먹음 게시물 수 
+		
 			
 			
 			//조리 재료
-			String ingSTR = resultMap.get("rcp_parts_dtls").toString();
+			String ingSTR = "";
+			//조리 재료
+			if(resultMap.get("rcp_parts_dtls") != null) {
+				ingSTR = resultMap.get("rcp_parts_dtls").toString();
+			}else {
+				ingSTR = "재료없음";
+			}
 			ingSTR = ingSTR.replace("재료","");
 			ingSTR = ingSTR.replaceAll("\n",", ");
 			
@@ -86,12 +94,15 @@ public class DishController {
 					manualIdNum = String.valueOf(i+1);
 				}
 				manualId += manualIdNum;
-				if(!resultMap.get(manualId).toString().isEmpty()) {
-					String manualStr = resultMap.get(manualId).toString();
+				
+				String manualStr = "";
+				if(resultMap.get(manualId) != null) {
+					manualStr = resultMap.get(manualId).toString();
 					manualStr = manualStr.replace("\n","");
-					recipe.add(i,manualStr);
 				}
-			}
+				recipe.add(i,manualStr);
+				}
+				
 			map.put("recipe", recipe); //조리방법
 			
 			List<String> imgList = new ArrayList<>();
@@ -107,11 +118,15 @@ public class DishController {
 				
 				imgId += imgIdNum;
 				
-				if(!resultMap.get(imgId).toString().isEmpty()) {
-					String imgStr = resultMap.get(imgId).toString();
+				String imgStr = ""; 
+				
+				if(resultMap.get(imgId) != null) {
+					imgStr = resultMap.get(imgId).toString();
 					imgStr = imgStr.replace("\n","");
-					imgList.add(i,imgStr);
 				}
+				
+				imgList.add(i,imgStr);
+				
 			}
 
 			map.put("imgList", imgList); //조리이미지
@@ -425,8 +440,10 @@ public class DishController {
 		
 		map.put("dish_num", resultMap.get("rcp_seq")); //고유번호
 		map.put("dish_name", resultMap.get("rcp_nm"));  //음식명
-		//map.put("cookery", resultMap.get("rcp_way2")); //조리방법
+		map.put("cookery", resultMap.get("rcp_way2")); //조리방법
 		map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
+		map.put("dish_like", resultMap.get("dish_like")); // 좋아요 개수
+		map.put("ate", resultMap.get("ate")); //먹음 게시물 수 
 		
 		
 		String ingSTR = "";
@@ -434,9 +451,9 @@ public class DishController {
 		if(resultMap.get("rcp_parts_dtls") != null) {
 			ingSTR = resultMap.get("rcp_parts_dtls").toString();
 		}else {
-			ingSTR = "test";
+			ingSTR = "재료없음";
 		}
-		System.out.println("얍 :::: ");
+
 		ingSTR = ingSTR.replace("재료","");
 		ingSTR = ingSTR.replaceAll("\n",", ");
 
