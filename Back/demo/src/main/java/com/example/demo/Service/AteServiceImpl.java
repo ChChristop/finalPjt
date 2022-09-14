@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.AteDao;
 import com.example.demo.dao.point.PointDAO;
+import com.example.demo.dto.AteDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
@@ -35,16 +36,16 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		int result = ateDao.add(ate);
 
-//		UserPointVO vo = new UserPointVO();
-//
-//		vo.setMnum(ate.getMnum());
-//		vo.setPointID(ATE_PLUS);
-//		vo.setPoint(ATE_POINT);
-//	//	vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
-//
-//		pointDAO.registerPoint(vo);
-//
-//		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
+		UserPointVO vo = new UserPointVO();
+
+		vo.setMnum(ate.getMnum());
+		vo.setPointID(ATE_PLUS);
+		vo.setPoint(ATE_POINT);
+		vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
+
+		pointDAO.registerPoint(vo);
+
+		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
 
 		return result;
 	}
@@ -122,7 +123,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
-	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
+	public PageResultVO<AteDTO> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
 	
 		// 기준
 		if (pageRequestDTO.getBasis() == "pk") {
@@ -132,7 +133,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		pageRequestDTO.setterChange();
 		
-		List<Ate> result = null;
+		List<AteDTO> result = null;
 	
 		int count = 0;
 
@@ -154,8 +155,20 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int commAdd(DishComm dishComm) {
 		
+		int result  = ateDao.commAdd(dishComm);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(dishComm.getMnum());
+		vo.setPointID(ATE_COMMENT_PLUS);
+		vo.setPoint(ATE_COMMENT_POINT);
+		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[AteServiceImpl] [commAdd] [{}]", dishComm.getMnum());
 		
 		return ateDao.commAdd(dishComm);
 	}

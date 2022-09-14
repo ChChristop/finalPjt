@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,19 +8,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.AteDTO;
 import com.example.demo.dto.DishCommDTO;
 import com.example.demo.dto.DishLikeDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.PointDTO;
 import com.example.demo.pagelib.PageRequestDTO;
-import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.service.AteService;
 import com.example.demo.service.DishService;
@@ -278,11 +276,10 @@ public class MemberController {
 		
 		//먹음 리스트 조회(페이지 처리 한 것)
 		@GetMapping("/ate-list/{mnum}")
-		public ResponseEntity<PageResultVO<Ate>> getUserList2(@PathVariable long mnum, HttpServletRequest request,
+		public ResponseEntity<PageResultVO<AteDTO>> getUserList2(@PathVariable long mnum, HttpServletRequest request,
 				PageRequestDTO pageRequestDTO) {
 			
 			log.info("[/api/member/ate-list/{mnum}] [먹음 리스트 조회] ] [{}]", mnum);
-			
 			
 			// 추후 주석 해제 예정
 
@@ -297,11 +294,11 @@ public class MemberController {
 			 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
 			 */
 			
-			PageResultVO<Ate> result = ateService.getUserAteList(pageRequestDTO,mnum);
+			PageResultVO<AteDTO> result = ateService.getUserAteList(pageRequestDTO,mnum);
 
-			if(result == null) return new ResponseEntity<>(new PageResultVO<Ate>(),HttpStatus.ACCEPTED);
+			if(result == null) return new ResponseEntity<>(new PageResultVO<AteDTO>(),HttpStatus.ACCEPTED);
 			
-			log.info("[/api/getList2/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
+			log.info("[/api/member/ate-list/{mnum}] [먹음 리스트 조회 성공] [{}]", mnum);
 			
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}

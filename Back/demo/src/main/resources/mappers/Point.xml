@@ -6,10 +6,12 @@
 
 	<select id="findUserPointbyMnum" resultType="PointDTO">
 	
-	SELECT * FROM USERPOINT U LEFT OUTER JOIN POINT P 
+	SELECT U.*, P.*, D.RCP_NM FROM USERPOINT U 
 	
-	ON U.POINTID = P.POINTID 
-	
+    LEFT OUTER JOIN POINT P ON U.POINTID = P.POINTID 
+    
+    LEFT OUTER JOIN DISHDB D ON U.RCP_SEQ = D.RCP_SEQ
+    
 	WHERE U.MNUM = #{mnum}
 	
 	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
@@ -19,9 +21,11 @@
 	<!-- 현재날짜 기준 7일 활동 내역 미구현-->
 	<select id="findUserPoint7dbyMnum" resultType="PointDTO">
 	
-	SELECT * FROM USERPOINT U LEFT OUTER JOIN POINT P 
+	SELECT U.*, P.*, D.RCP_NM FROM USERPOINT U 
 	
-	ON U.POINTID = P.POINTID 
+    LEFT OUTER JOIN POINT P ON U.POINTID = P.POINTID 
+    
+    LEFT OUTER JOIN DISHDB D ON U.RCP_SEQ = D.RCP_SEQ
 	
 	WHERE U.MNUM = #{mnum} AND
 	

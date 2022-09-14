@@ -6,9 +6,11 @@
 
 	<select id="dishLikeListbyMnum" resultType="DishLikeDTO">
 	
-	SELECT * FROM DISH_LIKE 
+	SELECT L.*, D.RCP_NM
+
+	FROM DISH_LIKE L LEFT OUTER JOIN DISHDB D ON L.RCP_SEQ = D.RCP_SEQ
 	
-	WHERE MNUM = #{mnum}
+	WHERE L.MNUM = #{mnum}
 	
 	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
 	

@@ -118,10 +118,11 @@ ON A.RCP_SEQ = B.RCP_SEQ
 		WHERE mnum = #{mnum}
 	</select>
 	
-	<select id="getAteListbyUser" resultType="Ate">
-		SELECT * FROM ATE
-		WHERE MNUM = #{mnum}
-		ORDER BY ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
+	<select id="getAteListbyUser" resultType="AteDTO">
+		SELECT A.*, D.RCP_NM
+		FROM ATE A LEFT OUTER JOIN DISHDB D ON A.RCP_SEQ = D.RCP_SEQ
+		WHERE A.MNUM = #{mnum}
+		ORDER BY a.ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
 	
 	</select>
 	

@@ -17,6 +17,16 @@ public interface PointDAO {
 	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,RCP_SEQ) "
 			+ "VALUES(#{mnum},#{pointID},#{point},#{RCP_SEQ})")
 	public void registerPoint(UserPointVO vo);
+	
+	//dish_num은 null이어도 됨
+	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,AC_NUM) "
+			+ "VALUES(#{mnum},#{pointID},#{point},#{ac_num})")
+	public void registerPointbyAc_num(UserPointVO vo);
+	
+	//dish_num은 null이어도 됨
+	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,A_LNUM) "
+			+ "VALUES(#{mnum},#{pointID},#{point},#{a_lnum})")
+	public void registerPointbya_lnum(UserPointVO vo);
 
 	public List<PointDTO> findUserPointbyMnum(PageRequestDTO dto,long mnum);
 	
