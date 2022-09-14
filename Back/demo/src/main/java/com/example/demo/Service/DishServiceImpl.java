@@ -159,15 +159,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		int result = dishDao.commAdd(dishComm);
 		
-		UserPointVO vo = new UserPointVO();
-		vo.setMnum(dishComm.getMnum());
-		vo.setPointID(COMMENT_PLUS);
-		vo.setPoint(COMMENT_POINT);
-		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
-		
-		pointDAO.registerPoint(vo);
-		
-		log.info("[DishServiceImpl] [commAdd] [{}]", dishComm.getMnum());
+//		UserPointVO vo = new UserPointVO();
+//		vo.setMnum(dishComm.getMnum());
+//		vo.setPointID(COMMENT_PLUS);
+//		vo.setPoint(COMMENT_POINT);
+//		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
+//		
+//		pointDAO.registerPoint(vo);
+//		
+//		log.info("[DishServiceImpl] [commAdd] [{}]", dishComm.getMnum());
 		
 		return result;
 	}
@@ -178,15 +178,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 		
 		int result = dishDao.commDelete(dishComm);
 		
-		UserPointVO vo = new UserPointVO();
-		vo.setMnum(dishComm.getMnum());
-		vo.setPointID(COMMENT_MINUS);
-		vo.setPoint(COMMENT_POINT * -1);
-		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
-		
-		pointDAO.registerPoint(vo);
-		
-		log.info("[DishServiceImpl] [commDelete] [{}]", dishComm.getMnum());
+//		UserPointVO vo = new UserPointVO();
+//		vo.setMnum(dishComm.getMnum());
+//		vo.setPointID(COMMENT_MINUS);
+//		vo.setPoint(COMMENT_POINT * -1);
+//		vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
+//		
+//		pointDAO.registerPoint(vo);
+//		
+//		log.info("[DishServiceImpl] [commDelete] [{}]", dishComm.getMnum());
 		
 		return result;
 	}

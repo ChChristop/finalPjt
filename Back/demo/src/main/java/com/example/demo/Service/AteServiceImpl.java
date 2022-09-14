@@ -35,16 +35,16 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		int result = ateDao.add(ate);
 
-		UserPointVO vo = new UserPointVO();
-
-		vo.setMnum(ate.getMnum());
-		vo.setPointID(ATE_PLUS);
-		vo.setPoint(ATE_POINT);
-		vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
-
-		pointDAO.registerPoint(vo);
-
-		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
+//		UserPointVO vo = new UserPointVO();
+//
+//		vo.setMnum(ate.getMnum());
+//		vo.setPointID(ATE_PLUS);
+//		vo.setPoint(ATE_POINT);
+//	//	vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
+//
+//		pointDAO.registerPoint(vo);
+//
+//		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
 
 		return result;
 	}
@@ -59,7 +59,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
-	public Ate getOne(int ate_num) {
+	public Map<String, Object> getOne(int ate_num) {
 
 		return ateDao.getOne(ate_num);
 	}
@@ -76,16 +76,16 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		int result = ateDao.delete(ate_num,mnum);
 
-		UserPointVO vo = new UserPointVO();
-
-		vo.setMnum(mnum);
-		vo.setPointID(ATE_MINUS);
-		vo.setPoint(ATE_POINT * -1);
-
-		pointDAO.registerPoint(vo);
-
-		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
-		
+//		UserPointVO vo = new UserPointVO();
+//
+//		vo.setMnum(mnum);
+//		vo.setPointID(ATE_MINUS);
+//		vo.setPoint(ATE_POINT * -1);
+//
+//		pointDAO.registerPoint(vo);
+//
+//		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
+//		
 		return result;
 	}
 

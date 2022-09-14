@@ -17,7 +17,7 @@ public interface AteDao {
 
 	public List<Ate> get();
 
-	public Ate getOne(int ate_num);
+	public Map<String, Object> getOne(int ate_num);
 
 	public int editAte(Ate ate);
 

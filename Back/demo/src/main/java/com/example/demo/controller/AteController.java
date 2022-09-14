@@ -34,9 +34,6 @@ public class AteController {
 
 	@Autowired
 	AteService ateService;
-
-	@Value("${a.imgdir}")
-	String fdir;
 	
 	@Value("${AteuploadPath}")
 	String uploadPath;
@@ -91,14 +88,9 @@ public class AteController {
 
 		return ateService.get();
 	}
-
 	/*
-<<<<<<< HEAD
-	 * 먹음 게시글 한개 불러오기 -> 이동 또는 권한 조정 예정
-=======
 	 * 먹음 게시글 한개 불러오기
 	 * 댓글도 같이 불러옴 
->>>>>>> 39bd7c5b1b1377bdf68ad80dc9733ddbad2bba64
 	 */
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
@@ -117,8 +109,7 @@ public class AteController {
 			str = "liked";
 		}
 
-		Ate result = ateService.getOne(ate_num);
-
+		Map<String, Object> result = ateService.getOne(ate_num);
 		List<DishComm> commList = ateService.commGet(ate_num);
 		
 		resultMap.put("commList", commList);
@@ -128,11 +119,12 @@ public class AteController {
 
 		return resultMap;
 	}
-
+	
 	/*
-	 * 먹음 게시글 수정하기(글 번호, 로그인한 아이디도 같이 보내주세요) 수정은 작성자만 가능하게 -> 프론트와 상의
+	 * 먹음 게시글 수정하기(글 번호, 로그인한 아이디도 같이 보내주세요) 
+	 * 수정은 작성자만 가능하게 -> 프론트와 상의
 	 */
-
+	
 	@PutMapping("/edit/{ate_num}/{mnum}")
 	public String edit(@ModelAttribute Ate ate,
 			@RequestParam("file") MultipartFile file) throws Exception{
@@ -176,7 +168,7 @@ public class AteController {
 	 * 먹음 게시글 삭제하기(글 번호도 같이 보내주세요)
 	 */
 
-	@DeleteMapping("/delete/{ate_num}/{munm}")
+	@DeleteMapping("/delete/{ate_num}/{mnum}")
 	public String delete(@PathVariable int ate_num,@PathVariable int mnum) {
 		//정말 삭제하시겠습니까? 질문 하는거...(팝업)
 		
@@ -199,7 +191,7 @@ public class AteController {
 	 * 먹음 좋아요 등록 / 취소 유저 번호도 같이 받아야해!
 	 */
 	@PostMapping("/like/{ate_num}/{mnum}")
-	public String goDishLike(@PathVariable int ate_num, @PathVariable int mnum) {
+	public String goAteLike(@PathVariable int ate_num, @PathVariable int mnum) {
 
 		String str = "";
 		// 좋아요 안누른 상태면, 좋아요 등록
@@ -245,11 +237,11 @@ public class AteController {
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
 	 */
-	@DeleteMapping("/comm/delete/{mnum}/{ate_num}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+	@DeleteMapping("/comm/delete/{mnum}/{ac_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
 		
 		dishComm.setMnum(mnum);
-		dishComm.setAte_num(ate_num);
+		dishComm.setAc_num(ac_num);
 		String str = "";
 		int i = ateService.commDelete(dishComm);
 		
@@ -265,11 +257,11 @@ public class AteController {
 	/*
 	 * 댓글 수정(작성한 사람만 수정 가능)  
 	 */
-	@PutMapping("/comm/edit/{mnum}/{ate_num}")
-	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
+	@PutMapping("/comm/edit/{mnum}/{ac_num}")
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
 		
 		dishComm.setMnum(mnum);
-		dishComm.setAte_num(ate_num);
+		dishComm.setAc_num(ac_num);
 
 		String str = "";
 		int i =  ateService.commEdit(dishComm);

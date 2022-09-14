@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MainDao;
+import com.example.demo.vo.NonMember;
 
 import groovy.util.logging.Slf4j;
 
@@ -33,6 +34,12 @@ public class MainServiceImpl implements MainService {
 	public List<Map<String, Object>> ingAllReco(int mnum) {
 	
 		return mainDao.ingAllReco(mnum);
+	}
+
+	@Override
+	public List<Map<String, Object>> ingAllReco_9999(NonMember nonMember) {
+		
+		return mainDao.ingAllReco_9999(nonMember);
 	}
 
 
