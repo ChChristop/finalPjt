@@ -24,6 +24,14 @@
 	select * from (select * from dish_ing where iname like concat('%',#{ing5},'%') limit 0,10) ing5
 	</select>  
 	
+	<select id="getIngs" parameterType="Integer" resultType="map"> 
+		select iname from refrigerator where mnum =#{mnum} order by `expiration date`
+	</select>
+	
+	<select id="getList" parameterType="map" resultType="map">
+		select * from dishDB where RCP_SEQ in (select RCP_SEQ from dish_ing where iname = #{iname}) limit 0,5
+	</select>
+	
 	
 	
 	<!-- 포이치 구문 사용하자!

@@ -223,11 +223,11 @@ public class DishController {
 	@PostMapping("/add/{mnum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,
 			@RequestParam("file01") MultipartFile file01
-			/*	,@RequestParam("file02") MultipartFile file02,
+			/*,@RequestParam("file02") MultipartFile file02,
 			@RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04,
-			@RequestParam("file05") MultipartFile file05
-			,@RequestParam("file06") MultipartFile file06,
+			@RequestParam("file05") MultipartFile file05*/
+			/*,@RequestParam("file06") MultipartFile file06,
 			@RequestParam("file07") MultipartFile file07,
 			@RequestParam("file08") MultipartFile file08,
 			@RequestParam("file09") MultipartFile file09,
@@ -300,6 +300,8 @@ public class DishController {
 		dish.setRCP_SEQ(Integer.toString(num));
 		
 		String str = "";
+		
+		System.out.println("RCP_PARTS_DTLS() ::: " +dish.getRCP_PARTS_DTLS());
 		
 		int i = dishService.add(dish, mnum);
 		

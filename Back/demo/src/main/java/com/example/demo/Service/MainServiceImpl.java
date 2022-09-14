@@ -42,6 +42,18 @@ public class MainServiceImpl implements MainService {
 		return mainDao.ingAllReco_9999(nonMember);
 	}
 
+	@Override
+	public List<Map<String, Object>> getIngs(int mnum) {
+	
+		return mainDao.getIngs(mnum);
+	}
+
+	@Override
+	public List<Map<String, Object>> getList(String string) {
+		
+		return mainDao.getList(string);
+	}
+
 
 	
 }
