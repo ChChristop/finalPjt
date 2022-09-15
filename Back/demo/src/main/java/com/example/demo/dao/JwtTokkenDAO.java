@@ -19,7 +19,7 @@ public interface JwtTokkenDAO {
 	int createJWTTokenInDB(String id, String jwt,String ip);
 
 	@Delete("DELETE FROM JWTTOKEN WHERE id = #{id}")
-	void refreshTokenRemove(String id);
+	int refreshTokenRemove(String id);
 
 	@Select("SELECT * FROM JWTTOKEN WHERE id = #{id}")
 	List<JwtVO> findJWTByAdminID(String id);

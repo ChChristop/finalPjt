@@ -19,9 +19,9 @@ public interface PointDAO {
 	public void registerPoint(UserPointVO vo);
 	
 	//dish_num은 null이어도 됨
-	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,AC_NUM) "
-			+ "VALUES(#{mnum},#{pointID},#{point},#{ac_num})")
-	public void registerPointbyAc_num(UserPointVO vo);
+	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,ATE_NUM) "
+			+ "VALUES(#{mnum},#{pointID},#{point},#{ate_num})")
+	public void registerPointbyAte_num(UserPointVO vo);
 	
 	//dish_num은 null이어도 됨
 	@Insert("INSERT INTO USERPOINT(MNUM,POINTID,POINT,A_LNUM) "

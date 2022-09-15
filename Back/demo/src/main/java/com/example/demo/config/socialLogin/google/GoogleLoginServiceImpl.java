@@ -59,7 +59,7 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 //	 		레거시 코드	
 //			String getHeader = request.getHeader("abc");
 //			String code = getHeader.substring(getHeader.indexOf("code")+5,getHeader.indexOf("&scope"));
-		log.info("[GoogleLoginServiceImpl] : Google Login 진입");
+		log.info("[GoogleLoginServiceImpl] [구글 로그인] []");
 		
 		//Header 분석
 		String code = getHeader;
@@ -142,14 +142,14 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 	public MemberDTO check(MemberDTO dto) {
 
 		// DB에 아이디가 있는지 확인 중
-		log.info("[GoogleLoginServiceImpl] : check(MemberDTO dto) : " + dto.getMemberID());
+		log.info("[GoogleLoginServiceImpl] [check] [{}]", dto.getMemberID());
 		
 		Optional<MemberVO> member = memberDAO.findMemberbyMemberIDForJWT(dto.getMemberID());
 
 		// DB에 아이디가 없으면 자동 가입 -> 나중에 수정 예정
 		if (!(member.isPresent())) {
 
-			log.info("[GoogleLoginServiceImpl] : 회원가입 진행 : " + dto.getMemberID());
+			log.info("[GoogleLoginServiceImpl] [check 회원가입 진행] [{}]", dto.getMemberID());
 			
 			memberService.register(dto);
 			 
@@ -173,7 +173,7 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 	@Override
 	public void loginSuccess(MemberDTO memberDTO, HttpServletRequest request) {
 
-		log.info("[GoogleLoginServiceImpl] : 구글 로그인 성공 : " + memberDTO.getMemberID());
+		log.info("[GoogleLoginServiceImpl] [구글 로그인 성공] [{}]", memberDTO.getMemberID());
 		
 		PrincipalDetails principalDetails = new PrincipalDetails(memberDTO);
 		
@@ -213,7 +213,7 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 		// DB에 일치하는 아이디가 없으면 빈 객체 리턴
 		if (!(member.isPresent())) {
 			
-			log.warn("[GoogleLoginServiceImpl] : 모바일 구글 실패 : " + id);
+			log.warn("[GoogleLoginServiceImpl] [모바일 구글 실패] [{}]", id);
 			
 			return new MemberDTO();
 		}

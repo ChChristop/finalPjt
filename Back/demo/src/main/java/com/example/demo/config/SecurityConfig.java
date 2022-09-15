@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Slf4j
 public class SecurityConfig {
 	
 	private final CorsConfig corsConfig = new CorsConfig();

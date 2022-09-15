@@ -47,11 +47,16 @@ public class AteTest {
 				
 				Ate ate1 = new Ate();
 				
+				Random rrr = new Random();
+				int r3 = rrr.nextInt(0, abc.length);
+				Random rrrr = new Random();
+				int r4 = rrrr.nextInt(0, 3);
+				
 				ate1.setMnum(i);
-				ate1.setRCP_SEQ(Integer.toString(abc[r1]));
+				ate1.setRCP_SEQ(Integer.toString(abc[r3]));
 				ate1.setAte_like(0);
 				ate1.setAte_hit(0);
-				ate1.setAte_content(bcd[rr1]);
+				ate1.setAte_content(bcd[r4]);
 
 				ate.add(ate1);
 			}

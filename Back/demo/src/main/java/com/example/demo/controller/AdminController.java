@@ -39,7 +39,7 @@ public class AdminController {
 	@GetMapping("/checkID/{adminID}")
 	public ResponseEntity<Boolean> checkAdminID(@PathVariable String adminID) {
 
-		log.info("[/api/admin/checkID/{adminID}] [진입] [{}]", adminID);
+		log.info("[/api/admin/checkID/{adminID}] [checkAdminID] [{}]", adminID);
 
 		// 관리자 아이디 중복 체크 true or false 사용
 		boolean result = adminService.CheckadminID(adminID);
@@ -51,7 +51,7 @@ public class AdminController {
 	@GetMapping("/adminID/{adminID}")
 	public ResponseEntity<AdminDTO> searchAdmin(@PathVariable String adminID) {
 
-		log.info("[/api/admin/adminID/{adminId}] [진입] [{}]", adminID);
+		log.info("[/api/admin/adminID/{adminId}] [searchAdmin] [{}]", adminID);
 
 		AdminDTO result = null;
 
@@ -63,10 +63,10 @@ public class AdminController {
 		}
 
 		if (result == null) {
-			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 실패] [{}]", adminID);
+			log.warn("[/api/admin/adminID/{adminId}] [searchAdmin 실패] [{}]", adminID);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} else {
-			log.warn("[/api/admin/adminID/{adminId}] [관리자 조회 성공] [{}]", adminID);
+			log.warn("[/api/admin/adminID/{adminId}] [searchAdmin 성공] [{}]", adminID);
 			result.setAdminPW("");
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
@@ -77,7 +77,7 @@ public class AdminController {
 	public ResponseEntity<PageResultDTO<Map<String,Object>, AdminDTO>> adminlist(@ModelAttribute PageRequestDTO pageRequestDTO,
 			Model mopdel) {
 
-		log.info("[/api/admin/admin-list] [진입]");
+		log.info("[/api/admin/admin-list] [adminlist] []");
 
 		PageResultDTO<Map<String,Object>, AdminDTO> result = adminService.getAdminList(pageRequestDTO);
 
@@ -89,16 +89,16 @@ public class AdminController {
 
 	public ResponseEntity<Long> addAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("[/api/admin/register] [진입] [{}]", adminDTO.getAdminID());
+		log.info("[/api/admin/register] [addAdmin] [{}]", adminDTO.getAdminID());
 
 		// 정상적으로 등록됐으면 관리자 식별자 리턴;
 		Long result = adminService.register(adminDTO);
 
 		if (result > 0) {
-			log.info("[/api/admin/register] [회원 가입 성공] [{}]", adminDTO.getAdminID());
+			log.info("[/api/admin/register] [addAdmin 성공] [{}]", adminDTO.getAdminID());
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			log.warn("[/api/admin/register] [회원 가입 실패] [{}]", adminDTO.getAdminID());
+			log.warn("[/api/admin/register] [addAdmin 실패] [{}]", adminDTO.getAdminID());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		}
@@ -109,16 +109,16 @@ public class AdminController {
 	@DeleteMapping("/delete/{anum}")
 	public ResponseEntity<Long> removeAdmin(@PathVariable Long anum) {
 
-		log.info("[/api/delete/{anum}] [진입] [{}]", anum);
+		log.info("[/api/delete/{anum}] [removeAdmin] [{}]", anum);
 
 		// 정상적으로 삭제됐으면 anum 리턴, 아니면 0
 		Long result = adminService.remove(anum);
 
 		if (result > 0) {
-			log.info("[/api/admin/delete/{anum}] [관리자 삭제 성공] [{}]",anum);
+			log.info("[/api/admin/delete/{anum}] [removeAdmin 성공] [{}]",anum);
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			log.warn("[/api/admin/delete/{anum}] [관리자 삭제 실패] [{}]", anum);
+			log.warn("[/api/admin/delete/{anum}] [removeAdmin 실패] [{}]", anum);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -128,15 +128,15 @@ public class AdminController {
 	@PutMapping("/update")
 	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
-		log.info("[/api/admin/update] [진입] [{}]",adminDTO.getAdminID());
+		log.info("[/api/admin/update] [updateAdmin] [{}]",adminDTO.getAdminID());
 
 		Long result = adminService.update(adminDTO);
 
 		if (result > 0) {
-			log.info("[/api/admin/update] [관리자 수정 성공] [{}]",adminDTO.getAdminID());
+			log.info("[/api/admin/update] [updateAdmin 성공] [{}]",adminDTO.getAdminID());
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			log.warn("[/api/admin/update] : [관리자 수정 실패] [{}] ",adminDTO.getAdminID());
+			log.warn("[/api/admin/update] : [updateAdmin 실패] [{}] ",adminDTO.getAdminID());
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -148,7 +148,7 @@ public class AdminController {
 	public ResponseEntity<PageResultDTO<Map<String, Object>, MemberDTO>> adminlist2(
 			@ModelAttribute PageRequestDTO pageRequestDTO) {
 
-		log.info("[/api/member/member-list] [회원 리스트 조회]");
+		log.info("[/api/member/member-list] [adminlist2]");
 
 		PageResultDTO<Map<String, Object>, MemberDTO> result = memberService.getMemberList2(pageRequestDTO);
 

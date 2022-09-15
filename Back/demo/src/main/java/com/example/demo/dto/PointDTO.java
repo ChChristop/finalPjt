@@ -31,7 +31,8 @@ public class PointDTO {
 	@JsonProperty("RCP_NM")
 	private String RCP_NM;
 	
-	private int ac_num;
+	@JsonProperty("ATE_NUM")
+	private int ATE_NUM;
 	
-	private int a_lnum;
+
 }

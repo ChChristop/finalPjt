@@ -51,25 +51,37 @@ public class DishTest implements PointDescription {
 	public void tes2() {
 		
 		try {
+			int ate_num = 108;
+			int mnum = 98;
 			
-			DishComm dishComm = new DishComm();
-			dishComm.setMnum(100);
-			dishComm.setAte_num(20);;
-			dishComm.setRCP_SEQ(Integer.toString(19));
-			dishComm.setContent("맛있어요!");
-
-			ateDAO.commAdd(dishComm);
+			ateDAO.goAteLike(ate_num, mnum);
 			
 			UserPointVO vo = new UserPointVO();
-			vo.setMnum(dishComm.getMnum());
-			vo.setPointID(ATE_COMMENT_PLUS);
-			vo.setPoint(ATE_COMMENT_POINT);
-			vo.setRCP_SEQ(Integer.parseInt(dishComm.getRCP_SEQ()));
-
-			pointDAO.registerPoint(vo);
+			vo.setMnum(mnum);
+			vo.setPointID(ATE_LIKE_PLUS);
+			vo.setPoint(ATE_LIKE_POINT);
+			vo.setAte_num(ate_num);;
 			
+			pointDAO.registerPointbyAte_num(vo);
+			
+//			DishComm dishComm = new DishComm();
+//			dishComm.setAte_num(108);
+//			dishComm.setMnum(98);
+//			dishComm.setContent("컨텐츠0");
+//			
+//			ateDAO.commAdd(dishComm);
+//			
+//			UserPointVO vo = new UserPointVO();
+//			vo.setMnum(dishComm.getMnum());
+//			vo.setPointID(ATE_COMMENT_PLUS);
+//			vo.setPoint(ATE_COMMENT_POINT);
+//			vo.setAte_num(dishComm.getAte_num());;
+//			
+//			pointDAO.registerPointbyAte_num(vo);
 
-			System.out.println("[DishServiceImpl] [commAdd] " + dishComm.getMnum());
+			
+			System.out.println("[AteServiceImpl] [commAdd] " + mnum);
+	
 			
 		} catch (Exception e) {
 			
