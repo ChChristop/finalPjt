@@ -29,7 +29,7 @@
 	</select>
 	
 	<select id="getList" parameterType="map" resultType="map">
-		select * from dishDB where RCP_SEQ in (select RCP_SEQ from dish_ing where iname = #{iname}) limit 0,5
+		select * from dishDB where RCP_SEQ in (select RCP_SEQ from dish_ing where iname = #{iname}) limit 0,2
 	</select>
 	
 	

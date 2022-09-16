@@ -222,9 +222,9 @@ public class DishController {
 	 */
 	@PostMapping("/add/{mnum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,
-			@RequestParam("file01") MultipartFile file01
-			/*,@RequestParam("file02") MultipartFile file02,
-			@RequestParam("file03") MultipartFile file03,
+			@RequestParam("file01") MultipartFile file01,
+			@RequestParam("file02") MultipartFile file02
+			/*,@RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04,
 			@RequestParam("file05") MultipartFile file05*/
 			/*,@RequestParam("file06") MultipartFile file06,
@@ -241,12 +241,12 @@ public class DishController {
 			dish.setMANUAL_IMG01(ip+"/ate/" + savedName);
 		}
 		
-//		if(!file02.isEmpty()) {
-//			String savedName = file02.getOriginalFilename();
-//			savedName = uploadFile(savedName, file02.getBytes());
-//			dish.setMANUAL_IMG02(ip+"/ate/" + savedName);
-//			}
-//
+		if(!file02.isEmpty()) {
+			String savedName = file02.getOriginalFilename();
+			savedName = uploadFile(savedName, file02.getBytes());
+			dish.setMANUAL_IMG02(ip+"/ate/" + savedName);
+			}
+
 //		if(!file03.isEmpty()) {
 //			String savedName = file03.getOriginalFilename();
 //			savedName = uploadFile(savedName, file03.getBytes());
