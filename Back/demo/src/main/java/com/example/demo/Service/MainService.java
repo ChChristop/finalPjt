@@ -15,4 +15,8 @@ public interface MainService {
 
 	public List<Map<String, Object>> ingAllReco_9999(NonMember nonMember);
 
+	public List<Map<String, Object>> getIngs(int mnum);
+
+	public List<Map<String, Object>> getList(String string);
+
 }

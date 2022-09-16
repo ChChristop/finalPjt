@@ -20,7 +20,6 @@ import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 import com.example.demo.vo.point.PointDescription;
-import com.example.demo.vo.point.UserPointVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,8 +51,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int add(DishDB dish, int mnum) {
 		
-		
-		//여기 나중에 하나로 묶어
 		dishDao.add(dish);
 		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
@@ -72,7 +69,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
 		
-		//여기 나중에 하나로 묶어
 		dishDao.edit(dish);
 		dishDao.editInfo(dish1, rCP_SEQ, mnum);
 		dishDao.deleIng(rCP_SEQ);
@@ -119,15 +115,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 	
 		dishDao.goDishLike(RCP_SEQ,mnum);
 		
-		UserPointVO vo = new UserPointVO();
-		vo.setMnum(mnum);
-		vo.setPointID(LIKE_PLUS);
-		vo.setPoint(LIKE_POINT);
-		vo.setRCP_SEQ(RCP_SEQ);
-		
-		pointDAO.registerPoint(vo);
-		
-		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
+//		UserPointVO vo = new UserPointVO();
+//		vo.setMnum(mnum);
+//		vo.setPointID(LIKE_PLUS);
+//		vo.setPoint(LIKE_POINT);
+//		vo.setRCP_SEQ(RCP_SEQ);
+//		
+//		pointDAO.registerPoint(vo);
+//		
+//		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
 	}
 
 	@Override
@@ -135,16 +131,16 @@ public class DishServiceImpl implements DishService, PointDescription {
 	public void goDishDislike(int RCP_SEQ, int mnum) {
 		
 		dishDao.goDishDislike(RCP_SEQ,mnum);
-		
-		UserPointVO vo = new UserPointVO();
-		vo.setMnum(mnum);
-		vo.setPointID(LIKE_MINUS);
-		vo.setPoint(LIKE_POINT * -1);
-		vo.setRCP_SEQ(RCP_SEQ);
-		
-		pointDAO.registerPoint(vo);
-		
-		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
+//		
+//		UserPointVO vo = new UserPointVO();
+//		vo.setMnum(mnum);
+//		vo.setPointID(LIKE_MINUS);
+//		vo.setPoint(LIKE_POINT * -1);
+//		vo.setRCP_SEQ(RCP_SEQ);
+//		
+//		pointDAO.registerPoint(vo);
+//		
+//		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
 	}
 
 	@Override
