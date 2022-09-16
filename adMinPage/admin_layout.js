@@ -4,6 +4,7 @@ import { Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Board_Page from "./board-Page";
 import UserList from "./userlist";
+import NewBoard from "./newboard";
 
 const Admin_Layout = () => {
   let navigate = useNavigate();
@@ -18,7 +19,7 @@ const Admin_Layout = () => {
                 <ListGroup.Item>
                   <Nav.Link
                     onClick={() => {
-                      navigate("/admin-Page/BoardPage");
+                      navigate("/admin-Page/BoardPage/");
                     }}
                   >
                     <strong className="black">게시물관리</strong>
@@ -28,7 +29,17 @@ const Admin_Layout = () => {
                 <ListGroup.Item>
                   <Nav.Link
                     onClick={() => {
-                      navigate("/admin-Page/UserList");
+                      navigate("/admin-Page/NewBoard/");
+                    }}
+                  >
+                    <strong className="black">게시글 작성</strong>
+                  </Nav.Link>
+                </ListGroup.Item>
+                <br />
+                <ListGroup.Item>
+                  <Nav.Link
+                    onClick={() => {
+                      navigate("/admin-Page/UserList/");
                     }}
                   >
                     <strong className="black">유저 관리</strong>
@@ -40,16 +51,8 @@ const Admin_Layout = () => {
         </div>
       </div>
       <Routes>
-        <Route
-          path="/*"
-          element={
-            <div className="floatR">
-              <h2>관리자 화면</h2>
-            </div>
-          }
-        />
-
         <Route path="UserList" element={<UserList />} />
+        <Route path="NewBoard" element={<NewBoard />} />
         <Route path="BoardPage" element={<Board_Page />} />
       </Routes>
     </div>

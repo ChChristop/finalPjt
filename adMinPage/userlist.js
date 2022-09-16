@@ -1,5 +1,4 @@
 import Table from "react-bootstrap/Table";
-import UserCustomer from "../component/Customer";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./admin.css";

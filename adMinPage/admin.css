@@ -17,3 +17,8 @@ ul {
 .th1 {
   vertical-align: middle;
 }
+
+.board_text {
+  width: 300px;
+  height: 200px;
+}

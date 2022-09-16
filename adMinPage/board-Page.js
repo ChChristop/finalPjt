@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./admin.css";
 import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 
 function Board_Page() {
   // axiox의 값을 받아오는 메서드-----------------------------------------
@@ -27,17 +26,42 @@ function Board_Page() {
             <th>사진</th>
             <th>제목</th>
             <th>작성자</th>
+            <th>조회수</th>
             <th>작성일</th>
+            <th>수 정 / 삭 제 </th>
           </tr>
         </thead>
         <tbody>
-          <Customer boards={boards} />
+          {boards.map((board) => (
+            <tr key={board.dish_num}>
+              <th className="th1">{board.dish_num}</th>
+              <th className="th1">
+                <img src={board.mainIMG} width="100px"></img>
+              </th>
+              <th className="th1">{board.dish_name}</th>
+              <th className="th1">{board.writer}</th>
+              <th className="th1">{board.hit}</th>
+              <th className="th1">{board.date}</th>
+              <th className="th1">
+                <button>🛠️</button>
+                <button>❌</button>
+              </th>
+            </tr>
+          ))}
+          ;
         </tbody>
       </Table>
-
-      <br />
-      <Button variant="outline-success">글쓰기</Button>
     </div>
   );
 }
 export default Board_Page;
+
+/*
+<Customer boards={boards} />
+
+if (window.confirm("게시물을 삭제하시겠습니까?")) {
+      alert("삭제되었습니다");
+    } else {
+      alert("취소되었습니다");
+    }
+*/
