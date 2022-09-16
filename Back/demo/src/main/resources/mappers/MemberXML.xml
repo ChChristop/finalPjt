@@ -141,7 +141,7 @@
 	
 		<select id="topUser" resultType="Map">
 		
-		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, M.lastAccessDate, M.role
+		SELECT M.mnum, M.nickname, M.date, M.role
 
 		,count(A.ate_num) AS ateCount
 		

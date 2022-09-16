@@ -20,6 +20,18 @@ public interface PointDescription {
 	//좋아요 적립 취소 600번
 	public final static int LIKE_MINUS = 600;
 	
+	//먹음 댓글 적립 700번
+	public final static int ATE_COMMENT_PLUS = 700;
+	
+	//먹음 댓글 적립 취소 800번
+	public final static int ATE_COMMENT_MINUS = 800;
+	
+	//먹음 좋아요 적립 900번
+	public final static int ATE_LIKE_PLUS = 900;
+		
+	//먹음 좋아요 적립 취소 1000번
+	public final static int ATE_LIKE_MINUS = 1000;
+	
 	//먹음 포인트
 	public final static int ATE_POINT = 20;
 	
@@ -29,4 +41,9 @@ public interface PointDescription {
 	//좋아요 포인트
 	public final static int LIKE_POINT = 1;
 	
+	//먹음 댓글 포인트
+	public final static int ATE_COMMENT_POINT = 5;
+	
+	//먹음 좋아요 포인트
+	public final static int ATE_LIKE_POINT = 1;
 }

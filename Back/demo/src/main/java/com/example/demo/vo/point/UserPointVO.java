@@ -21,6 +21,8 @@ public class UserPointVO {
 	
 	//등록 시간(등록시 테이블에 자동생성)
 	private LocalDateTime date;
+	
+	private int ate_num;
 
 
 }

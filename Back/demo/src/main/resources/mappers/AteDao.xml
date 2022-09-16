@@ -103,11 +103,16 @@
 		WHERE mnum = #{mnum}
 	</select>
 	
-	<select id="getAteListbyUser" resultType="Ate">
-		SELECT * FROM ATE
-		WHERE MNUM = #{mnum}
-		ORDER BY ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
-	
+	<select id="getAteListbyUser" resultType="AteDTO">
+		SELECT A.*, D.RCP_NM
+		,count(C.ate_num) as ate_comm_count
+   		,(select count(*) from ate_like L where A.ate_num = L.ate_num) as ate_like_count
+		FROM ATE A 
+        LEFT JOIN DISHDB D ON A.RCP_SEQ = D.RCP_SEQ
+        LEFT JOIN ate_comm C ON a.ate_num = c.ate_num
+		WHERE A.MNUM = #{mnum}
+		group by ate_num
+		ORDER BY a.ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
 	</select>
 	
 	

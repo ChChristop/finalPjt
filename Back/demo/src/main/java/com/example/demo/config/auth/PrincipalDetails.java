@@ -47,12 +47,11 @@ public class PrincipalDetails implements UserDetails {
 
 		// 관리자 권한 설정
 		if (check) {
-
 			adminDTO.getRole().stream().forEach(role -> {
 				authorities.add(new SimpleGrantedAuthority(role));
 			});
 			;
-
+			System.out.println("여기니");
 			return authorities;
 			// 회원 권한 설정
 		} else {

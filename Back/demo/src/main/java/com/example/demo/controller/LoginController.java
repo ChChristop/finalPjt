@@ -107,13 +107,31 @@ public class LoginController {
 		
 	}
 
-	@Transactional(rollbackFor = { RuntimeException.class, Error.class })
+	@Transactional(rollbackFor = Exception.class)
 	@GetMapping("/api/logout/{id}")
-	public ResponseEntity<String> logout(@PathVariable String id) {
+	public ResponseEntity<Boolean> logout(@PathVariable String id,HttpServletRequest request) {
 
 		try {
 			
-		jwtTokkenDAO.refreshTokenRemove(id);
+			// 추후 주석 해제 예정
+
+			/*
+			 * String getID = (long) request.getAttribute("id");
+			 * 
+			 * if (id != getID) {
+			 * 
+			 * log.warn("[/api/logout/{id}] [로그아웃 실패] [{}]", getID;
+			 * 
+			 * return new ResponseEntity<>(false,HttpStatus.FORBIDDEN); }
+			 */
+			
+			
+		int result = jwtTokkenDAO.refreshTokenRemove(id);
+		
+		if(result == 0) {
+			log.warn("[/api/logout/{id}] [로그아웃 실패] [{}]", id);
+			return new ResponseEntity<>(false,HttpStatus.ACCEPTED);
+		}
 		
 		boolean check = AdminCheck.check;
 
@@ -125,13 +143,13 @@ public class LoginController {
 		
 		log.info("[/api/logout/{id}] [로그아웃 성공] [{}]", id);
 
-		return new ResponseEntity<>(id, HttpStatus.OK);
+		return new ResponseEntity<>(true, HttpStatus.OK);
 		
 		}catch(Exception e) {
 			
-			log.info("[/api/logout/{id}] [로그아웃 실패] [{}]", id);
+			log.warn("[/api/logout/{id}] [로그아웃 실패(서버)] [{}]", id);
 			
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(false,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

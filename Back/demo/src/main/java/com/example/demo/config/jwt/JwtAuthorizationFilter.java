@@ -58,7 +58,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				 + "|(/api/refre/.+)"
 				 + "|(/api/ate/(?!get).+)"
 				 + "|(/api/dish/(?!get)(?!search).+)"
-				 
 				 );
 
 

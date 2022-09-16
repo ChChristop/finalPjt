@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 //로그인 인증관련 필터
 @Slf4j
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
+public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
 	private AuthenticationManager authenticationManager;
 
@@ -39,7 +38,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 	// login 필터
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, IOException, ServletException {
+			throws AuthenticationException, InternalAuthenticationServiceException,IOException, ServletException{
 
 		// 관리자 또는 회원으로 나누어져 로그인 진행으로 파라미터를 읽을 필요가 있음
 		BufferedReader br = new BufferedReader(
@@ -83,7 +82,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		}
 
 		
-		log.info("[JwtAuthneticationFilter] : 로그인 시도 중 " + param[0]);
+		log.info("[JwtAuthneticationFilter] [로그인 시도 중] [{}]", param[0]);
 		
 		// html로 받을 시
 		UsernamePasswordAuthenticationToken authenticationToken = null;;
@@ -106,14 +105,21 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			authenticationToken = new UsernamePasswordAuthenticationToken(memberDTO.getMemberID(), memberDTO.getMemberPW());
 
 		}
+		request.setAttribute("id", param[0]);
+		
+		Authentication authentication = null;
+				
+		try{
+			authentication = authenticationManager.authenticate(authenticationToken);}
+		
+		catch(InternalAuthenticationServiceException e) {
+			CustomLoginFailHandler error = new CustomLoginFailHandler();
+			error.onAuthenticationFailure(request, response, e);
+			return null;
+		}	
 
-		// 세션 생성
-	
-			
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-		
-		log.info("[JwtAuthneticationFilter] [authentication 객체 생성] [{}] ", authentication.getName());
-		
+		log.info("[JwtAuthneticationFilter] [authentication 객체 생성] [{}]", authentication.getName());
+
 		return authentication;
 
 	}
@@ -124,16 +130,13 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 		
-		
-		log.info("[JwtAuthneticationFilter] : 로그인 성공 : " + principalDetails.getUsername());
+		log.info("[JwtAuthneticationFilter] [로그인 성공] [{}]", principalDetails.getUsername());
 
 		String jwtToken = JwtProperties.CreateJWTToken(principalDetails);
 
 		String jwtRefreshToken = JwtProperties.CreateJWTRefreshToken(principalDetails);
 
 		request.setAttribute("refreshToken", jwtRefreshToken);
-
-		request.setAttribute("id", principalDetails.getUsername());
 		
 		if(AdminCheck.check) {
 			principalDetails.getAdminDTO().setAdminPW("");

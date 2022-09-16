@@ -38,7 +38,7 @@ public class RefrigeratorContoller {
 	@GetMapping("/list/{mnum}")
 	public ResponseEntity<List<RefrigeratorDTO>> refreList(@PathVariable long mnum, HttpServletRequest request) {
 
-		log.info("[api/refre/list/{mnum}] [냉장고 조회] " + mnum);
+		log.info("[api/refre/list/{mnum}] [refreList] [{}]", mnum);
 		try {
 			
 //		//잠시 주석
@@ -47,7 +47,7 @@ public class RefrigeratorContoller {
 //		// jwt 인증 정보와 요청한 회원의 정보가 다를 경우
 //		if (mnum != getNumber) {
 //
-//			log.warn("/api/refre/list/{num} 경고 : " + "jwt 회원번호 :" + getNumber + "요청 회원번호 :" + mnum);
+//			log.warn("[api/refre/list/{mnum}] [refreList 실패] [{}]", mnum);
 //
 //			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 //		}
@@ -57,19 +57,19 @@ public class RefrigeratorContoller {
 
 		if (result.size() == 0) {
 			
-			log.info("[api/refre/list/{mnum}] [냉장고 조회 실패 회원번호 오류] : " + mnum);
+			log.info("[api/refre/list/{mnum}] [refreList 실패 회원번호 오류] [{}]", mnum);
 			
 			return new ResponseEntity<>(new ArrayList<RefrigeratorDTO>(),HttpStatus.ACCEPTED);
 			
 			}
 
-		log.info("[api/refre/list/{mnum}] [냉장고 성공] : " + mnum);
+		log.info("[api/refre/list/{mnum}] [refreList 성공] [{}]", mnum);
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 		
 		}catch(Exception e) {
 			
-			log.info("[api/refre/list/{mnum}] [냉장고 실패] : " + mnum);
+			log.warn("[api/refre/list/{mnum}] [refreList 실패] [{}]", mnum);
 			
 			return new ResponseEntity<List<RefrigeratorDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -80,7 +80,7 @@ public class RefrigeratorContoller {
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseEntity<Long> refreAdd(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
 
-		log.info("[/api/refre/add] [냉장고 재료 추가] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+		log.info("[/api/refre/add] [refreAdd] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 		try {
 		// 잠시 주석
 //		
@@ -89,7 +89,7 @@ public class RefrigeratorContoller {
 //		// jwt 인증 정보와 요청한 회원의 정보가 다를 경우
 //		if (refrigeratorDTO.getMnum() != getNumber) {
 //
-//			log.warn("/api/refre/add/ 경고 : " + "jwt 회원번호 : " + getNumber + " 요청 회원번호 :" + refrigeratorDTO.getMnum());
+//			log.warn("[/api/refre/add] [refreAdd 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 //
 //			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 //		}
@@ -106,16 +106,16 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.register(refrigeratorDTO);
 
 		if (result > 0) {
-			log.info("[/api/refre/add] [냉장고 재료 추가 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			log.info("[/api/refre/add] [refreAdd 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
-			log.warn("[/api/refre/add] [냉장고 재료 추가 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			log.warn("[/api/refre/add] [refreAdd 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(0L,HttpStatus.ACCEPTED);
 		}
 		}catch(Exception e) {
 			//예상치 못한 예외
-			log.warn("[/api/refre/add] [냉장고 재료 추가 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			log.warn("[/api/refre/add] [refreAdd 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			return new ResponseEntity<>(0L,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -125,7 +125,7 @@ public class RefrigeratorContoller {
 	public ResponseEntity<Long> refreRemove(@PathVariable long refrenum, @PathVariable long mnum,
 			HttpServletRequest request) {
 
-		log.info("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제] [{}/{}]",mnum,refrenum);
+		log.info("[/api/refre/removal/{mnum}/{refrenum}] [refreRemove] [{}/{}]",mnum,refrenum);
 		try {
 		// 잠시 주석
 //		long getNumber = (long) request.getAttribute("GetNumber");
@@ -133,7 +133,7 @@ public class RefrigeratorContoller {
 //		// jwt 인증 정보와 요청한 회원의 정보가 다를 경우
 //		if (mnum != getNumber) {
 //
-//			log.warn("/removal/{mnum}/{ingrnum} 경고" + "jwt 회원번호 :" + getNumber + "요청 회원번호 :" + mnum);
+//			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [refreRemove 실패] [{}/{}]",mnum,refrenum);
 //
 //			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 //		}
@@ -142,14 +142,14 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.remove(refrenum);
 
 		if (result > 0) {
-			log.info("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제 성공] [{}/{}]",mnum,refrenum);
+			log.info("[/api/refre/removal/{mnum}/{refrenum}] [refreRemove 성공] [{}/{}]",mnum,refrenum);
 			return new ResponseEntity<>(refrenum, HttpStatus.OK);
 		} else {
-			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제 실패1] [{}/{}]",mnum,refrenum);
+			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [refreRemove 실패1] [{}/{}]",mnum,refrenum);
 			return new ResponseEntity<>(0L,HttpStatus.ACCEPTED);
 		}
 		}catch(Exception e) {
-			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [냉장고 재료 삭제 실패2] [{}/{}]",mnum,refrenum);
+			log.warn("[/api/refre/removal/{mnum}/{refrenum}] [refreRemove 실패2] [{}/{}]",mnum,refrenum);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
@@ -160,7 +160,7 @@ public class RefrigeratorContoller {
 	@Transactional(rollbackFor = Exception.class)
 	public ResponseEntity<Long> refreUpdate(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
 
-		log.info("[/api/refre/update] [냉장고 재료 수정] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+		log.info("[/api/refre/update] [refreUpdate] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 		
 		try {
 		// 잠시 주석
@@ -169,7 +169,7 @@ public class RefrigeratorContoller {
 //		// jwt 인증 정보와 요청한 회원의 정보가 다를 경우
 //		if (refrigeratorDTO.getMnum() != getNumber) {
 //
-//			log.warn("/api/refre/update/ 경고: " + "jwt 회원번호 :" + getNumber + "요청 회원번호 :" + refrigeratorDTO.getMnum());
+//			log.warn("[/api/refre/update] [refreUpdate 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 //
 //			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 //		}
@@ -186,14 +186,14 @@ public class RefrigeratorContoller {
 		long result = refrigeratorService.update(refrigeratorDTO);
 
 		if (result > 0) {
-			log.info("[/api/refre/update] [냉장고 재료 수정 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			log.info("[/api/refre/update] [refreUpdate 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(refrigeratorDTO.getRefrenum(), HttpStatus.OK);
 		} else {
-			log.warn("[/api/refre/update] [냉장고 재료 수정 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			log.warn("[/api/refre/update] [refreUpdate 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(0L,HttpStatus.ACCEPTED);
 		}
 		}catch(Exception e) {
-			log.warn("[/api/refre/update] [냉장고 재료 수정 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
+			log.warn("[/api/refre/update] [refreUpdate 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

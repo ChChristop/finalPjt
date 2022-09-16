@@ -26,12 +26,13 @@ import com.example.demo.service.DishService;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
+import com.github.javaparser.utils.Log;
 
 import groovy.util.logging.Slf4j;
 
 @RestController
 @RequestMapping("/api/dish")
-@Slf4j
+@lombok.extern.slf4j.Slf4j
 public class DishController {
 
 	@Autowired
@@ -212,6 +213,8 @@ public class DishController {
 	@GetMapping("/search")
 	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
 		
+		log.info("[/api/dish/search] [검색어] [{}]",searchI);
+		
 		List<Map<String, Object>> dishList = dishService.search(select,searchI);
 		
 		return dishList;
@@ -222,13 +225,14 @@ public class DishController {
 	 */
 	@PostMapping("/add/{mnum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,
-			@RequestParam("file01") MultipartFile file01
-			/*,@RequestParam("file02") MultipartFile file02,
+			@RequestParam("mainIMG") MultipartFile fileMain,
+			@RequestParam("file01") MultipartFile file01,
+			@RequestParam("file02") MultipartFile file02,
 			@RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04,
-			@RequestParam("file05") MultipartFile file05*/
-			/*,@RequestParam("file06") MultipartFile file06,
-			@RequestParam("file07") MultipartFile file07,
+			@RequestParam("file05") MultipartFile file05,
+			@RequestParam("file06") MultipartFile file06
+			/*,@RequestParam("file07") MultipartFile file07,
 			@RequestParam("file08") MultipartFile file08,
 			@RequestParam("file09") MultipartFile file09,
 			@RequestParam("file10") MultipartFile file10*/) throws Exception {
@@ -238,39 +242,45 @@ public class DishController {
 		if(!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
-			dish.setMANUAL_IMG01(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG01(ip+"/dishDB/" + savedName);
 		}
 		
-//		if(!file02.isEmpty()) {
-//			String savedName = file02.getOriginalFilename();
-//			savedName = uploadFile(savedName, file02.getBytes());
-//			dish.setMANUAL_IMG02(ip+"/ate/" + savedName);
-//			}
-//
-//		if(!file03.isEmpty()) {
-//			String savedName = file03.getOriginalFilename();
-//			savedName = uploadFile(savedName, file03.getBytes());
-//			dish.setMANUAL_IMG03(ip+"/ate/" + savedName);
-//			}
-//		
-//		if(!file04.isEmpty()) {
-//			String savedName = file04.getOriginalFilename();
-//			savedName = uploadFile(savedName, file04.getBytes());
-//			dish.setMANUAL_IMG04(ip+"/ate/" + savedName);
-//			}
-//		
-//		if(!file05.isEmpty()) {
-//			String savedName = file05.getOriginalFilename();
-//			savedName = uploadFile(savedName, file05.getBytes());
-//			dish.setMANUAL_IMG05(ip+"/ate/" + savedName);
-//			}
+		if(!file02.isEmpty()) {
+			String savedName = file02.getOriginalFilename();
+			savedName = uploadFile(savedName, file02.getBytes());
+			dish.setMANUAL_IMG02(ip+"/dishDB/" + savedName);
+			}
 		
-//		if(!file06.isEmpty()) {
-//			String savedName = file06.getOriginalFilename();
-//			savedName = uploadFile(savedName, file06.getBytes());
-//			dish.setMANUAL_IMG06(ip+"/ate/" + savedName);
-//			}
-//		
+		if(!fileMain.isEmpty()) {
+			String savedName = fileMain.getOriginalFilename();
+			savedName = uploadFile(savedName, fileMain.getBytes());
+			dish.setATT_FILE_NO_MAIN(ip+"/dishDB/" + savedName);
+			}
+
+		if(!file03.isEmpty()) {
+			String savedName = file03.getOriginalFilename();
+			savedName = uploadFile(savedName, file03.getBytes());
+			dish.setMANUAL_IMG03(ip+"/ate/" + savedName);
+			}
+		
+		if(!file04.isEmpty()) {
+			String savedName = file04.getOriginalFilename();
+			savedName = uploadFile(savedName, file04.getBytes());
+			dish.setMANUAL_IMG04(ip+"/ate/" + savedName);
+			}
+		
+		if(!file05.isEmpty()) {
+			String savedName = file05.getOriginalFilename();
+			savedName = uploadFile(savedName, file05.getBytes());
+			dish.setMANUAL_IMG05(ip+"/ate/" + savedName);
+			}
+		
+		if(!file06.isEmpty()) {
+			String savedName = file06.getOriginalFilename();
+			savedName = uploadFile(savedName, file06.getBytes());
+			dish.setMANUAL_IMG06(ip+"/ate/" + savedName);
+			}
+		
 //		if(!file07.isEmpty()) {
 //			String savedName = file07.getOriginalFilename();
 //			savedName = uploadFile(savedName, file07.getBytes());
@@ -301,8 +311,6 @@ public class DishController {
 		
 		String str = "";
 		
-		System.out.println("RCP_PARTS_DTLS() ::: " +dish.getRCP_PARTS_DTLS());
-		
 		int i = dishService.add(dish, mnum);
 		
 		if(i > 0) {
@@ -324,73 +332,73 @@ public class DishController {
 			@RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04,
 			@RequestParam("file05") MultipartFile file05,
-			@RequestParam("file06") MultipartFile file06,
-			@RequestParam("file07") MultipartFile file07,
+			@RequestParam("file06") MultipartFile file06
+			/*@RequestParam("file07") MultipartFile file07,
 			@RequestParam("file08") MultipartFile file08,
 			@RequestParam("file09") MultipartFile file09,
-			@RequestParam("file10") MultipartFile file10) throws Exception {
+			@RequestParam("file10") MultipartFile file10*/) throws Exception {
 		
 		
 		if(!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
-			dish.setMANUAL_IMG01(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG01(ip+"/dishDB/" + savedName);
 		}
 		
 		if(!file02.isEmpty()) {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
-			dish.setMANUAL_IMG02(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG02(ip+"/dishDB/" + savedName);
 			}
 
 		if(!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
-			dish.setMANUAL_IMG03(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG03(ip+"/dishDB/" + savedName);
 			}
 		
 		if(!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
-			dish.setMANUAL_IMG04(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG04(ip+"/dishDB/" + savedName);
 			}
 		
 		if(!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
-			dish.setMANUAL_IMG05(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG05(ip+"/dishDB/" + savedName);
 			}
 		
 		if(!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
-			dish.setMANUAL_IMG06(ip+"/ate/" + savedName);
+			dish.setMANUAL_IMG06(ip+"/dishDB/" + savedName);
 			}
 		
-		if(!file07.isEmpty()) {
-			String savedName = file07.getOriginalFilename();
-			savedName = uploadFile(savedName, file07.getBytes());
-			dish.setMANUAL_IMG07(ip+"/ate/" + savedName);
-			}
-		
-		if(!file08.isEmpty()) {
-			String savedName = file08.getOriginalFilename();
-			savedName = uploadFile(savedName, file08.getBytes());
-			dish.setMANUAL_IMG08(ip+"/ate/" + savedName);
-			}
-		
-		if(!file09.isEmpty()) {
-			String savedName = file09.getOriginalFilename();
-			savedName = uploadFile(savedName, file09.getBytes());
-			dish.setMANUAL_IMG09(ip+"/ate/" + savedName);
-			}
-		
-		if(!file10.isEmpty()) {
-			String savedName = file10.getOriginalFilename();
-			savedName = uploadFile(savedName, file10.getBytes());
-			dish.setMANUAL_IMG10(ip+"/ate/" + savedName);
-			}
-		
+//		if(!file07.isEmpty()) {
+//			String savedName = file07.getOriginalFilename();
+//			savedName = uploadFile(savedName, file07.getBytes());
+//			dish.setMANUAL_IMG07(ip+"/ate/" + savedName);
+//			}
+//		
+//		if(!file08.isEmpty()) {
+//			String savedName = file08.getOriginalFilename();
+//			savedName = uploadFile(savedName, file08.getBytes());
+//			dish.setMANUAL_IMG08(ip+"/ate/" + savedName);
+//			}
+//		
+//		if(!file09.isEmpty()) {
+//			String savedName = file09.getOriginalFilename();
+//			savedName = uploadFile(savedName, file09.getBytes());
+//			dish.setMANUAL_IMG09(ip+"/ate/" + savedName);
+//			}
+//		
+//		if(!file10.isEmpty()) {
+//			String savedName = file10.getOriginalFilename();
+//			savedName = uploadFile(savedName, file10.getBytes());
+//			dish.setMANUAL_IMG10(ip+"/ate/" + savedName);
+//			}
+//		
 		dish.setRCP_SEQ(Integer.toString(RCP_SEQ));
 		
 	

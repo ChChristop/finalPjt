@@ -15,7 +15,7 @@
 	
 	
 	<insert id="ingAdd" parameterType="map">
-		insert into dish_ing set 
+		insert into dish_ing1 set 
 		RCP_SEQ = #{RCP_SEQ},
 		iname=#{ing}
 	</insert>

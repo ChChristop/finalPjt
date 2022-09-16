@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.service.DishService;
+import com.example.demo.service.elastic.ElasticSearch;
 import com.example.demo.service.mail.MailService;
 import com.example.demo.service.memberService.MemberService;
 import com.example.demo.vo.pwToken.PwTokenVO;
@@ -33,32 +34,34 @@ public class AllPermitURI {
 	private final DishService dishService;
 
 	private final MailService mailService;
+	
+	private final ElasticSearch elaService;
 
 	// 회원 등록 URI
 	@PostMapping("/register")
 	public ResponseEntity<Long> addAdmin(@RequestBody MemberDTO memberDTO) {
 		try {
-			log.info("[/api/register] [회원 등록] [{}]", memberDTO.getMemberID());
+			log.info("[/api/register] [addAdmin] [{}]", memberDTO.getMemberID());
 
 			// 정상적으로 등록됐으면 anum 리턴, 아니면 0;
 			Long result = memberService.register(memberDTO);
 
 			if (result > 0) {
 
-				log.info("[/api/register] [회원 가입 성공] [{}]", memberDTO.getMemberID());
+				log.info("[/api/register] [addAdmin 성공] [{}]", memberDTO.getMemberID());
 
 				return new ResponseEntity<>(result, HttpStatus.OK);
 
 			} else {
 
-				log.warn("[/api/register] [회원 가입 실패] [{}]", memberDTO.getMemberID());
+				log.warn("[/api/register] [addAdmin 실패] [{}]", memberDTO.getMemberID());
 
 				return new ResponseEntity<>(0L, HttpStatus.ACCEPTED);
 
 			}
 		} catch (Exception e) {
 
-			log.warn("[/api/register] [회원 가입 실패(서버)] [{}]", memberDTO.getMemberID());
+			log.warn("[/api/register] [addAdmin 실패(서버)] [{}]", memberDTO.getMemberID());
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -70,7 +73,7 @@ public class AllPermitURI {
 
 		try {
 
-			log.info("[/api/id-check/{memberID}] [ID 중복 체크] [{}]", memberID);
+			log.info("[/api/id-check/{memberID}] [checkAdminID] [{}]", memberID);
 
 			// 회원 아이디 중복 체크 true or false 사용
 			boolean result = memberService.checkMemberID(memberID);
@@ -89,13 +92,13 @@ public class AllPermitURI {
 		
 		try {
 
-			log.info("[/topUser] [탑 유저 조회]");
+			log.info("[/topUser] [topUser] []");
 
 			List<Map<String, Object>> result = memberService.topUser();
 
 			if (result.size() == 0) {
 				
-				log.info("[/topUser] [탑 유저 조회 실패]");
+				log.info("[/topUser] [topUser] []");
 				
 				return new ResponseEntity<>(new ArrayList<>(), HttpStatus.ACCEPTED);
 			}
@@ -104,7 +107,7 @@ public class AllPermitURI {
 
 		} catch (Exception e) {
 
-			log.info("[/topUser] [탑 유저 조회 실패(서버)]");
+			log.info("[/topUser] [topUser 실패(서버)] []");
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -115,19 +118,19 @@ public class AllPermitURI {
 		
 		try {
 			
-			log.info("[/topDish] [탑 레시피 조회]");
+			log.info("[/topDish] [topDish] []");
 
 			List<Map<String, Object>> result = dishService.topDish();
 
 			if (result.size() == 0) {
-				log.warn("[/topDish] [탑 레시피 조회 실패(서버)]");
+				log.warn("[/topDish] [topDish 실패(서버)] []");
 				return new ResponseEntity<>(new ArrayList<>(), HttpStatus.ACCEPTED);
 			}
 
 			return new ResponseEntity<>(result, HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.warn("[/topDish] [탑 레시피 조회 실패(서버)]");
+			log.warn("[/topDish] [topDish 실패(서버)] []");
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -140,13 +143,13 @@ public class AllPermitURI {
 			
 			String email = memberID.get("memberID");
 
-			log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송] [{}]", email);
+			log.info("[/api/account/email/send] [sendEmail] [{}]", email);
 
 			boolean result = mailService.sendMail(email);
 
 			if (!result) {
 
-				log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송 실패] [{}]", email);
+				log.info("[/api/account/email/send] [sendEmail 실패] [{}]", email);
 
 				return new ResponseEntity<>(result, HttpStatus.ACCEPTED);
 
@@ -156,7 +159,7 @@ public class AllPermitURI {
 
 		} catch (Exception e) {
 
-			log.info("[/api/account/email/send] [비밀번호 재설정 이메일 발송 실패(서버)] [{}]", memberID);
+			log.info("[/api/account/email/send] [sendEmail 실패(서버)] [{}]", memberID);
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -169,11 +172,11 @@ public class AllPermitURI {
 			
 		String result[] = mailService.checkToken(pwTokenVO.getPwToken());
 
-			log.info("[/account/email/check-token] [비밀번호 토큰 확인] [{}]", pwTokenVO.getPwToken());
+			log.info("[/account/email/check-token] [checkToken] [{}]", pwTokenVO.getPwToken());
 
 			if (result.length == 0) {
 
-				log.info("[/account/email/check-token] [비밀번호 토큰 확인 실패] [{}]", pwTokenVO.getPwToken());
+				log.info("[/account/email/check-token] [checkToken 실패] [{}]", pwTokenVO.getPwToken());
 
 				return new ResponseEntity<>(new String[] {}, HttpStatus.ACCEPTED);
 			}
@@ -182,7 +185,7 @@ public class AllPermitURI {
 
 		} catch (Exception e) {
 
-			log.info("[/account/email/check-token] [비밀번호 토큰 확인 실패(서버)] [{}]", pwTokenVO.getPwToken());
+			log.info("[/account/email/check-token] [checkToken 실패(서버)] [{}]", pwTokenVO.getPwToken());
 
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -196,18 +199,29 @@ public class AllPermitURI {
 			boolean result = memberService.changePW(memberDTO);
 
 			if (!result) {
-				log.info("[/account/email/changePW] [비밀번호 변경 실패] [{}]", memberDTO.getMemberID());
+				log.info("[/account/email/changePW] [changePW 실패] [{}]", memberDTO.getMemberID());
 				return new ResponseEntity<Boolean>(result, HttpStatus.ACCEPTED);
 			}
 			
-			log.info("[/account/email/changePW] [비밀번호 변경] [{}]", memberDTO.getMemberID());
+			log.info("[/account/email/changePW] [changePW 변경] [{}]", memberDTO.getMemberID());
 
 			return new ResponseEntity<Boolean>(result, HttpStatus.OK);
 
 		} catch (Exception e) {
-			log.info("[/account/email/changePW] [비밀번호 변경 실패(서버)] [{}]", memberDTO.getMemberID());
+			log.info("[/account/email/changePW] [changePW 실패(서버)] [{}]", memberDTO.getMemberID());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	
+	@GetMapping("/keyword")
+	public ResponseEntity<List<String>> keyword(){
+		
+		List<String> result  = elaService.search();
+		
+		return new ResponseEntity<List<String>>(result,HttpStatus.OK);
+		
+		
 	}
 
 }

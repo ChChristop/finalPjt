@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.AteDao;
 import com.example.demo.dao.point.PointDAO;
+import com.example.demo.dto.AteDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
@@ -35,16 +36,16 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		int result = ateDao.add(ate);
 
-//		UserPointVO vo = new UserPointVO();
-//
-//		vo.setMnum(ate.getMnum());
-//		vo.setPointID(ATE_PLUS);
-//		vo.setPoint(ATE_POINT);
-//	//	vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
-//
-//		pointDAO.registerPoint(vo);
-//
-//		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
+		UserPointVO vo = new UserPointVO();
+
+		vo.setMnum(ate.getMnum());
+		vo.setPointID(ATE_PLUS);
+		vo.setPoint(ATE_POINT);
+		vo.setRCP_SEQ(Integer.parseInt(ate.getRCP_SEQ()));
+
+		pointDAO.registerPoint(vo);
+
+		log.info("[AteServiceImpl] [add] [{}]", ate.getMnum());
 
 		return result;
 	}
@@ -102,15 +103,38 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void goAteLike(int ate_num, int mnum) {
 
 		ateDao.goAteLike(ate_num, mnum);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(ATE_LIKE_PLUS);
+		vo.setPoint(ATE_LIKE_POINT);
+		vo.setAte_num(ate_num);;
+		
+		pointDAO.registerPointbyAte_num(vo);
+		
+		log.info("[AteServiceImpl] [goAteLike] [{}]", mnum);
+		
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void goAteDislike(int ate_num, int mnum) {
 
 		ateDao.goAteDislike(ate_num, mnum);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(ATE_LIKE_MINUS);
+		vo.setPoint(ATE_LIKE_POINT * -1);
+		vo.setAte_num(ate_num);;
+		
+		pointDAO.registerPointbyAte_num(vo);
+		
+		log.info("[AteServiceImpl] [goAteDislike] [{}]", mnum);
 	}
 
 	@Override
@@ -122,7 +146,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
-	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
+	public PageResultVO<AteDTO> getUserAteList(PageRequestDTO pageRequestDTO, long mnum) {
 	
 		// 기준
 		if (pageRequestDTO.getBasis() == "pk") {
@@ -132,7 +156,7 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		pageRequestDTO.setterChange();
 		
-		List<Ate> result = null;
+		List<AteDTO> result = null;
 	
 		int count = 0;
 
@@ -154,17 +178,41 @@ public class AteServiceImpl implements AteService, PointDescription {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int commAdd(DishComm dishComm) {
 		
+		int result  = ateDao.commAdd(dishComm);
 		
-		return ateDao.commAdd(dishComm);
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(dishComm.getMnum());
+		vo.setPointID(ATE_COMMENT_PLUS);
+		vo.setPoint(ATE_COMMENT_POINT);
+		vo.setAte_num(dishComm.getAte_num());;
+		
+		pointDAO.registerPointbyAte_num(vo);
+		
+		log.info("[AteServiceImpl] [commAdd] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public int commDelete(DishComm dishComm) {
 		
+		int result = ateDao.commDelete(dishComm);
 		
-		return ateDao.commDelete(dishComm);
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(dishComm.getMnum());
+		vo.setPointID(ATE_COMMENT_MINUS);
+		vo.setPoint(ATE_COMMENT_POINT * -1);
+		vo.setAte_num(dishComm.getAte_num());;
+		
+		pointDAO.registerPointbyAte_num(vo);
+		
+		log.info("[AteServiceImpl] [commDelete] [{}]", dishComm.getMnum());
+		
+		return result;
 	}
 
 	@Override

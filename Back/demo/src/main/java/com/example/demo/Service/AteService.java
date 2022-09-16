@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Map;
 
+import com.example.demo.dto.AteDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultVO;
 import com.example.demo.vo.Ate;
@@ -30,7 +31,7 @@ public interface AteService {
 	
 	public List<Ate> getAllList(long mnum);
 	
-	public PageResultVO<Ate> getUserAteList(PageRequestDTO pageRequestDTO,long mnum);
+	public PageResultVO<AteDTO> getUserAteList(PageRequestDTO pageRequestDTO,long mnum);
 
 	public int commAdd(DishComm dishComm);
 

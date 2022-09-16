@@ -30,7 +30,7 @@ public class JwtProperties {
 	// 10일 static 1일 86,400,000 (1/1000초)
 	public static final int REFRESHKEY_EXPIRATION_TIME = 864000000; // 10일
 
-	public static final String REFRESHKEY_HEADER_STRING = "Refresh-Token";
+	public static final String REFRESHKEY_HEADER_STRING = "RefreshToken";
 
 	public static String CreateJWTToken(PrincipalDetails principalDetails) {
 		

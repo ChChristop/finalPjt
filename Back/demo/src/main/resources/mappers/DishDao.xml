@@ -166,8 +166,8 @@
 		d.t_weather,
 		d.hit,
 		d.editdate,
-		db.rcp_seq,
-		db.rcp_nm,
+		db.rcp_SEQ,
+		db.rcp_NM,
 		db.rcp_parts_dtls,
 		db.rcp_pat2,
 		db.rcp_way2,
@@ -303,7 +303,7 @@
 		db.att_file_no_mk
 		from dish d  
  		right join dishDB db
-		on db.RCP_SEQ = d.RCP_SEQ limit 0,30
+		on db.RCP_SEQ = d.RCP_SEQ order by db.RCP_SEQ*1 DESC limit 0,20
 	</select>
 
 	<select id="dishLike" parameterType="int" resultType="int">

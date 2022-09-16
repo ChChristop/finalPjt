@@ -6,9 +6,11 @@
 
 	<select id="dishCommListbyMnum" resultType="DishCommDTO">
 	
-	SELECT * FROM DISH_COMM 
+	SELECT C.*, D.RCP_NM, D.ATT_FILE_NO_MAIN 
 	
-	WHERE MNUM = #{mnum}
+	FROM DISH_COMM C LEFT OUTER JOIN DISHDB D ON C.RCP_SEQ = D.RCP_SEQ
+	
+	WHERE C.MNUM = #{mnum}
 	
 	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
 	

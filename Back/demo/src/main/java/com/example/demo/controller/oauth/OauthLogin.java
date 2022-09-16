@@ -53,11 +53,26 @@ public class OauthLogin {
 
 		MemberDTO memberDTO = googleLoginService.login(getHeader);
 
-//		if (memberDTO == null) {
-//			
-//		}
-//		
-		log.info("[OauthLogin api/login] : 구글 로그인 중 : " + memberDTO.getMemberID());
+		log.info("[OauthLogin api/login] [구글 로그인 중] [{}]", memberDTO.getMemberID());
+		
+		if (memberDTO.getNickname() == null) {
+			
+			log.warn("[OauthLogin api/login] [구글 로그인 실패] [{}]", memberDTO.getMemberID());
+			
+			request.setAttribute("id",memberDTO.getMemberID());
+			
+			CustomLoginFailHandler error = new CustomLoginFailHandler();
+			
+			try {
+				error.onAuthenticationFailure(request, response, new AuthenticationServiceException("회원 가입 필요"));
+			} 
+			catch (IOException e) {} 
+			catch (ServletException e) {}
+			
+			return null;
+		}
+		
+	
 
 		googleLoginService.loginSuccess(memberDTO, request);
 
@@ -67,7 +82,7 @@ public class OauthLogin {
 		response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, jwtToken);
 		response.addHeader(JwtProperties.REFRESHKEY_HEADER_STRING, jwtrefreshToekn);
 
-		log.info("[OauthLogin api/login] : 구글 로그인 성공 : " + memberDTO.getMemberID());
+		log.info("[OauthLogin api/login] [구글 로그인 성공] [{}]", memberDTO.getMemberID());
 
 		return new ResponseEntity<>(memberDTO, HttpStatus.ACCEPTED);
 
@@ -77,7 +92,7 @@ public class OauthLogin {
 	public ResponseEntity<MemberDTO> mobilelogin(@RequestBody GoogleUserInfoMobile googleUserInfo,
 			HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
 
-		log.info("[OauthLogin api/login/mobile] : 모바일 구글 로그인 중 : " + googleUserInfo.toString());
+		log.info("[OauthLogin api/login/mobile] [모바일 구글 로그인 중] [{}]", googleUserInfo.toString());
 
 		MemberDTO memberDTO = googleLoginService.mobileGoogleLogin(googleUserInfo.getEmail());
 
@@ -91,7 +106,7 @@ public class OauthLogin {
 			response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, jwtToken);
 			response.addHeader(JwtProperties.REFRESHKEY_HEADER_STRING, jwtrefreshToekn);
 
-			log.info("[OauthLogin api/login/mobile] : 모바일 구글 로그인 성공 : " + googleUserInfo.toString());
+			log.info("[OauthLogin api/login/mobile] [모바일 구글 로그인 성공] [{}]", googleUserInfo.toString());
 
 			return new ResponseEntity<>(memberDTO, HttpStatus.OK);
 			
@@ -99,7 +114,7 @@ public class OauthLogin {
 			
 			fail.onAuthenticationFailure(request, response, new AuthenticationServiceException("AuthenticationServiceException"));
 			
-			log.warn("[OauthLogin api/login/mobile] : 모바일 구글 로그인 실패 : " + googleUserInfo.toString());
+			log.warn("[OauthLogin api/login/mobile] [모바일 구글 로그인 실패] [{}]", googleUserInfo.toString());
 		
 			return null;
 		}

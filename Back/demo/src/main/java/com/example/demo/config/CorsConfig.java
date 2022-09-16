@@ -19,7 +19,7 @@ public class CorsConfig {
 	    config.setAllowedHeaders(Arrays.asList("*"));
 		config.addAllowedMethod("*");
 		config.addExposedHeader("Authorization");
-		config.addExposedHeader("Refresh-Token");
+		config.addExposedHeader("RefreshToken");
 		config.setAllowCredentials(true);
 
 		source.registerCorsConfiguration("/**", config);

@@ -91,7 +91,7 @@ public class MailService {
 				htmlStr += "<a style=\"text-decoration: none; color: white;\" href="+url+">"+ "비밀번호 재설정</a>";
 				htmlStr += "</button>";
 				htmlStr += "<p style=\"margin-top: 1rem;\">또는 아래의 URL 주소로 직접 이동해주세요.</p>";
-				htmlStr += "<p style=\"margin-top: 1rem;\">" + url +"</p>";
+				htmlStr += "<p style=\"margin-top: 1rem;\">" + jwtToken +"</p>";
 				htmlStr += "</div>";
 				htmlStr += "</div>";
 				
