@@ -53,11 +53,26 @@ public class OauthLogin {
 
 		MemberDTO memberDTO = googleLoginService.login(getHeader);
 
-//		if (memberDTO == null) {
-//			
-//		}
-//		
 		log.info("[OauthLogin api/login] [구글 로그인 중] [{}]", memberDTO.getMemberID());
+		
+		if (memberDTO.getNickname() == null) {
+			
+			log.warn("[OauthLogin api/login] [구글 로그인 실패] [{}]", memberDTO.getMemberID());
+			
+			request.setAttribute("id",memberDTO.getMemberID());
+			
+			CustomLoginFailHandler error = new CustomLoginFailHandler();
+			
+			try {
+				error.onAuthenticationFailure(request, response, new AuthenticationServiceException("회원 가입 필요"));
+			} 
+			catch (IOException e) {} 
+			catch (ServletException e) {}
+			
+			return null;
+		}
+		
+	
 
 		googleLoginService.loginSuccess(memberDTO, request);
 

@@ -107,30 +107,30 @@ public class MemberController {
 
 	// 회원 수정 URI
 	@PutMapping("/update")
-	public ResponseEntity<Long> updateMember(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
+	public ResponseEntity<Boolean> updateMember(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
 
 		log.info("[/api/member/update] [updateMember] [{}]", memberDTO.getMemberID());
 
 		// 추후 주석 해제 예정
 
-		/*
-		 * long getNumber = (long) request.getAttribute("GetNumber");
-		 * 
-		 * if (memberDTO.getMnum() != getNumber) {
-		 * 
-		 * log.warn("[/api/member/update] [updateAdmin 실패] [{}]", memberDTO.getMnum());
-		 * 
-		 * return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
-		 */
+		
+//		  long getNumber = (long) request.getAttribute("GetNumber");
+//		  
+//		  if (memberDTO.getMnum() != getNumber) {
+//		  
+//		  log.warn("[/api/member/update] [updateAdmin 실패] [{}]", memberDTO.getMnum());
+//		  
+//		  return new ResponseEntity<>(HttpStatus.FORBIDDEN); }
+		 
 
 		Long result = memberService.update(memberDTO);
 
 		if (result > 0) {
 			log.info("[/api/member/delete/{mnum}] [updateMember 성공] [{}]", memberDTO.getMemberID());
-			return new ResponseEntity<>(memberDTO.getMnum(), HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			log.warn("[/api/member/delete/{mnum}] [updateMember 실패] [{}]", memberDTO.getMemberID());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
 		}
 
 	}

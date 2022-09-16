@@ -24,5 +24,8 @@ public class DishLikeDTO {
 	private String RCP_NM;
 	
 	private LocalDateTime date;
+	
+	@JsonProperty("ATT_FILE_NO_MAIN")
+	private String ATT_FILE_NO_MAIN;
 
 }

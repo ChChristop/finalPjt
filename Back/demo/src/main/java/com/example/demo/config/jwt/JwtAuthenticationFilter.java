@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 	// login 필터
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException,  InternalAuthenticationServiceException,IOException, ServletException{
+			throws AuthenticationException, InternalAuthenticationServiceException,IOException, ServletException{
 
 		// 관리자 또는 회원으로 나누어져 로그인 진행으로 파라미터를 읽을 필요가 있음
 		BufferedReader br = new BufferedReader(
@@ -107,7 +107,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		}
 		request.setAttribute("id", param[0]);
 		
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);	
+		Authentication authentication = null;
+				
+		try{
+			authentication = authenticationManager.authenticate(authenticationToken);}
+		
+		catch(InternalAuthenticationServiceException e) {
+			CustomLoginFailHandler error = new CustomLoginFailHandler();
+			error.onAuthenticationFailure(request, response, e);
+			return null;
+		}	
 
 		log.info("[JwtAuthneticationFilter] [authentication 객체 생성] [{}]", authentication.getName());
 

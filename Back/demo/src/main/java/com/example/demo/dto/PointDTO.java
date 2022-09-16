@@ -34,5 +34,11 @@ public class PointDTO {
 	@JsonProperty("ATE_NUM")
 	private int ATE_NUM;
 	
+	@JsonProperty("ATT_FILE_NO_MAIN")
+	private String ATT_FILE_NO_MAIN;
+	
+	@JsonProperty("ATE_PICTURE")
+	private String ATE_PICTURE;
+	
 
 }

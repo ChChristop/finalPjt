@@ -6,7 +6,7 @@
 
 	<select id="dishLikeListbyMnum" resultType="DishLikeDTO">
 	
-	SELECT L.*, D.RCP_NM
+	SELECT L.*, D.RCP_NM, D.ATT_FILE_NO_MAIN
 
 	FROM DISH_LIKE L LEFT OUTER JOIN DISHDB D ON L.RCP_SEQ = D.RCP_SEQ
 	

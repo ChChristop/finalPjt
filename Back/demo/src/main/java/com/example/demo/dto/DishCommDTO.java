@@ -26,5 +26,8 @@ public class DishCommDTO {
 		
 		@JsonProperty("RCP_NM")
 		private String RCP_NM;
+		
+		@JsonProperty("ATT_FILE_NO_MAIN")
+		private String ATT_FILE_NO_MAIN;
 	
 }

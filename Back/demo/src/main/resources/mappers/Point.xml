@@ -6,7 +6,9 @@
 
 	<select id="findUserPointbyMnum" resultType="PointDTO">
 	
-	SELECT U.MNUM, U.POINTID,U.POINT, U.ATE_NUM, P.CONTENT, U.DATE,
+	SELECT U.MNUM, U.POINTID,U.POINT, U.ATE_NUM, P.CONTENT, U.DATE
+	
+	,D.ATT_FILE_NO_MAIN, A.ATE_PICTURE,
 
 	COALESCE(U.RCP_SEQ,A.RCP_SEQ) AS RCP_SEQ, 
     
@@ -31,7 +33,9 @@
 	<!-- 현재날짜 기준 7일 활동 내역 미구현-->
 	<select id="findUserPoint7dbyMnum" resultType="PointDTO">
 	
-	SELECT U.MNUM, U.POINTID,U.POINT, U.ATE_NUM, P.CONTENT, U.DATE,
+	SELECT U.MNUM, U.POINTID,U.POINT, U.ATE_NUM, P.CONTENT, U.DATE
+	
+	,D.ATT_FILE_NO_MAIN, A.ATE_PICTURE,
 
 	COALESCE(U.RCP_SEQ,A.RCP_SEQ) AS RCP_SEQ, 
     
