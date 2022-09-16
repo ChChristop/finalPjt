@@ -65,8 +65,9 @@ public class MainController {
 	@GetMapping("/recipe/reco/{mnum}")
 	public List<Map<String, Object>> ingAllReco(@PathVariable int mnum){
 
-		List<Map<String, Object>> f = new ArrayList<>();
+		
 		List<Map<String, Object>> result = new ArrayList<>();
+		
 		String ing = "";
 		
 		
@@ -81,14 +82,18 @@ public class MainController {
 			Map<String, Object> map = new HashMap<>();
 			List<Map<String, Object>> list = new ArrayList<>();
 			ing = ings.get(i).get("iname").toString(); //재료명
-			result = mainService.getList(ing); //재료 관련 레시피 (리스트)
-			map.put("list",result);
-			map.put("iname",ing);
-			f.add(map);
-
+			list = mainService.getList(ing); //재료 관련 레시피 (리스트)
+			
+			// 포문으로 꺼내장 
+			for(Map la :list) {
+			
+				result.add(la);
+			
+			}
+			
 		}
 		
-		return f;
+		return result;
 	}
 	
 
