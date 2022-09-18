@@ -1,0 +1,42 @@
+.lankinglayout {
+  text-align: center;
+}
+
+.circle1 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #d5a11e;
+  border-radius: 50%;
+}
+.wrapper1 {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 1170px;
+}
+
+.circle2 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #a3a3a3;
+  border-radius: 50%;
+}
+
+.wrapper2 {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 1170px;
+}
+.circle3 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #cd7f32;
+  border-radius: 50%;
+}
+.wrapper3 {
+  margin: 0 auto;
+  padding: 30px;
+  max-width: 1170px;
+}

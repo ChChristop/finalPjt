@@ -7,6 +7,9 @@ ul {
 }
 .rmfwkrtjd {
   text-align: center;
+  border: groove 10px;
+  width: 500px;
+  margin: auto;
 }
 
 .Table {
@@ -21,4 +24,8 @@ ul {
 .board_text {
   width: 300px;
   height: 200px;
+}
+
+.rankings {
+  text-align: center;
 }
