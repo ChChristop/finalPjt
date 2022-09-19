@@ -20,6 +20,7 @@ import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
 import com.example.demo.vo.point.PointDescription;
+import com.example.demo.vo.point.UserPointVO;
 
 import lombok.RequiredArgsConstructor;
 

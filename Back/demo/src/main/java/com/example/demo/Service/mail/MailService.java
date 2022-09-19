@@ -79,6 +79,12 @@ public class MailService {
 		try{
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			
+			String location = "foodpush://seek?id=";
+			location += id[0];
+			location += "&authcode=";
+			location += jwtToken;
+			
+			
 			msg.setSubject("냉장고 계정 암호 재설정","UTF-8");
 			
 			String htmlStr = " <div style=\"margin-left: 3rem; padding: 3rem;\">";
@@ -88,13 +94,18 @@ public class MailService {
 				htmlStr += "<div>";
 				htmlStr += "<p style=\"margin-bottom: 1rem;\">아래의 링크를 클릭하여 비밀번호 재설정 페이지로 이동하세요.</p>";
 				htmlStr += "<button style=\"background-color: black;\">";
-				htmlStr += "<a style=\"text-decoration: none; color: white;\" href="+url+">"+ "비밀번호 재설정</a>";
+//				htmlStr += "<a style=\"text-decoration: none; color: white;\" href="+url+">"+ "비밀번호 재설정</a>";
 				htmlStr += "</button>";
-				htmlStr += "<p style=\"margin-top: 1rem;\">또는 아래의 URL 주소로 직접 이동해주세요.</p>";
-				htmlStr += "<p style=\"margin-top: 1rem;\">" + jwtToken +"</p>";
+				htmlStr += "<p style=\"margin-top: 1rem;\">모바일은 아래의 URL 주소로 직접 이동해주세요.</p>";		
+				htmlStr += "<a style=\"text-decoration: none;\" href='";
+				htmlStr +=  location;
+				htmlStr += "'>";
+				htmlStr += "<button type='button' style=\"background-color: black; color: white;\">";
+				htmlStr +=  "사이트 이동</button>";
+				htmlStr += "</a>";
 				htmlStr += "</div>";
 				htmlStr += "</div>";
-				
+			
 				msg.setText(htmlStr,"UTF-8","html");
 				msg.addRecipients(RecipientType.TO, id[0]);;
 			
@@ -102,7 +113,7 @@ public class MailService {
 			
 			PwTokenVO pwToken = new PwTokenVO();
 			pwToken.setMnum(dto.getMnum());
-			pwToken.setPwToken(jwtToken);
+			pwToken.setAuthcode(jwtToken);
 
 			PwTokenVO check = pwTokenDAO.checkPwTokenbyMnum(dto.getMnum());
 					

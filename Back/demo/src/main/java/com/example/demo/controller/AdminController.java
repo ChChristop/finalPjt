@@ -87,7 +87,7 @@ public class AdminController {
 	// 관리자 등록 URI
 	@PostMapping("/register")
 
-	public ResponseEntity<Long> addAdmin(@RequestBody AdminDTO adminDTO) {
+	public ResponseEntity<Boolean> addAdmin(@RequestBody AdminDTO adminDTO) {
 
 		log.info("[/api/admin/register] [addAdmin] [{}]", adminDTO.getAdminID());
 
@@ -96,10 +96,10 @@ public class AdminController {
 
 		if (result > 0) {
 			log.info("[/api/admin/register] [addAdmin 성공] [{}]", adminDTO.getAdminID());
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			log.warn("[/api/admin/register] [addAdmin 실패] [{}]", adminDTO.getAdminID());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
 
 		}
 	}
@@ -107,7 +107,7 @@ public class AdminController {
 	// 관리자 삭제 URI, 관리자 삭제 시 연관된 게시글, 댓글 삭제도 이루어져야 할지 회의 필요
 	// 탈퇴 삭제
 	@DeleteMapping("/delete/{anum}")
-	public ResponseEntity<Long> removeAdmin(@PathVariable Long anum) {
+	public ResponseEntity<Boolean> removeAdmin(@PathVariable Long anum) {
 
 		log.info("[/api/delete/{anum}] [removeAdmin] [{}]", anum);
 
@@ -116,17 +116,17 @@ public class AdminController {
 
 		if (result > 0) {
 			log.info("[/api/admin/delete/{anum}] [removeAdmin 성공] [{}]",anum);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			log.warn("[/api/admin/delete/{anum}] [removeAdmin 실패] [{}]", anum);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
 		}
 
 	}
 
 	// 관리자 수정 URI
 	@PutMapping("/update")
-	public ResponseEntity<Long> updateAdmin(@RequestBody AdminDTO adminDTO) {
+	public ResponseEntity<Boolean> updateAdmin(@RequestBody AdminDTO adminDTO) {
 
 		log.info("[/api/admin/update] [updateAdmin] [{}]",adminDTO.getAdminID());
 
@@ -134,10 +134,10 @@ public class AdminController {
 
 		if (result > 0) {
 			log.info("[/api/admin/update] [updateAdmin 성공] [{}]",adminDTO.getAdminID());
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			log.warn("[/api/admin/update] : [updateAdmin 실패] [{}] ",adminDTO.getAdminID());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
 		}
 
 	}

@@ -167,27 +167,27 @@ public class AllPermitURI {
 
 	// 토큰 유효성 확인
 	@PostMapping("/account/email/check-token")
-	public ResponseEntity<String[]> checkToken(@RequestBody PwTokenVO pwTokenVO) {
+	public ResponseEntity<Boolean> checkToken(@RequestBody PwTokenVO pwTokenVO) {
 		try {
 			
-		String result[] = mailService.checkToken(pwTokenVO.getPwToken());
+		String result[] = mailService.checkToken(pwTokenVO.getAuthcode());
 
-			log.info("[/account/email/check-token] [checkToken] [{}]", pwTokenVO.getPwToken());
+			log.info("[/account/email/check-token] [checkToken] [{}]", pwTokenVO.getAuthcode());
 
 			if (result.length == 0) {
 
-				log.info("[/account/email/check-token] [checkToken 실패] [{}]", pwTokenVO.getPwToken());
+				log.info("[/account/email/check-token] [checkToken 실패] [{}]", pwTokenVO.getAuthcode());
 
-				return new ResponseEntity<>(new String[] {}, HttpStatus.ACCEPTED);
+				return new ResponseEntity<>(false, HttpStatus.ACCEPTED);
 			}
 
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 
 		} catch (Exception e) {
 
-			log.info("[/account/email/check-token] [checkToken 실패(서버)] [{}]", pwTokenVO.getPwToken());
+			log.info("[/account/email/check-token] [checkToken 실패(서버)] [{}]", pwTokenVO.getAuthcode());
 
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(false,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

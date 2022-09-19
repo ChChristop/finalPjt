@@ -76,7 +76,7 @@ public class MemberController {
 
 	// 회원 삭제 URI
 	@DeleteMapping("/delete/{mnum}")
-	public ResponseEntity<Long> removeMember(@PathVariable Long mnum, HttpServletRequest request) {
+	public ResponseEntity<Boolean> removeMember(@PathVariable Long mnum, HttpServletRequest request) {
 
 		log.info("[/api/member/delete/{mnum}] [removeMember] [{}]", mnum);
 
@@ -97,10 +97,10 @@ public class MemberController {
 
 		if (result > 0) {
 			log.info("[api/member/delete/{mnum}] [removeMember 성공] [{}]", mnum);
-			return new ResponseEntity<>(mnum, HttpStatus.OK);
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		} else {
 			log.warn("[/api/member/delete/{mnum}] [removeMember 실패] [{}]", mnum);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
 		}
 
 	}
