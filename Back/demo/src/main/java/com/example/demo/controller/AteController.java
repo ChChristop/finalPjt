@@ -226,7 +226,7 @@ public class AteController {
 		int i = ateService.commAdd(dishComm);
 		
 		if(i>0) {
-			str = "댓글이 등록되었습니다.";
+			str = Integer.toString(dishComm.getAc_num());
 		}else {
 			str = "댓글 등록에 실패하였습니다.";
 		}
@@ -237,11 +237,13 @@ public class AteController {
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
 	 */
-	@DeleteMapping("/comm/delete/{mnum}/{ac_num}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
+	@DeleteMapping("/comm/delete/{mnum}/{ac_num}/{ate_num}")
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num,@PathVariable int ate_num) {
 		
 		dishComm.setMnum(mnum);
 		dishComm.setAc_num(ac_num);
+		dishComm.setAte_num(ate_num);
+		
 		String str = "";
 		int i = ateService.commDelete(dishComm);
 		

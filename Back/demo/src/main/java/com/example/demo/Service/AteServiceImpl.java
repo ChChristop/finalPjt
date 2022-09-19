@@ -77,17 +77,21 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 		int result = ateDao.delete(ate_num,mnum);
 
-//		UserPointVO vo = new UserPointVO();
-//
-//		vo.setMnum(mnum);
-//		vo.setPointID(ATE_MINUS);
-//		vo.setPoint(ATE_POINT * -1);
-//
-//		pointDAO.registerPoint(vo);
-//
-//		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
-//		
-		return result;
+		try {
+		UserPointVO vo = new UserPointVO();
+
+		vo.setMnum(mnum);
+		vo.setPointID(ATE_MINUS);
+		vo.setPoint(ATE_POINT * -1);
+
+		pointDAO.registerPoint(vo);
+
+		log.info("[AteServiceImpl] [delete 성공] [{}]", mnum);
+		
+		return result;}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	@Override

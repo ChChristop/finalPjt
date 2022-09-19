@@ -30,15 +30,19 @@ public class DishDBServiceImpl implements DishDBService {
 	
 		}
 		
-		
-		
 	}
-
 
 	@Override
 	public void ingAdd(Map<String, Object> ingMap) {
 	
 		dishDBDao.ingAdd(ingMap);
+	}
+
+
+	@Override
+	public boolean ingCheck(String ingItem, String num) {
+
+		return dishDBDao.ingCheck(ingItem,num);
 	}
 
 	

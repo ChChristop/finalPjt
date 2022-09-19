@@ -26,9 +26,6 @@ import com.example.demo.service.DishService;
 import com.example.demo.vo.Dish;
 import com.example.demo.vo.DishComm;
 import com.example.demo.vo.DishDB;
-import com.github.javaparser.utils.Log;
-
-import groovy.util.logging.Slf4j;
 
 @RestController
 @RequestMapping("/api/dish")
@@ -152,7 +149,9 @@ public class DishController {
 		int i = dishService.commAdd(dishComm);
 		
 		if(i > 0) {
-			str = "댓글이 등록되었습니다.";
+			
+			str = Integer.toString(dishComm.getDc_num());
+
 		}else {
 			str = "댓글 등록에 실패하였습니다.";
 		}
@@ -164,13 +163,14 @@ public class DishController {
 	/*
 	 * 댓글 삭제(작성한 사람만 삭제 가능)  
 	 */
-	@DeleteMapping("/comm/delete/{mnum}/{dc_num}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int dc_num) {
+	@DeleteMapping("/comm/delete/{mnum}/{dc_num}/{dish_num}")
+	public String commDelete(DishComm dishComm, @PathVariable int mnum, @PathVariable int dc_num, @PathVariable int dish_num) {
 		
 		// 중간에 수정으로 인해서 RCP_SEQ 구해오기
 		
 		dishComm.setMnum(mnum);
 		dishComm.setDc_num(dc_num);
+		dishComm.setRCP_SEQ(Integer.toString(dish_num));
 		
 		String str = "";
 		int i = dishService.commDelete(dishComm);
@@ -223,8 +223,8 @@ public class DishController {
 	/*
 	 * 음식 추가
 	 */
-	@PostMapping("/add/{mnum}")
-	public String add(@ModelAttribute DishDB dish, @PathVariable int mnum,
+	@PostMapping("/add/{anum}")
+	public String add(@ModelAttribute DishDB dish, @PathVariable int anum,
 			@RequestParam("mainIMG") MultipartFile fileMain,
 			@RequestParam("file01") MultipartFile file01,
 			@RequestParam("file02") MultipartFile file02,
@@ -232,12 +232,8 @@ public class DishController {
 			@RequestParam("file04") MultipartFile file04,
 			@RequestParam("file05") MultipartFile file05,
 			@RequestParam("file06") MultipartFile file06
-			/*,@RequestParam("file07") MultipartFile file07,
-			@RequestParam("file08") MultipartFile file08,
-			@RequestParam("file09") MultipartFile file09,
-			@RequestParam("file10") MultipartFile file10*/) throws Exception {
+			) throws Exception {
 		
-		System.out.println("지훈 : 들어와따!!!!!!");
 		
 		if(!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
@@ -281,29 +277,6 @@ public class DishController {
 			dish.setMANUAL_IMG06(ip+"/ate/" + savedName);
 			}
 		
-//		if(!file07.isEmpty()) {
-//			String savedName = file07.getOriginalFilename();
-//			savedName = uploadFile(savedName, file07.getBytes());
-//			dish.setMANUAL_IMG07(ip+"/ate/" + savedName);
-//			}
-//		
-//		if(!file08.isEmpty()) {
-//			String savedName = file08.getOriginalFilename();
-//			savedName = uploadFile(savedName, file08.getBytes());
-//			dish.setMANUAL_IMG08(ip+"/ate/" + savedName);
-//			}
-//		
-//		if(!file09.isEmpty()) {
-//			String savedName = file09.getOriginalFilename();
-//			savedName = uploadFile(savedName, file09.getBytes());
-//			dish.setMANUAL_IMG09(ip+"/ate/" + savedName);
-//			}
-//		
-//		if(!file10.isEmpty()) {
-//			String savedName = file10.getOriginalFilename();
-//			savedName = uploadFile(savedName, file10.getBytes());
-//			dish.setMANUAL_IMG10(ip+"/ate/" + savedName);
-//			}
 		
 		int num = dishService.getNum();
 
@@ -311,7 +284,7 @@ public class DishController {
 		
 		String str = "";
 		
-		int i = dishService.add(dish, mnum);
+		int i = dishService.add(dish, anum);
 		
 		if(i > 0) {
 			str = dish.getRCP_SEQ() + "이 등록되었습니다.";
@@ -325,18 +298,15 @@ public class DishController {
 	/*
 	 * 음식 정보 수정하기
 	 */
-	@PutMapping("/edit/{RCP_SEQ}/{mnum}")
-	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int mnum, @PathVariable int RCP_SEQ,
+	@PutMapping("/edit/{RCP_SEQ}/{anum}")
+	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int anum, @PathVariable int RCP_SEQ,
+			@RequestParam("mainIMG") MultipartFile fileMain,
 			@RequestParam("file01") MultipartFile file01,
 			@RequestParam("file02") MultipartFile file02,
 			@RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04,
 			@RequestParam("file05") MultipartFile file05,
-			@RequestParam("file06") MultipartFile file06
-			/*@RequestParam("file07") MultipartFile file07,
-			@RequestParam("file08") MultipartFile file08,
-			@RequestParam("file09") MultipartFile file09,
-			@RequestParam("file10") MultipartFile file10*/) throws Exception {
+			@RequestParam("file06") MultipartFile file06) throws Exception {
 		
 		
 		if(!file01.isEmpty()) {
@@ -404,7 +374,7 @@ public class DishController {
 	
 		String str = "";
 		
-		int i = dishService.edit(dish, dish1, RCP_SEQ, mnum);
+		int i = dishService.edit(dish, dish1, RCP_SEQ, anum);
 		
 		if(i > 0) {
 			str = dish.getRCP_SEQ() + "이 수정되었습니다.";
@@ -454,8 +424,13 @@ public class DishController {
 		map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
 		map.put("dish_like", resultMap.get("dish_like")); // 좋아요 개수
 		map.put("ate", resultMap.get("ate")); //먹음 게시물 수 
-		
-		
+		map.put("writer",resultMap.get("writer"));
+		//시간
+		if(resultMap.get("editdate") == null) {
+			map.put("date",resultMap.get("date"));
+		}else {
+			map.put("date",resultMap.get("editdate"));
+		}
 		String ingSTR = "";
 		//조리 재료
 		if(resultMap.get("rcp_parts_dtls") != null) {

@@ -16,7 +16,7 @@ public interface DishService {
 	/*
 	 * 음식 추가 
 	 */
-	public int add(DishDB dish, int mnum);
+	public int add(DishDB dish, int anum);
 	/*
 	 * 음식 전체 리스트 불러오기 
 	 */
@@ -90,5 +90,5 @@ public interface DishService {
 	  유저 좋아요 조회
 	*/
 	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO dto, long mnum);
-	
+
 }

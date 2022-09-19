@@ -21,5 +21,7 @@ public interface MainDao {
 	public List<Map<String, Object>> getIngs(int mnum);
 
 	public List<Map<String, Object>> getList(String string);
+
+	public List<Map<String, Object>> mainSearch(Map<String,Object> searchMap);
 	
 }

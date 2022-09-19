@@ -19,4 +19,6 @@ public interface MainService {
 
 	public List<Map<String, Object>> getList(String string);
 
+	public List<Map<String, Object>> mainSearch(Map<String, Object> searchMap);
+
 }

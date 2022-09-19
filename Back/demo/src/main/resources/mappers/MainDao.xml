@@ -8,8 +8,21 @@
 	</select>
 	
 	<select id="ingAllReco" parameterType="Integer" resultType="map">
-	select db.RCP_NM, re.iname, db.RCP_SEQ, db.ATT_FILE_NO_MAIN from dishDB db right join (select d.RCP_SEQ, d.iname from  dish_ing d right join refrigerator r on
-	d.iname = r.iname where r.mnum = #{mnum} order by r.`expiration date`, r.iname) re on db.RCP_SEQ = re.RCP_SEQ
+	select db.RCP_NM, 
+	re.iname, 
+	db.RCP_SEQ, 
+	db.ATT_FILE_NO_MAIN from dishDB db 
+	right join 
+	(select d.RCP_SEQ, d.iname from  dish_ing d right join refrigerator r on
+	d.iname = r.iname where r.mnum = #{mnum} order by r.`expiration date`, r.iname) re 
+	on db.RCP_SEQ = re.RCP_SEQ
+	</select>
+	
+	<select id = "mainSearch" parameterType="String" resultType="map">
+		select db.*,'재료' as str  from dishDB db where RCP_NM regexp #{search}
+		union distinct
+		select db.*,'레시피' as str from dishDB db where RCP_SEQ in 
+		(select RCP_SEQ from dish_ing where iname regexp #{search})
 	</select>
 	
 	<select id="ingAllReco_9999" parameterType="map" resultType="map">
@@ -25,14 +38,14 @@
 	</select>  
 	
 	<select id="getIngs" parameterType="Integer" resultType="map"> 
-		select iname from refrigerator where mnum =#{mnum} order by `expiration date`
+		select distinct(iname) from refrigerator where mnum =#{mnum} order by `expiration date`
 	</select>
 	
 	<select id="getList" parameterType="map" resultType="map">
 		select db.*, 
 		(select iname from dish_ing where iname = #{iname} group by iname) as iname
     	from dishDB db where RCP_SEQ in 
-    	(select RCP_SEQ from dish_ing ing where iname = #{iname}) limit 0,2
+    	(select RCP_SEQ from dish_ing ing where iname = #{iname}) limit 0,1
 		
 	</select>
 	

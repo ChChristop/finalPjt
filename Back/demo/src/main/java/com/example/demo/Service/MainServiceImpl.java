@@ -54,6 +54,12 @@ public class MainServiceImpl implements MainService {
 		return mainDao.getList(string);
 	}
 
+	@Override
+	public List<Map<String, Object>> mainSearch(Map<String, Object> searchMap) {
+
+		return mainDao.mainSearch(searchMap);
+	}
+
 
 	
 }

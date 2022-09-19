@@ -9,5 +9,9 @@ public interface DishDBService {
 	 * 재료만(dish_ing) 테이블 저장
 	 */
 	public void ingAdd(Map<String, Object> ingMap);
+	/*
+	 * 재료 중복 체크 
+	 */
+	public boolean ingCheck(String ingItem, String num);
 
 }

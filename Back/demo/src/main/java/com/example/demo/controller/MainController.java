@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.service.MainService;
@@ -38,6 +42,23 @@ public class MainController {
 		return result;
 	}
 	
+	
+	/*
+	 * 모바일 - 검색 (정규식)
+	 */
+	@PostMapping("/search")
+	@ResponseBody
+	public List<Map<String, Object>> mainSearch(@RequestBody Map<String,Object> searchMap){
+		
+		
+		System.out.println("searchMap ::: " + searchMap);
+		List<Map<String, Object>> result = new ArrayList<>();
+		result = mainService.mainSearch(searchMap);
+
+		return result;
+	}
+	
+	
 	/*
 	 * 전체 재료 다 갖고오기
 	 */
@@ -52,7 +73,7 @@ public class MainController {
 	 * 재료 누르면 관련 메뉴 추천(재료 1개에 관해) 
 	 * 이거 안쓸수도 있음
 	 */
-	@GetMapping("/recipe/{iname}")
+	@GetMapping("/recipe/{iname:[가-힣]+}")
 	public List<Map<String, Object>> recipeAuto(@PathVariable String iname){
 		
 		List<Map<String, Object>> result = mainService.recipeAuto(iname); 
@@ -74,9 +95,6 @@ public class MainController {
 		//1. 냉장고 재료 불러오기 
 		List<Map<String, Object>> ings = mainService.getIngs(mnum);
 		
-		System.out.println("ings ::: " +ings);
-		
-		
 		for(int i=0; i< ings.size(); i++) {
 			
 			Map<String, Object> map = new HashMap<>();
@@ -86,9 +104,7 @@ public class MainController {
 			
 			// 포문으로 꺼내장 
 			for(Map la :list) {
-			
 				result.add(la);
-			
 			}
 			
 		}

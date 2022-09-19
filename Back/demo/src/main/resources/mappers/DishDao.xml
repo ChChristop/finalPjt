@@ -9,16 +9,22 @@
 	</select> 
 	<insert id="addInfo" parameterType="map">
 		insert into dish set
-		writer=#{mnum}, RCP_SEQ = #{dnum}
+		writer=#{anum}, RCP_SEQ = #{dnum}
 	</insert>
 
 	<insert id="commAdd" parameterType="map" >
+	
 		insert into dish_comm set 
 		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
+		
+		<selectKey resultType="int" keyProperty="dc_num" order="AFTER">
+			SELECT max(dc_num) dc_num from dish_comm
+		</selectKey>
+		
     </insert>
       
 	<insert id="add" parameterType="map" useGeneratedKeys="true"
-		keyProperty="dnum">
+		keyProperty="dnum" >
 		insert into dishDB set
 		RCP_PARTS_DTLS = #{RCP_PARTS_DTLS},
 		RCP_PAT2 = #{RCP_PAT2},
@@ -407,6 +413,10 @@
 		
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM dishDB WHERE RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<delete id="deleteDish" parameterType="Integer">
+		DELETE FROM dish WHERE RCP_SEQ = #{RCP_SEQ}
 	</delete>
 	
 	<delete id="commDelete" parameterType="map">

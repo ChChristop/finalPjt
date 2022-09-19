@@ -56,4 +56,6 @@ public interface DishDao {
 
 	public void deleIng(int rCP_SEQ);
 
+	public void deleteDish(int rCP_SEQ);
+
 }
