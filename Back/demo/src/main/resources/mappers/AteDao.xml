@@ -104,7 +104,14 @@
 	</select>
 	
 	<select id="getAteListbyUser" resultType="AteDTO">
-		SELECT A.*, D.RCP_NM
+		SELECT A.ate_num,A.mnum,A.RCP_SEQ
+		, A.ate_date
+		, A.ate_picture
+		, A.ate_content
+		, A.ate_like
+		, A.ate_hit
+		, A.ate_editdate
+		, D.RCP_NM
 		,count(C.ate_num) as ate_comm_count
    		,(select count(*) from ate_like L where A.ate_num = L.ate_num) as ate_like_count
 		FROM ATE A 

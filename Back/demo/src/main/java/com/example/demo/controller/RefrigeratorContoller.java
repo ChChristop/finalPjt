@@ -78,7 +78,7 @@ public class RefrigeratorContoller {
 	// 냉장고 재료 추가
 	@PostMapping("/add")
 	@Transactional(rollbackFor = Exception.class)
-	public ResponseEntity<Boolean> refreAdd(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
+	public ResponseEntity<Long> refreAdd(@RequestBody RefrigeratorDTO refrigeratorDTO, HttpServletRequest request) {
 
 		log.info("[/api/refre/add] [refreAdd] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
 		try {
@@ -107,15 +107,15 @@ public class RefrigeratorContoller {
 
 		if (result > 0) {
 			log.info("[/api/refre/add] [refreAdd 성공] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
-			return new ResponseEntity<>(true, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else {
 			log.warn("[/api/refre/add] [refreAdd 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
-			return new ResponseEntity<>(false,HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(result,HttpStatus.ACCEPTED);
 		}
 		}catch(Exception e) {
 			//예상치 못한 예외
 			log.warn("[/api/refre/add] [refreAdd 실패] [{}/{}]", refrigeratorDTO.getMnum(), refrigeratorDTO.getIname());
-			return new ResponseEntity<>(false,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(0L,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}

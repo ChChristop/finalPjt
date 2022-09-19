@@ -77,13 +77,15 @@ public class MailService {
 		log.info("[MailService] [sendMail 진행 중] [{}]",memberID);
 		
 		try{
+			
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			
-			String location = "foodpush://seek?id=";
+			String location = "intent://seek?";
 			location += id[0];
 			location += "&authcode=";
 			location += jwtToken;
-			
+			location += "#intent;scheme=foodpush;package=com.foodpushapp;end;";
+		
 			
 			msg.setSubject("냉장고 계정 암호 재설정","UTF-8");
 			
@@ -100,6 +102,7 @@ public class MailService {
 				htmlStr += "<a style=\"text-decoration: none;\" href='";
 				htmlStr +=  location;
 				htmlStr += "'>";
+//				htmlStr += "link";
 				htmlStr += "<button type='button' style=\"background-color: black; color: white;\">";
 				htmlStr +=  "사이트 이동</button>";
 				htmlStr += "</a>";
@@ -125,6 +128,7 @@ public class MailService {
 		
 			
 		}catch(Exception e) {
+			e.printStackTrace();
 			return false;
 			
 		}
