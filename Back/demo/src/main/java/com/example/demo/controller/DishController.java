@@ -64,7 +64,6 @@ public class DishController {
 			map.put("mainIMG", resultMap.get("att_file_no_main")); //메인이미지
 			map.put("dish_like", resultMap.get("dish_like")); // 좋아요 개수
 			map.put("ate", resultMap.get("ate")); //먹음 게시물 수 
-		
 			
 			
 			//조리 재료

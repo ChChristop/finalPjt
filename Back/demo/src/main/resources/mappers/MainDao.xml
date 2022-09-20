@@ -18,12 +18,27 @@
 	on db.RCP_SEQ = re.RCP_SEQ
 	</select>
 	
-	<select id = "mainSearch" parameterType="String" resultType="map">
-		select db.*,'재료' as str  from dishDB db where RCP_NM regexp #{search}
-		union distinct
-		select db.*,'레시피' as str from dishDB db where RCP_SEQ in 
-		(select RCP_SEQ from dish_ing where iname regexp #{search})
+	<select id ="mainSearch" parameterType="map" resultType="map">
+	SELECT * 
+		FROM (
+			SELECT @ROWNUM:=@ROWNUM+1 as RN, Z.*
+				FROM (
+				(select * from dishDB where RCP_NM regexp #{search}
+				union distinct
+				select * from dishDB where RCP_SEQ in 
+				(select RCP_SEQ from dish_ing where iname regexp #{search})))Z where (@ROWNUM:=0) =0
+					) B
+			WHERE RN BETWEEN #{start} AND #{end}
 	</select>
+	
+	<select id="searchCNT" parameterType="map" resultType="integer">
+		select count(*) from           
+		(select * from dishDB where RCP_NM regexp #{search}
+		union distinct
+		select * from dishDB where RCP_SEQ in 
+		(select RCP_SEQ from dish_ing where iname regexp #{search}))Z
+	</select>
+	
 	
 	<select id="ingAllReco_9999" parameterType="map" resultType="map">
 	select * from (select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10) ing1

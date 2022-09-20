@@ -60,6 +60,12 @@ public class MainServiceImpl implements MainService {
 		return mainDao.mainSearch(searchMap);
 	}
 
+	@Override
+	public int searchCNT(Map<String, Object> searchMap) {
+		
+		return mainDao.searchCNT(searchMap);
+	}
+
 
 	
 }

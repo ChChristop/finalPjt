@@ -48,14 +48,40 @@ public class MainController {
 	 */
 	@PostMapping("/search")
 	@ResponseBody
-	public List<Map<String, Object>> mainSearch(@RequestBody Map<String,Object> searchMap){
+	public Map<String, Object> mainSearch(@RequestBody Map<String,Object> searchMap){
+		
+		Map<String, Object> resultMap = new HashMap<>();
+			//System.out.println("searchMap ::: " + searchMap);
+		
+		//한페이지당 결과는 10개
+		//전체 페이지 수 totalPage
+		int totalCNT = mainService.searchCNT(searchMap);
+			//System.out.println("totalCNT ::: " + totalCNT); //지워
+		//한장당 원하는 개수
+		int onePage = 15; //수정 가능
+		int totalPage = (int) Math.ceil((double)totalCNT/onePage);
+			//System.out.println("totalPage ::: " + totalPage); //지워
+		
+		//요청 들어온 페이지 (기본은 1)  
+		int page = 1;
+		if(!searchMap.get("page").toString().isEmpty()) {
+			page = Integer.parseInt((String) searchMap.get("page")); 
+		}
+		
+		int start = onePage*(page-1)+1;
+		int end = page*onePage;
+		searchMap.put("start", start);
+		searchMap.put("end", end);
+			//System.out.println(searchMap);
 		
 		
-		System.out.println("searchMap ::: " + searchMap);
 		List<Map<String, Object>> result = new ArrayList<>();
+		
 		result = mainService.mainSearch(searchMap);
-
-		return result;
+		resultMap.put("result",result);
+		resultMap.put("totalPage",totalPage);
+		
+		return resultMap;
 	}
 	
 	
@@ -73,7 +99,7 @@ public class MainController {
 	 * 재료 누르면 관련 메뉴 추천(재료 1개에 관해) 
 	 * 이거 안쓸수도 있음
 	 */
-	@GetMapping("/recipe/{iname:[가-힣]+}")
+	@GetMapping("/recipe/iname")
 	public List<Map<String, Object>> recipeAuto(@PathVariable String iname){
 		
 		List<Map<String, Object>> result = mainService.recipeAuto(iname); 
