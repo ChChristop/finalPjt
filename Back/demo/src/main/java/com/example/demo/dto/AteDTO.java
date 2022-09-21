@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -10,7 +12,7 @@ public class AteDTO {
 	@JsonProperty("RCP_SEQ")
 	private String RCP_SEQ;		// 음식 게시물 고유 번호(F)
 	private int mnum;		// 멤버 고유 번호(F)
-	private String ate_date;	// 먹음 등록날짜
+	private LocalDateTime ate_date;	// 먹음 등록날짜
 	private String ate_picture; // 먹음 사진
 	private String ate_content; // 먹음 내용
 //	private int ate_like;    // 먹음 좋아요

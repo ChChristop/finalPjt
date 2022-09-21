@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -168,10 +170,11 @@ public class AteServiceImpl implements AteService, PointDescription {
 
 			// 조회 메서드
 			result = ateDao.getAteListbyUser(pageRequestDTO,mnum);
-			
+		
 			if(result.size()<1) return null;
 			
 			count = ateDao.ateCount(mnum);
+		
 
 			return new PageResultVO<>(result,pageRequestDTO,count);
 			
