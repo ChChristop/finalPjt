@@ -54,7 +54,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	public int add(DishDB dish, int anum) {
 		
 		dishDao.add(dish);
-		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
 		dishDao.addInfo(dnum, anum);
 		
@@ -63,16 +62,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 		String result = restTestController.RegexCheck(obj);
 		restTestController.goDish_ing(result,num);
 		
-		
 		return '1';
 	}
 
 
 	@Override
-	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
+	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int anum) {
 		
 		dishDao.edit(dish);
-		dishDao.editInfo(dish1, rCP_SEQ, mnum);
+		dishDao.editInfo(dish1, rCP_SEQ, anum);
 		dishDao.deleIng(rCP_SEQ);
 		
 		Object obj = dish.getRCP_PARTS_DTLS();
@@ -99,8 +97,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int delete(int RCP_SEQ) {
 		
-		dishDao.deleteDish(RCP_SEQ);
-		
 		return dishDao.delete(RCP_SEQ);
 	}
 
@@ -108,8 +104,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int dishLike(int mnum, int RCP_SEQ) {
 		
-		return dishDao.dishLike(mnum,RCP_SEQ);
-		
+		return dishDao.dishLike(mnum,RCP_SEQ);	
 	}
 
 	@Override
@@ -206,7 +201,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 
 	@Override
 	public List<Map<String, Object>> search(String select, String searchI) {
-		
 		
 		return dishDao.search(select,searchI);
 	}

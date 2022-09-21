@@ -33,11 +33,12 @@ public class MainController {
 	 * 모바일 버전 - > 비회원 접속시 메뉴 추천!
 	 * 추후 접속 제한은 얘기 해봐야함!!!!
 	 */
-	@GetMapping("/recipe/reco/9999")
+	@PostMapping("/recipe/reco/9999")
 	public List<Map<String, Object>> ingAllReco_9999(@ModelAttribute NonMember nonMember){
 		
+		System.out.println("nonMember :::" + nonMember);
 		List<Map<String, Object>> result = mainService.ingAllReco_9999(nonMember); 
-		
+		System.out.println("result ::: " + result);
 		
 		return result;
 	}
@@ -56,11 +57,11 @@ public class MainController {
 		//한페이지당 결과는 10개
 		//전체 페이지 수 totalPage
 		int totalCNT = mainService.searchCNT(searchMap);
-			//System.out.println("totalCNT ::: " + totalCNT); //지워
+		System.out.println("totalCNT ::: " + totalCNT); //지워
 		//한장당 원하는 개수
 		int onePage = 15; //수정 가능
 		int totalPage = (int) Math.ceil((double)totalCNT/onePage);
-			//System.out.println("totalPage ::: " + totalPage); //지워
+		System.out.println("totalPage ::: " + totalPage); //지워
 		
 		//요청 들어온 페이지 (기본은 1)  
 		int page = 1;

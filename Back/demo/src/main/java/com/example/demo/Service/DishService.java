@@ -28,7 +28,7 @@ public interface DishService {
 	/*
 	 * 음식 정보 수정하기
 	 */
-	public int edit(DishDB dish, Dish dish1, int rCP_SEQ, int mnum);
+	public int edit(DishDB dish, Dish dish1, int rCP_SEQ, int anum);
 	/*
 	 *  조회수 +1
 	 */
@@ -75,7 +75,6 @@ public interface DishService {
 	 * 레시피 게시물 검색 기능
 	 */
 	public List<Map<String, Object>> search(String select, String searchI);
-	
 	/*
 	   top 50 게시글 
 	*/

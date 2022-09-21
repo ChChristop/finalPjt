@@ -38,9 +38,9 @@ public interface DishDao {
 
 	public int getNum();
 
-	public void addInfo(int dnum, int mnum);
+	public void addInfo(int dnum, int anum);
 
-	public void editInfo(Dish dish1, int rCP_SEQ, int mnum);
+	public void editInfo(Dish dish1, int rCP_SEQ, int anum);
 
 	public int commAdd(DishComm dishComm);
 
