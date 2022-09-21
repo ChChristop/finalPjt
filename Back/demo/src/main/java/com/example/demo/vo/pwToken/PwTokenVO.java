@@ -14,6 +14,6 @@ public class PwTokenVO {
 	
 	private long mnum;
 	
-	private String pwToken;
+	private String authcode;
 
 }

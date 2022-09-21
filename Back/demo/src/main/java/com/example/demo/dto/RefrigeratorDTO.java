@@ -26,7 +26,7 @@ public class RefrigeratorDTO {
 	private String iname;
 	
 	//유통기한
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+//	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate expirationDate;
 	
 	//(레거시 코드)키워드1
