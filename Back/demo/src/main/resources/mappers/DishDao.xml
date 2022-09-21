@@ -9,7 +9,7 @@
 	</select> 
 	<insert id="addInfo" parameterType="map">
 		insert into dish set
-		anum=#{anum}, RCP_SEQ = #{dnum}
+		anum=#{anum}, RCP_SEQ=#{dnum}
 	</insert>
 
 	<insert id="commAdd" parameterType="map" >
@@ -377,7 +377,7 @@
 	</update>
 	
 	<update id="upHit" parameterType="Integer">
-		INSERT INTO DISH (hit,rcp_seq, anum) VALUES ('1',#{rcp_seq},'a')
+		INSERT INTO DISH (hit,rcp_seq) VALUES ('1',#{rcp_seq})
         ON DUPLICATE KEY UPDATE hit = hit+1
 	</update>
 	
