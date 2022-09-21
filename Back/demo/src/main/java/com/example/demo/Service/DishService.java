@@ -16,7 +16,7 @@ public interface DishService {
 	/*
 	 * 음식 추가 
 	 */
-	public int add(DishDB dish, int mnum);
+	public int add(DishDB dish, int anum);
 	/*
 	 * 음식 전체 리스트 불러오기 
 	 */
@@ -28,7 +28,7 @@ public interface DishService {
 	/*
 	 * 음식 정보 수정하기
 	 */
-	public int edit(DishDB dish, Dish dish1, int rCP_SEQ, int mnum);
+	public int edit(DishDB dish, Dish dish1, int rCP_SEQ, int anum);
 	/*
 	 *  조회수 +1
 	 */
@@ -75,7 +75,6 @@ public interface DishService {
 	 * 레시피 게시물 검색 기능
 	 */
 	public List<Map<String, Object>> search(String select, String searchI);
-	
 	/*
 	   top 50 게시글 
 	*/
@@ -90,5 +89,5 @@ public interface DishService {
 	  유저 좋아요 조회
 	*/
 	public PageResultVO<DishLikeDTO> getLikeListbyMnum(PageRequestDTO dto, long mnum);
-	
+
 }

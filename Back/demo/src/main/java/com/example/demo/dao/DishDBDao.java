@@ -19,5 +19,8 @@ public interface DishDBDao {
 	public int checkNum(Map<String, Object> nodeMapData);
 
 
+	public boolean ingCheck(String ingItem, String num);
+
+
 	
 }

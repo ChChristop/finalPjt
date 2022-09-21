@@ -37,6 +37,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 	private final DishCommDAO dishCommDAO;
 	
 	private final DishLikeDAO dishLikeDAO;
+	
 	@Autowired
 	RestTestController restTestController;
 
@@ -50,28 +51,26 @@ public class DishServiceImpl implements DishService, PointDescription {
 	}
 
 	@Override
-	public int add(DishDB dish, int mnum) {
+	public int add(DishDB dish, int anum) {
 		
 		dishDao.add(dish);
-		
 		int dnum= Integer.parseInt(dish.getRCP_SEQ());
-		dishDao.addInfo(dnum, mnum);
+		dishDao.addInfo(dnum, anum);
 		
 		Object obj = dish.getRCP_PARTS_DTLS();
 		String num = Integer.toString(dnum);
 		String result = restTestController.RegexCheck(obj);
 		restTestController.goDish_ing(result,num);
 		
-		
 		return '1';
 	}
 
 
 	@Override
-	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int mnum) {
+	public int edit(DishDB dish, Dish dish1,int rCP_SEQ, int anum) {
 		
 		dishDao.edit(dish);
-		dishDao.editInfo(dish1, rCP_SEQ, mnum);
+		dishDao.editInfo(dish1, rCP_SEQ, anum);
 		dishDao.deleIng(rCP_SEQ);
 		
 		Object obj = dish.getRCP_PARTS_DTLS();
@@ -98,7 +97,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int delete(int RCP_SEQ) {
 		
-		
 		return dishDao.delete(RCP_SEQ);
 	}
 
@@ -106,8 +104,7 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public int dishLike(int mnum, int RCP_SEQ) {
 		
-		return dishDao.dishLike(mnum,RCP_SEQ);
-		
+		return dishDao.dishLike(mnum,RCP_SEQ);	
 	}
 
 	@Override
@@ -116,15 +113,15 @@ public class DishServiceImpl implements DishService, PointDescription {
 	
 		dishDao.goDishLike(RCP_SEQ,mnum);
 		
-//		UserPointVO vo = new UserPointVO();
-//		vo.setMnum(mnum);
-//		vo.setPointID(LIKE_PLUS);
-//		vo.setPoint(LIKE_POINT);
-//		vo.setRCP_SEQ(RCP_SEQ);
-//		
-//		pointDAO.registerPoint(vo);
-//		
-//		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(LIKE_PLUS);
+		vo.setPoint(LIKE_POINT);
+		vo.setRCP_SEQ(RCP_SEQ);
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [goDishLike] [{}]", mnum);
 	}
 
 	@Override
@@ -132,16 +129,16 @@ public class DishServiceImpl implements DishService, PointDescription {
 	public void goDishDislike(int RCP_SEQ, int mnum) {
 		
 		dishDao.goDishDislike(RCP_SEQ,mnum);
-//		
-//		UserPointVO vo = new UserPointVO();
-//		vo.setMnum(mnum);
-//		vo.setPointID(LIKE_MINUS);
-//		vo.setPoint(LIKE_POINT * -1);
-//		vo.setRCP_SEQ(RCP_SEQ);
-//		
-//		pointDAO.registerPoint(vo);
-//		
-//		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
+		
+		UserPointVO vo = new UserPointVO();
+		vo.setMnum(mnum);
+		vo.setPointID(LIKE_MINUS);
+		vo.setPoint(LIKE_POINT * -1);
+		vo.setRCP_SEQ(RCP_SEQ);
+		
+		pointDAO.registerPoint(vo);
+		
+		log.info("[DishServiceImpl] [goDishDislike] [{}]", mnum);
 	}
 
 	@Override
@@ -205,7 +202,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 	@Override
 	public List<Map<String, Object>> search(String select, String searchI) {
 		
-		
 		return dishDao.search(select,searchI);
 	}
 
@@ -249,7 +245,8 @@ public class DishServiceImpl implements DishService, PointDescription {
 					
 					e.printStackTrace();
 					
-					return null;}
+					return null;
+					}
 			
 	}
 
@@ -286,5 +283,6 @@ public class DishServiceImpl implements DishService, PointDescription {
 			return null;}
 
 	}
-	
+
+
 }

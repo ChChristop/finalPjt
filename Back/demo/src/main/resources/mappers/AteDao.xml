@@ -48,6 +48,11 @@
 	<insert id="commAdd" parameterType="map">
 		insert into ate_comm set 
 		mnum=#{mnum}, ate_num=#{ate_num}, content=#{content}
+		
+		<selectKey resultType="int" keyProperty="ac_num" order="AFTER">
+			SELECT max(ac_num) ac_num from ate_comm
+		</selectKey>
+		
     </insert>
 	
 	<delete id="commDelete" parameterType="map">

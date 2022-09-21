@@ -85,9 +85,11 @@ public class RestTestController {
 	   			for(int j= 0; j<result.split(",").length; j++) {
 	   				String ingItem = result.split(",")[j].trim();
 	   				if(!ingItem.isEmpty()) {
-	   				ingMap.put("ing",ingItem);
-	   				ingMap.put("RCP_SEQ", num);
-	   				dishService.ingAdd(ingMap);
+	   				//	if(dishService.ingCheck(ingItem, num) == 0) {
+	   						ingMap.put("ing",ingItem);
+	   						ingMap.put("RCP_SEQ", num);
+	   						dishService.ingAdd(ingMap);
+	   				//	}
 	   				}
 		   		}
 		
