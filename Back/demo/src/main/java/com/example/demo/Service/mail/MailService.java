@@ -80,11 +80,11 @@ public class MailService {
 			
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			
-			String location = "intent://seek?";
+			String location = "https://chchristop.github.io/react08/seek?id=";
 			location += id[0];
 			location += "&authcode=";
 			location += jwtToken;
-			location += "#intent;scheme=foodpush;package=com.foodpushapp;end;";
+
 		
 			
 			msg.setSubject("냉장고 계정 암호 재설정","UTF-8");
@@ -94,14 +94,10 @@ public class MailService {
 				htmlStr += " 냉장고 계정 암호 재설정 안내 </h1>";
 				htmlStr += "<br>";
 				htmlStr += "<div>";
-				htmlStr += "<p style=\"margin-bottom: 1rem;\">아래의 링크를 클릭하여 비밀번호 재설정 페이지로 이동하세요.</p>";
-				htmlStr += "<button style=\"background-color: black;\">";
-//				htmlStr += "<a style=\"text-decoration: none; color: white;\" href="+url+">"+ "비밀번호 재설정</a>";
-				htmlStr += "</button>";
+				htmlStr += "<p style=\"margin-bottom: 1rem;\">인증코드입니다. 이용하고 계신 사이트에서 코드 입력바랍니다.</p>";
+				htmlStr += "<p style=\"margin-bottom: 1rem;\">"+ jwtToken + "</p>";
 				htmlStr += "<p style=\"margin-top: 1rem;\">모바일은 아래의 URL 주소로 직접 이동해주세요.</p>";		
-				htmlStr += "<a style=\"text-decoration: none;\" href='";
-				htmlStr +=  location;
-				htmlStr += "'>";
+				htmlStr += "<a style=\"text-decoration: none;\" href='"+location+"'>";
 //				htmlStr += "link";
 				htmlStr += "<button type='button' style=\"background-color: black; color: white;\">";
 				htmlStr +=  "사이트 이동</button>";
@@ -175,7 +171,7 @@ public class MailService {
 			return getID;
 
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 			return new String[] {};
 		}
 	}
