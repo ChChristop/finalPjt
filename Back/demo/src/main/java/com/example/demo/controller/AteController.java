@@ -45,6 +45,7 @@ public class AteController {
 					@PathVariable int mnum,@RequestParam("file") MultipartFile file) 
 			throws Exception {
 
+		System.out.println("신나 들어와따!!");
 		ate.setRCP_SEQ(RCP_SEQ);
 		ate.setMnum(mnum);
 

@@ -38,7 +38,7 @@ public class DishController {
 	@Value("${DishDBuploadPath}")
 	String dbUploadPath;
 
-	String ip = Constants.IP_PORT;
+	String ip = Constants.TEST_IP_PORT; //일단 
 
 	@GetMapping("/get")
 	public List<Map<String, Object>> get() {
@@ -73,6 +73,7 @@ public class DishController {
 				ingSTR = "재료없음";
 				
 			}
+			
 			ingSTR = ingSTR.replace("재료", "");
 			ingSTR = ingSTR.replaceAll("\n", ", ");
 
@@ -258,25 +259,25 @@ public class DishController {
 		if (!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
-			dish.setMANUAL_IMG03(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG03(ip + "/dishDB/" + savedName);
 		}
 
 		if (!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
-			dish.setMANUAL_IMG04(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG04(ip + "/dishDB/" + savedName);
 		}
 
 		if (!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
-			dish.setMANUAL_IMG05(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG05(ip + "/dishDB/" + savedName);
 		}
 
 		if (!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
-			dish.setMANUAL_IMG06(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG06(ip + "/dishDB/" + savedName);
 		}
 
 		int num = dishService.getNum();
