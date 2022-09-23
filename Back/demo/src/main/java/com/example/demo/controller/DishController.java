@@ -38,6 +38,7 @@ public class DishController {
 	@Value("${DishDBuploadPath}")
 	String dbUploadPath;
 
+
 	String ip = Constants.IP_PORT;
 
 	@GetMapping("/get")
@@ -48,6 +49,7 @@ public class DishController {
 		if (!fileTest.exists()) {
 			fileTest.mkdirs();
 		}
+
 
 		// DB에서 받아온 모양
 		List<Map<String, Object>> DBlist = dishService.get();
@@ -72,6 +74,7 @@ public class DishController {
 
 			if (resultMap.get("rcp_parts_dtls") != null) {
 
+
 				ingSTR = resultMap.get("rcp_parts_dtls").toString();
 
 			} else {
@@ -79,6 +82,7 @@ public class DishController {
 				ingSTR = "재료없음";
 
 			}
+      
 			ingSTR = ingSTR.replace("재료", "");
 			ingSTR = ingSTR.replaceAll("\n", ", ");
 
@@ -112,6 +116,7 @@ public class DishController {
 
 				}
 
+
 				recipe.add(i, manualStr);
 			}
 
@@ -120,6 +125,7 @@ public class DishController {
 			List<String> imgList = new ArrayList<>();
 
 			for (int i = 0; i < 20; i++) {
+
 
 				String imgId = "manual_img";
 				String imgIdNum = "";
@@ -220,8 +226,10 @@ public class DishController {
 		return str;
 	}
 
+
 	@GetMapping("/search")
 	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
+
 
 		log.info("[/api/dish/search] [검색어] [{}]", searchI);
 
@@ -232,6 +240,7 @@ public class DishController {
 
 	@PostMapping("/add/{anum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int anum,
+
 			@RequestParam("mainIMG") MultipartFile fileMain, @RequestParam("file01") MultipartFile file01,
 			@RequestParam("file02") MultipartFile file02, @RequestParam("file03") MultipartFile file03,
 			@RequestParam("file04") MultipartFile file04, @RequestParam("file05") MultipartFile file05,
@@ -252,37 +261,48 @@ public class DishController {
 		if (!file02.isEmpty()) {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
+
 			dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!fileMain.isEmpty()) {
 			String savedName = fileMain.getOriginalFilename();
 			savedName = uploadFile(savedName, fileMain.getBytes());
+
 			dish.setATT_FILE_NO_MAIN(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
+
 			dish.setMANUAL_IMG03(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
+
 			dish.setMANUAL_IMG04(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
+
 			dish.setMANUAL_IMG05(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
+
 			dish.setMANUAL_IMG06(ip + "image/dishDB/" + savedName);
+
 		}
 
 		int num = dishService.getNum();
@@ -295,11 +315,13 @@ public class DishController {
 
 		if (i > 0) {
 
+
 			str = dish.getRCP_SEQ() + "이 등록되었습니다.";
 
 		} else {
 
 			str = "글 등록에 실패하였습니다.";
+
 
 		}
 
@@ -308,6 +330,7 @@ public class DishController {
 	}
 
 	@PutMapping("/edit/{RCP_SEQ}/{anum}")
+
 	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int anum,
 			@PathVariable int RCP_SEQ, @RequestParam("mainIMG") MultipartFile fileMain,
 			@RequestParam("file01") MultipartFile file01, @RequestParam("file02") MultipartFile file02,
@@ -325,42 +348,55 @@ public class DishController {
 			String savedName = fileMain.getOriginalFilename();
 			savedName = uploadFile(savedName, fileMain.getBytes());
 			dish.setATT_FILE_NO_MAIN(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
+      
 			dish.setMANUAL_IMG01(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file02.isEmpty()) {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
-			dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
+
+      dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
+
 			dish.setMANUAL_IMG03(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
+
 			dish.setMANUAL_IMG04(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
+
 			dish.setMANUAL_IMG05(ip + "image/dishDB/" + savedName);
+
 		}
 
 		if (!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
+
 			dish.setMANUAL_IMG06(ip + "image/dishDB/" + savedName);
+
 		}
 
 		dish.setRCP_SEQ(Integer.toString(RCP_SEQ));
@@ -395,7 +431,9 @@ public class DishController {
 		String str = "";
 		if (check == 1) {
 
+
 			str = "liked";
+
 
 		}
 
@@ -421,6 +459,7 @@ public class DishController {
 
 			map.put("date", resultMap.get("editdate"));
 
+
 		}
 
 		String ingSTR = "";
@@ -437,12 +476,13 @@ public class DishController {
 
 		ingSTR = ingSTR.replace("재료", "");
 		ingSTR = ingSTR.replaceAll("\n", ", ");
-
+    
 		map.put("ingredient", ingSTR);
 
 		List<String> recipe = new ArrayList<>();
 
 		for (int i = 0; i < 20; i++) {
+
 
 			String manualId = "manual";
 			String manualIdNum = "";
@@ -562,6 +602,7 @@ public class DishController {
 
 			dishService.goDishDislike(RCP_SEQ, mnum);
 			str = "좋아요 해제!";
+
 
 		}
 

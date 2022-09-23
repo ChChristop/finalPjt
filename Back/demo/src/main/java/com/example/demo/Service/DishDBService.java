@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface DishDBService {
 
-	public void dbGO(Map<String, Object> nodeMapData, int mnum);
+	public void dbGO(Map<String, Object> nodeMapData, int anum);
 	/*
 	 * 재료만(dish_ing) 테이블 저장
 	 */

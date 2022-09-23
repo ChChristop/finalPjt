@@ -30,8 +30,8 @@ public class RestTestController {
 	DishDBService dishService;
 
 	
-	@GetMapping("/tagtest/{start}/{end}/{mnum}")
-	 public void main(String[] args, @PathVariable int start,@PathVariable int end, @PathVariable int mnum) {
+	@GetMapping("/tagtest/{start}/{end}/{anum}")
+	 public void main(String[] args, @PathVariable int start,@PathVariable int end, @PathVariable int anum) {
 
 	        try {
 	  
@@ -60,7 +60,7 @@ public class RestTestController {
 	            NodeList childNodeList = firstNode.getChildNodes();
 	            Map<String, Object> nodeMapData = getNodeList(childNodeList);
 	           //전체 db에 저장하는 메소드 ; 나중에 살려야해! 
-	           dishService.dbGO(nodeMapData,mnum);
+	           dishService.dbGO(nodeMapData,anum);
 	           
 	           //재료만 저장하는 메소드
 	            

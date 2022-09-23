@@ -4,7 +4,7 @@
 <mapper namespace="com.example.demo.dao.DishDBDao">
 
 	<insert id="dbGoInfo" parameterType="map">
-		insert into dish set writer=#{mnum}, RCP_SEQ = #{nodeMapData.RCP_SEQ}
+		insert into dish set anum=#{anum}, RCP_SEQ = #{nodeMapData.RCP_SEQ}
 	</insert>
 	
 	<select id="checkNum" parameterType="map" resultType="int">
@@ -12,8 +12,6 @@
 	select count(*) from dishDB where RCP_SEQ = #{RCP_SEQ}
 	
 	</select>
-	
-	
 	
 	<insert id="ingAdd" parameterType="map">
 		insert into dish_ing set 

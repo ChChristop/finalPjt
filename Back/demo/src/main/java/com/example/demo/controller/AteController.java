@@ -62,6 +62,7 @@ public class AteController {
 
 		ate.setAte_picture(ip + "image/ate/" + savedName);
 
+
 		String str = "";
 		int i = ateService.add(ate);
 
@@ -152,6 +153,7 @@ public class AteController {
 		String savedName = file.getOriginalFilename();
 		savedName = uploadFile(savedName, file.getBytes());
 
+
 		ate.setAte_picture(ip + "image/ate/" + savedName);
 
 		int i = ateService.editAte(ate);
@@ -161,7 +163,7 @@ public class AteController {
 			str = "글 수정되었습니다.";
 			
 		} else {
-			
+
 			str = "글 수정에 실패하였습니다.";
 			
 		}
@@ -176,7 +178,6 @@ public class AteController {
 
 		return ateList;
 	}
-
 
 	@DeleteMapping("/delete/{ate_num}/{mnum}")
 	public String delete(@PathVariable int ate_num, @PathVariable int mnum) {
