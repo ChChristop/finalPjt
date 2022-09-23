@@ -159,7 +159,7 @@
 	
 	<select id="search" parameterType="map" resultType="map">
 		SELECT
-		d.anum,
+		d.writer,
 		d.url,
 		d.dish_like,
 		d.ate,

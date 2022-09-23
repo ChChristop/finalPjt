@@ -42,6 +42,12 @@ public class DishController {
 
 	@GetMapping("/get")
 	public List<Map<String, Object>> get() {
+		
+		File fileTest = new File(dbUploadPath);
+
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
 
 		// DB에서 받아온 모양
 		List<Map<String, Object>> DBlist = dishService.get();
@@ -52,7 +58,7 @@ public class DishController {
 		for (Map<String, Object> resultMap : DBlist) {
 			Map<String, Object> map = new HashMap<>();
 
-			map.put("hit", resultMap.get("hit")); 
+			map.put("hit", resultMap.get("hit"));
 			map.put("writer", resultMap.get("anum"));
 			map.put("date", resultMap.get("date"));
 			map.put("dish_num", resultMap.get("rcp_seq"));
@@ -65,48 +71,47 @@ public class DishController {
 			String ingSTR = "";
 
 			if (resultMap.get("rcp_parts_dtls") != null) {
-				
+
 				ingSTR = resultMap.get("rcp_parts_dtls").toString();
-				
+
 			} else {
-				
+
 				ingSTR = "재료없음";
-				
+
 			}
 			ingSTR = ingSTR.replace("재료", "");
 			ingSTR = ingSTR.replaceAll("\n", ", ");
 
 			map.put("ingredient", ingSTR);
 
-			
 			List<String> recipe = new ArrayList<>();
 
 			for (int i = 0; i < 20; i++) {
-				
+
 				String manualId = "manual";
 				String manualIdNum = "";
-				
+
 				if (i < 9) {
-					
+
 					manualIdNum = "0" + String.valueOf(i + 1);
-					
+
 				} else {
-					
+
 					manualIdNum = String.valueOf(i + 1);
-					
+
 				}
-				
+
 				manualId += manualIdNum;
 
 				String manualStr = "";
-				
+
 				if (resultMap.get(manualId) != null) {
-					
+
 					manualStr = resultMap.get(manualId).toString();
 					manualStr = manualStr.replace("\n", "");
-					
+
 				}
-				
+
 				recipe.add(i, manualStr);
 			}
 
@@ -115,18 +120,18 @@ public class DishController {
 			List<String> imgList = new ArrayList<>();
 
 			for (int i = 0; i < 20; i++) {
-				
+
 				String imgId = "manual_img";
 				String imgIdNum = "";
-				
+
 				if (i < 9) {
-					
+
 					imgIdNum = "0" + String.valueOf(i + 1);
-					
+
 				} else {
-					
+
 					imgIdNum = String.valueOf(i + 1);
-					
+
 				}
 
 				imgId += imgIdNum;
@@ -134,10 +139,10 @@ public class DishController {
 				String imgStr = "";
 
 				if (resultMap.get(imgId) != null) {
-					
+
 					imgStr = resultMap.get(imgId).toString();
 					imgStr = imgStr.replace("\n", "");
-					
+
 				}
 
 				imgList.add(i, imgStr);
@@ -166,7 +171,7 @@ public class DishController {
 			str = Integer.toString(dishComm.getDc_num());
 
 		} else {
-			
+
 			str = "댓글 등록에 실패하였습니다.";
 		}
 
@@ -203,22 +208,20 @@ public class DishController {
 		int i = dishService.commEdit(dishComm);
 
 		if (i > 0) {
-			
+
 			str = "댓글이 수정되었습니다.";
-			
+
 		} else {
-			
+
 			str = "댓글 수정에 실패하였습니다.";
-			
+
 		}
 
 		return str;
 	}
 
-
 	@GetMapping("/search")
-	public List<Map<String, Object>> search(@RequestParam String select, 
-			@RequestParam String searchI) {
+	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
 
 		log.info("[/api/dish/search] [검색어] [{}]", searchI);
 
@@ -229,54 +232,57 @@ public class DishController {
 
 	@PostMapping("/add/{anum}")
 	public String add(@ModelAttribute DishDB dish, @PathVariable int anum,
-			@RequestParam("mainIMG") MultipartFile fileMain, 
-			@RequestParam("file01") MultipartFile file01,
-			@RequestParam("file02") MultipartFile file02, 
-			@RequestParam("file03") MultipartFile file03,
-			@RequestParam("file04") MultipartFile file04, 
-			@RequestParam("file05") MultipartFile file05,
+			@RequestParam("mainIMG") MultipartFile fileMain, @RequestParam("file01") MultipartFile file01,
+			@RequestParam("file02") MultipartFile file02, @RequestParam("file03") MultipartFile file03,
+			@RequestParam("file04") MultipartFile file04, @RequestParam("file05") MultipartFile file05,
 			@RequestParam("file06") MultipartFile file06) throws Exception {
+
+		File fileTest = new File(dbUploadPath);
+
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
 
 		if (!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
-			dish.setMANUAL_IMG01(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG01(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file02.isEmpty()) {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
-			dish.setMANUAL_IMG02(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!fileMain.isEmpty()) {
 			String savedName = fileMain.getOriginalFilename();
 			savedName = uploadFile(savedName, fileMain.getBytes());
-			dish.setATT_FILE_NO_MAIN(ip + "/dishDB/" + savedName);
+			dish.setATT_FILE_NO_MAIN(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
-			dish.setMANUAL_IMG03(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG03(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
-			dish.setMANUAL_IMG04(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG04(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
-			dish.setMANUAL_IMG05(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG05(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
-			dish.setMANUAL_IMG06(ip + "/ate/" + savedName);
+			dish.setMANUAL_IMG06(ip + "image/dishDB/" + savedName);
 		}
 
 		int num = dishService.getNum();
@@ -288,13 +294,13 @@ public class DishController {
 		int i = dishService.add(dish, anum);
 
 		if (i > 0) {
-			
+
 			str = dish.getRCP_SEQ() + "이 등록되었습니다.";
-			
+
 		} else {
-			
+
 			str = "글 등록에 실패하였습니다.";
-			
+
 		}
 
 		return str;
@@ -302,57 +308,59 @@ public class DishController {
 	}
 
 	@PutMapping("/edit/{RCP_SEQ}/{anum}")
-	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, 
-			@PathVariable int anum, @PathVariable int RCP_SEQ, 
-			@RequestParam("mainIMG") MultipartFile fileMain,
-			@RequestParam("file01") MultipartFile file01, 
-			@RequestParam("file02") MultipartFile file02,
-			@RequestParam("file03") MultipartFile file03, 
-			@RequestParam("file04") MultipartFile file04,
-			@RequestParam("file05") MultipartFile file05, 
-			@RequestParam("file06") MultipartFile file06)
+	public String edit(@ModelAttribute DishDB dish, @ModelAttribute Dish dish1, @PathVariable int anum,
+			@PathVariable int RCP_SEQ, @RequestParam("mainIMG") MultipartFile fileMain,
+			@RequestParam("file01") MultipartFile file01, @RequestParam("file02") MultipartFile file02,
+			@RequestParam("file03") MultipartFile file03, @RequestParam("file04") MultipartFile file04,
+			@RequestParam("file05") MultipartFile file05, @RequestParam("file06") MultipartFile file06)
 			throws Exception {
 
+		File fileTest = new File(dbUploadPath);
+		
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
+		
 		if (!fileMain.isEmpty()) {
 			String savedName = fileMain.getOriginalFilename();
 			savedName = uploadFile(savedName, fileMain.getBytes());
-			dish.setATT_FILE_NO_MAIN(ip + "/dishDB/" + savedName);
+			dish.setATT_FILE_NO_MAIN(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
-			dish.setMANUAL_IMG01(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG01(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file02.isEmpty()) {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
-			dish.setMANUAL_IMG02(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file03.isEmpty()) {
 			String savedName = file03.getOriginalFilename();
 			savedName = uploadFile(savedName, file03.getBytes());
-			dish.setMANUAL_IMG03(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG03(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file04.isEmpty()) {
 			String savedName = file04.getOriginalFilename();
 			savedName = uploadFile(savedName, file04.getBytes());
-			dish.setMANUAL_IMG04(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG04(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file05.isEmpty()) {
 			String savedName = file05.getOriginalFilename();
 			savedName = uploadFile(savedName, file05.getBytes());
-			dish.setMANUAL_IMG05(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG05(ip + "image/dishDB/" + savedName);
 		}
 
 		if (!file06.isEmpty()) {
 			String savedName = file06.getOriginalFilename();
 			savedName = uploadFile(savedName, file06.getBytes());
-			dish.setMANUAL_IMG06(ip + "/dishDB/" + savedName);
+			dish.setMANUAL_IMG06(ip + "image/dishDB/" + savedName);
 		}
 
 		dish.setRCP_SEQ(Integer.toString(RCP_SEQ));
@@ -386,9 +394,9 @@ public class DishController {
 
 		String str = "";
 		if (check == 1) {
-			
+
 			str = "liked";
-			
+
 		}
 
 		Map<String, Object> resultMap = dishService.getOne(RCP_SEQ);
@@ -406,25 +414,25 @@ public class DishController {
 		map.put("writer", resultMap.get("anum"));
 
 		if (resultMap.get("editdate") == null) {
-			
+
 			map.put("date", resultMap.get("date"));
-			
+
 		} else {
-			
+
 			map.put("date", resultMap.get("editdate"));
-			
+
 		}
 
 		String ingSTR = "";
 
 		if (resultMap.get("rcp_parts_dtls") != null) {
-			
+
 			ingSTR = resultMap.get("rcp_parts_dtls").toString();
-			
+
 		} else {
-			
+
 			ingSTR = "재료없음";
-			
+
 		}
 
 		ingSTR = ingSTR.replace("재료", "");
@@ -432,37 +440,36 @@ public class DishController {
 
 		map.put("ingredient", ingSTR);
 
-
 		List<String> recipe = new ArrayList<>();
 
 		for (int i = 0; i < 20; i++) {
-			
+
 			String manualId = "manual";
 			String manualIdNum = "";
-			
+
 			if (i < 9) {
-				
+
 				manualIdNum = "0" + String.valueOf(i + 1);
-				
+
 			} else {
-				
+
 				manualIdNum = String.valueOf(i + 1);
-				
+
 			}
-			
+
 			manualId += manualIdNum;
 
 			String manualStr = "";
-			
+
 			if (resultMap.get(manualId) != null) {
-				
+
 				manualStr = resultMap.get(manualId).toString();
 				manualStr = manualStr.replace("\n", "");
-				
+
 			}
-			
+
 			recipe.add(i, manualStr);
-			
+
 		}
 
 		map.put("recipe", recipe);
@@ -470,18 +477,18 @@ public class DishController {
 		List<String> imgList = new ArrayList<>();
 
 		for (int i = 0; i < 20; i++) {
-			
+
 			String imgId = "manual_img";
 			String imgIdNum = "";
-			
+
 			if (i < 9) {
-				
+
 				imgIdNum = "0" + String.valueOf(i + 1);
-				
+
 			} else {
-				
+
 				imgIdNum = String.valueOf(i + 1);
-				
+
 			}
 
 			imgId += imgIdNum;
@@ -489,18 +496,17 @@ public class DishController {
 			String imgStr = "";
 
 			if (resultMap.get(imgId) != null) {
-				
+
 				imgStr = resultMap.get(imgId).toString();
 				imgStr = imgStr.replace("\n", "");
-				
+
 			}
 
 			imgList.add(i, imgStr);
 		}
 
-		map.put("imgList", imgList); 
+		map.put("imgList", imgList);
 
-		
 		List<DishComm> commList = dishService.commGet(RCP_SEQ);
 
 		map.put("commList", commList);
@@ -529,13 +535,13 @@ public class DishController {
 		int i = dishService.delete(RCP_SEQ);
 
 		if (i > 0) {
-			
+
 			str = "글이 삭제되었습니다.";
-			
+
 		} else {
-			
+
 			str = "글 삭제에 실패하였습니다.";
-			
+
 		}
 
 		return str;
@@ -545,18 +551,18 @@ public class DishController {
 	public String goDishLike(@PathVariable int RCP_SEQ, @PathVariable int mnum) {
 
 		String str = "";
-		
+
 		if (dishService.dishLike(mnum, RCP_SEQ) == 0) {
 
 			dishService.goDishLike(RCP_SEQ, mnum);
 
 			str = "좋아요 등록!";
-		
+
 		} else {
-		
+
 			dishService.goDishDislike(RCP_SEQ, mnum);
 			str = "좋아요 해제!";
-		
+
 		}
 
 		return str;
