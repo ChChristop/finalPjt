@@ -1,24 +1,25 @@
-import GoogleLogin from "react-google-login";
+import { useRef } from 'react';
+import useScript from './useScript';
 
-function GoogleButton() {
-  const onSuccess = (response) => {
-    console.log(response);
-  };
-  const onFailure = (error) => {
-    console.log(error);
-  };
+export default function GoogleLogin({
+  onGoogleSignIn = () => {},
+  text = 'signin_with',
+}) {
+  const googleSignInButton = useRef(null);
+  const client_id =
+    '338950793796-fsuh7oog818lj6lvs2ds4suorcgoa61e.apps.googleusercontent.com';
 
-  return (
-    <div>
-      <GoogleLogin
-        clientId="338950793796-fsuh7oog818lj6lvs2ds4suorcgoa61e.apps.googleusercontent.com"
-        buttonText="구글 로그인"
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-        cookiePolicy={"single_host_origin"}
-      ></GoogleLogin>
-    </div>
-  );
+  useScript('https://accounts.google.com/gsi/client', () => {
+    window.google.accounts.id.initialize({
+      //client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      client_id,
+      callback: onGoogleSignIn,
+    });
+    window.google.accounts.id.renderButton(
+      googleSignInButton.current,
+      { theme: 'filled_blue', size: 'large', text, width: '250' } // customization attributes
+    );
+  });
+
+  return <div ref={googleSignInButton}></div>;
 }
-
-export default GoogleButton;
