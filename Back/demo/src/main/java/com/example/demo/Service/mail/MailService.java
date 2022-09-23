@@ -80,7 +80,7 @@ public class MailService {
 			
 			MimeMessage msg = javaMailSender.createMimeMessage();
 			
-			String location = "https://chchristop.github.io/react08/seek?id=";
+			String location = "https://chchristop.github.io/react08?id=";
 			location += id[0];
 			location += "&authcode=";
 			location += jwtToken;
