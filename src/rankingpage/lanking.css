@@ -1,0 +1,32 @@
+.lankinglayout {
+  text-align: center;
+}
+
+.wrapper {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.imgfile1 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #d5a11e;
+  border-radius: 50%;
+}
+
+.imgfile2 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #a3a3a3;
+  border-radius: 50%;
+}
+
+.imgfile3 {
+  margin: 0 auto;
+  width: 200px;
+  height: 200px;
+  border: 15px solid #cd7f32;
+  border-radius: 50%;
+}
