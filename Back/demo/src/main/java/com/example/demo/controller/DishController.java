@@ -38,7 +38,7 @@ public class DishController {
 	@Value("${DishDBuploadPath}")
 	String dbUploadPath;
 
-	String ip = Constants.TEST_IP_PORT; //일단 
+	String ip = Constants.IP_PORT; 
 
 	@GetMapping("/get")
 	public List<Map<String, Object>> get() {

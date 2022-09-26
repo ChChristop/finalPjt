@@ -31,14 +31,15 @@
 	</select>
 	
 	<select id="getOne" parameterType="Integer" resultType="map">
-	SELECT A.RCP_NM, 
-		A.RCP_SEQ,
-		(SELECT COUNT(*) FROM ATE_LIKE WHERE RCP_SEQ = A.RCP_SEQ) AS like_count
-		,B.*
-		FROM dishdb A
-		JOIN ATE B
-		ON A.RCP_SEQ = B.RCP_SEQ
-		where ate_num=#{ate_num}
+		SELECT A.RCP_NM, 
+			   A.RCP_SEQ,
+			   (SELECT COUNT(*) FROM ATE_LIKE WHERE RCP_SEQ = A.RCP_SEQ) AS LIKE_COUNT,
+			   (SELECT NICKNAME FROM MEMBER WHERE B.MNUM = MNUM) AS NICKNAME
+			    ,B.*
+		FROM DISHDB A
+			JOIN ATE B
+			ON A.RCP_SEQ = B.RCP_SEQ
+		WHERE ATE_NUM=#{ATE_NUM}
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">

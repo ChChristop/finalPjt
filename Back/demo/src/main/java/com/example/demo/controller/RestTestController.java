@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.example.demo.common.Constants;
 import com.example.demo.service.DishDBService;
 
 @RestController
@@ -29,29 +30,27 @@ public class RestTestController {
 	@Autowired
 	DishDBService dishService;
 
+	String MY_KEY = Constants.MY_KEY;
 	
 	@GetMapping("/tagtest/{start}/{end}/{anum}")
 	 public void main(String[] args, @PathVariable int start,@PathVariable int end, @PathVariable int anum) {
 
 	        try {
 	  
-	            String openApiUrl = "http://openapi.foodsafetykorea.go.kr/api"
-	            		+ "/e6966c1b694a4befb4c1/COOKRCP01/xml/"
-	            		+ start +
-	            		"/" + end;
-	            //OpenAPI URL 정보 읽기
+	            String openApiUrl = "http://openapi.foodsafetykorea.go.kr/api/"
+	            		+ MY_KEY + "/COOKRCP01/xml/"+ start + "/" + end;
+
 	            URL obj = new URL(openApiUrl);
 	            HttpURLConnection con = (HttpURLConnection)obj.openConnection();
 	            con.setDoOutput(true);
 	            con.setRequestMethod("GET");
-	            //받아온 XML문서 파싱 => document인스턴스에 저장
+	            
 	            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 	            Document document = (Document) docBuilder.parse(new InputSource(con.getInputStream()));
-	            //Dom Tree를 XML문서의 구조대로 완성
+	        
 	            document.getDocumentElement().normalize();
-	            //HIT Tag 정보들을  검색
-	            //item(번호)에 따라 정보가 바뀜
+	        
 	            List<Map<String, Object>> list = new ArrayList<>();
 	            List<Map<String, Object>> ing = new ArrayList<>();
 	            
@@ -59,11 +58,8 @@ public class RestTestController {
 	            Node firstNode = document.getElementsByTagName("row").item(i);
 	            NodeList childNodeList = firstNode.getChildNodes();
 	            Map<String, Object> nodeMapData = getNodeList(childNodeList);
-	           //전체 db에 저장하는 메소드 ; 나중에 살려야해! 
 	           dishService.dbGO(nodeMapData,anum);
-	           
-	           //재료만 저장하는 메소드
-	            
+	          
 	           String result = RegexCheck(nodeMapData.get("RCP_PARTS_DTLS"));
 	           String num = (String) nodeMapData.get("RCP_SEQ");
 	           
@@ -85,11 +81,11 @@ public class RestTestController {
 	   			for(int j= 0; j<result.split(",").length; j++) {
 	   				String ingItem = result.split(",")[j].trim();
 	   				if(!ingItem.isEmpty()) {
-	   				//	if(dishService.ingCheck(ingItem, num) == 0) {
+	   			
 	   						ingMap.put("ing",ingItem);
 	   						ingMap.put("RCP_SEQ", num);
 	   						dishService.ingAdd(ingMap);
-	   				//	}
+	   			
 	   				}
 		   		}
 		

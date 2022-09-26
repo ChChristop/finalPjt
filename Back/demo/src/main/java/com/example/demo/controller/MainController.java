@@ -52,18 +52,13 @@ public class MainController {
 	public Map<String, Object> mainSearch(@RequestBody Map<String,Object> searchMap){
 		
 		Map<String, Object> resultMap = new HashMap<>();
-			//System.out.println("searchMap ::: " + searchMap);
 		
-		//한페이지당 결과는 10개
-		//전체 페이지 수 totalPage
 		int totalCNT = mainService.searchCNT(searchMap);
-		System.out.println("totalCNT ::: " + totalCNT); //지워
-		//한장당 원하는 개수
-		int onePage = 15; //수정 가능
+	
+		int onePage = 15;
 		int totalPage = (int) Math.ceil((double)totalCNT/onePage);
-		System.out.println("totalPage ::: " + totalPage); //지워
-		
-		//요청 들어온 페이지 (기본은 1)  
+		System.out.println("totalPage ::: " + totalPage); 
+		  
 		int page = 1;
 		if(!searchMap.get("page").toString().isEmpty()) {
 			page = Integer.parseInt((String) searchMap.get("page")); 
@@ -73,8 +68,6 @@ public class MainController {
 		int end = page*onePage;
 		searchMap.put("start", start);
 		searchMap.put("end", end);
-			//System.out.println(searchMap);
-		
 		
 		List<Map<String, Object>> result = new ArrayList<>();
 		

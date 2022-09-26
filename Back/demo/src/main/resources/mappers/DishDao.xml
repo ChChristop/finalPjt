@@ -238,7 +238,7 @@
 	<select id="get" parameterType="Integer" resultType="map">
 		SELECT
 		d.anum,
-		d.url,
+		d.url, 
 		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
 		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
 		d.date,
