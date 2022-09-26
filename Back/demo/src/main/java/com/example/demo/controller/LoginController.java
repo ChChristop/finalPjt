@@ -113,21 +113,17 @@ public class LoginController {
 
 		try {
 			
-			// 추후 주석 해제 예정
+			  String getID = (String)request.getAttribute("ID");
+			  
+			  if (!(id.equals(getID))) {
 
-			/*
-			 * String getID = (long) request.getAttribute("id");
-			 * 
-			 * if (id != getID) {
-			 * 
-			 * log.warn("[/api/logout/{id}] [로그아웃 실패] [{}]", getID;
-			 * 
-			 * return new ResponseEntity<>(false,HttpStatus.FORBIDDEN); }
-			 */
+			  log.warn("[/api/logout/{id}] [로그아웃 실패] [{}]", getID);
+			  
+			  return new ResponseEntity<>(false,HttpStatus.FORBIDDEN); }
 			
 			
 		int result = jwtTokkenDAO.refreshTokenRemove(id);
-		
+
 		if(result == 0) {
 			log.warn("[/api/logout/{id}] [로그아웃 실패] [{}]", id);
 			return new ResponseEntity<>(false,HttpStatus.ACCEPTED);
@@ -146,6 +142,8 @@ public class LoginController {
 		return new ResponseEntity<>(true, HttpStatus.OK);
 		
 		}catch(Exception e) {
+			
+			e.printStackTrace();
 			
 			log.warn("[/api/logout/{id}] [로그아웃 실패(서버)] [{}]", id);
 			

@@ -30,7 +30,7 @@ public class RestTestController {
 	DishDBService dishService;
 
 	
-	@GetMapping("/tagtest/{start}/{end}/{anum}")
+//	@GetMapping("/tagtest/{start}/{end}/{anum}")
 	 public void main(String[] args, @PathVariable int start,@PathVariable int end, @PathVariable int anum) {
 
 	        try {

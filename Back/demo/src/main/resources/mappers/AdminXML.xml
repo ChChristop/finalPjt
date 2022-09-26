@@ -5,8 +5,8 @@
 <mapper namespace="com.example.demo.dao.AdminDAO">
 	<select id="getAdminList" resultType="Map">
 		SELECT A.anum, A.adminID, A.nickName, A.phoneNumber, A.date, A.lastAccessDate, A.role as role 
-		,COUNT(D.WRITER) AS dishCount
-		FROM ADMIN A LEFT OUTER JOIN DISH D ON A.ANUM = D.WRITER
+		,COUNT(D.anum) AS dishCount
+		FROM ADMIN A LEFT OUTER JOIN DISH D ON A.ANUM = D.ANUM
 		<where>
 			<if test='type == "i"'>
 				ADMINID like CONCAT('%',#{searchThings},'%')

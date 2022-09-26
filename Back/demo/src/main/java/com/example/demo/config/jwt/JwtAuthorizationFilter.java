@@ -56,7 +56,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				 + "|(/api/admin.+)"
 				 + "|(/api/logout/.+)"
 				 + "|(/api/refre/.+)"
-				 + "|(/api/ate/(?!get).+)"
+				 + "|(/api/ate/(?!get)(?!edit).+)"
 				 + "|(/api/dish/(?!get)(?!search).+)"
 				 );
 
@@ -70,8 +70,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 
 		String jwtHeader = request.getHeader(JwtProperties.SECRETKEY_HEADER_STRING);
-
-		System.out.println(request.getRequestURI() + " requestURI " + requestURI);
 
 		log.info("[JwtAuthorizationFilter] [Header JWTToken check] [{}]", jwtHeader);
 
@@ -101,7 +99,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		if (ip == null)
 			ip = request.getRemoteAddr();
-
+		
 		try {
 			// jwtToken이 날짜가 유효하지 않을 경우 checkJWTToken 길이는 0
 			checkJWTToken = JwtProperties.vaildateJwtToken(jwtToken, true);
@@ -114,14 +112,27 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				log.info("[JwtAuthorizationFilter] [WTToken 확인 중] ,[{}]",  jwtToken);
 
 				principalDetails = check(checkJWTToken, ip, false);
-
+				
 				if (principalDetails == null) {
-
+					
 					log.warn("[JwtAuthorizationFilter] [JWTToken 인증 실패] [{}]", jwtToken);
 
 				}
+			
+				//인증 성공시 
+				if (AdminCheck.check)
+				{
+					request.setAttribute("GetNumber", principalDetails.getAdminDTO().getAnum());
+					request.setAttribute("ID",principalDetails.getAdminDTO().getAdminID());
+					}
+				else {
+					request.setAttribute("GetNumber", principalDetails.getMemberDTO().getMnum());
+					request.setAttribute("ID",principalDetails.getMemberDTO().getMemberID());
+				}
 
 				chain.doFilter(request, response);
+				
+				return;
 
 			}
 
@@ -149,9 +160,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				response.addHeader(JwtProperties.SECRETKEY_HEADER_STRING, newJWTToken);
 
 				if (AdminCheck.check)
+				{
 					request.setAttribute("GetNumber", principalDetails.getAdminDTO().getAnum());
-				else
+					request.setAttribute("ID",principalDetails.getAdminDTO().getAdminID());
+					}
+				else {
 					request.setAttribute("GetNumber", principalDetails.getMemberDTO().getMnum());
+					request.setAttribute("ID",principalDetails.getMemberDTO().getMemberID());
+				}
 
 				chain.doFilter(request, response);
 
@@ -160,7 +176,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		} catch (Exception e) {
 
 			log.warn("[JwtAuthorizationFilter] [인증 실패]");
-
+			e.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
