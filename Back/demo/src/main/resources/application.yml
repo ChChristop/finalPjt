@@ -1,6 +1,6 @@
 spring:
   elasticsearch:
-    host: localhost:9200
+    host: ela:9200
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
