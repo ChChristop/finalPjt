@@ -141,6 +141,7 @@ public class AteController {
 	public String edit(@ModelAttribute Ate ate, @RequestParam("file") MultipartFile file) 
 			throws Exception {
 
+		System.out.println("진입?");
 		File fileTest = new File(uploadPath);
 		
 		if(!fileTest.exists()) {

@@ -151,6 +151,7 @@
  		right join dishDB db
 		on db.RCP_SEQ = d.RCP_SEQ
 		where db.RCP_SEQ = #{RCP_SEQ}
+		group by db.rcp_seq
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
@@ -377,8 +378,7 @@
 	</update>
 	
 	<update id="upHit" parameterType="Integer">
-		INSERT INTO DISH (hit,rcp_seq) VALUES ('1',#{rcp_seq})
-        ON DUPLICATE KEY UPDATE hit = hit+1
+		UPDATE DISH SET hit = hit+1,RCP_SEQ = #{rcp_seq} where RCP_SEQ = #{rcp_seq}
 	</update>
 	
 	<update id="commEdit" parameterType="map">
@@ -418,7 +418,7 @@
 	</delete>
 	
 	<select id="topDish" resultType="map">
-		SELECT D.WRITER, D.RCP_SEQ, D.DATE, D.HIT
+		SELECT D.ANUM, D.RCP_SEQ, D.DATE, D.HIT
 		
 		,B.RCP_NM, B.ATT_FILE_NO_MAIN
 		

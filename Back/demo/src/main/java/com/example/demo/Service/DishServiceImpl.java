@@ -38,9 +38,10 @@ public class DishServiceImpl implements DishService, PointDescription {
 	
 	private final DishLikeDAO dishLikeDAO;
 	
-	@Autowired
-	RestTestController restTestController;
-
+	
+	  @Autowired 
+	  RestTestController restTestController;
+	 
 
 	@Override
 	public List<Map<String, Object>> get() {

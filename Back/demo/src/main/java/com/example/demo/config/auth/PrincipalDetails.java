@@ -51,7 +51,6 @@ public class PrincipalDetails implements UserDetails {
 				authorities.add(new SimpleGrantedAuthority(role));
 			});
 			;
-			System.out.println("여기니");
 			return authorities;
 			// 회원 권한 설정
 		} else {

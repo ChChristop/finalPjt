@@ -38,11 +38,6 @@ public class OauthLogin {
 	
 	private final CustomLoginFailHandler fail;
 
-//	@GetMapping("/login")
-//	@ResponseBody
-//	public ResponseEntity<Object> login(@RequestParam(value = "code") String getHeader, HttpServletResponse response,
-//			HttpServletRequest request, RedirectAttributes rttr) {
-
 	@GetMapping("/login")
 	@ResponseBody
 	public ResponseEntity<MemberDTO> login(HttpServletResponse response, HttpServletRequest request) {
