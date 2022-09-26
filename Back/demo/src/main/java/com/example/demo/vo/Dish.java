@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Dish{
 
-	private String writer;			// 작성자
+	private String anum;			// 작성자
 	private String RCP_SEQ;
 	private String url;				// 동영상
 	private int dish_like;			// 좋아요 개수

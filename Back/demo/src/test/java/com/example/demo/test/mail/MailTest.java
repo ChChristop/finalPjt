@@ -22,7 +22,7 @@ public class MailTest {
 	@Test
 	public void test() {
 		
-		boolean result = mailService.sendMail("kimwpdyd@gmail.com");
+		boolean result = mailService.sendMail("kimwpdyd@naver.com");
 //		
 //		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraW13cGR5ZEBuYXZlci5jb20iLCJtbnVtIjoiMTc2IiwiZXhwIjoxNjYyNjE2MjQwLCJtZW1iZXJJRCI6ImtpbXdwZHlkQG5hdmVyLmNvbSJ9.8Ml2MVwrsyUu9G9aHNVF94x1MMNxpdzU2U_ypSRLAaEz80NP2ti-YMs8LhCOe_HNXxAsWzaoeqXEiyuGQbgYPg";
 //

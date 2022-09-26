@@ -60,18 +60,20 @@ public class SecurityConfig {
 				.authorizeRequests()
 
 			
-//				  .antMatchers("/api/logout/**") .hasAnyRole("MEMBER","ADMIN")
-//				  .antMatchers("/api/admin/**") .hasRole("ADMIN")
-//				  .antMatchers("/api/member/**") .hasAnyRole("MEMBER","ADMIN")
-//				  .antMatchers("/api/refre/**") .hasAnyRole("MEMBER")
-//				  .antMatchers("/api/dish/comm/**") .hasAnyRole("MEMBER","ADMIN")
-//				  .antMatchers("/api/dish/like/**") .hasAnyRole("MEMBER","ADMIN")
-//				  .antMatchers("/api/dish/add/**") .hasAnyRole("ADMIN")
-//				  .antMatchers("/api/dish/edit/**") .hasAnyRole("ADMIN")
-//				  .antMatchers("/api/dish/delete/**") .hasAnyRole("ADMIN")
-//				  .antMatchers("/api/ate/get/**") .permitAll() .antMatchers("/api/ate/**")
-//				  .hasAnyRole("MEMBER","ADMIN")
-//				 
+				  .antMatchers("/api/logout/**") .hasAnyRole("MEMBER","ADMIN")
+				  .antMatchers("/api/admin/**") .hasRole("ADMIN")
+				  .antMatchers("/api/member/**") .hasAnyRole("MEMBER","ADMIN")
+				  .antMatchers("/api/refre/**") .hasAnyRole("MEMBER")
+				  .antMatchers("/api/dish/comm/**") .hasAnyRole("MEMBER","ADMIN")
+				  .antMatchers("/api/dish/like/**") .hasAnyRole("MEMBER","ADMIN")
+				  .antMatchers("/api/dish/add/**") .hasAnyRole("ADMIN")
+				  .antMatchers("/api/dish/edit/**") .hasAnyRole("ADMIN")
+				  .antMatchers("/api/dish/delete/**") .hasAnyRole("ADMIN")
+				  .antMatchers("/api/ate/get/**") .permitAll() 
+				  .antMatchers("/api/ate/edit/**").permitAll()
+				  .antMatchers("/api/ate/**")
+				  .hasAnyRole("MEMBER","ADMIN")
+				 
 
 				.anyRequest().permitAll();
 
@@ -89,9 +91,8 @@ public class SecurityConfig {
 			JwtAuthenticationFilter loginFilter = new JwtAuthenticationFilter("/api/login/**", authenticationManager);
 			loginFilter.setAuthenticationFailureHandler(new CustomLoginFailHandler());
 
-			http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-
-//					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
+			http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
+					.addFilter(new JwtAuthorizationFilter(authenticationManager,adminDAO,memberDAO,jwtTokkenDAO));
 
 		}
 	}

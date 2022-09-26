@@ -2,9 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.dao.AteDao">
-	
-	<insert id="add" parameterType="map" useGeneratedKeys="true"
-		keyProperty="ate_num">
+
+	<insert id="add" parameterType="map" useGeneratedKeys="true" keyProperty="ate_num">
 		insert into ate 
 		set RCP_SEQ=#{RCP_SEQ}, mnum=#{mnum}, ate_date=now(),
 		ate_picture=#{ate_picture}, ate_content=#{ate_content}
@@ -19,7 +18,7 @@
 	JOIN ATE B
 	ON A.RCP_SEQ = B.RCP_SEQ
 	</select>
-	
+
 	<select id="search" parameterType="String" resultType="map">
 		select a.* , db.RCP_NM
         from dishDB db
@@ -29,8 +28,9 @@
         db.RCP_NM like concat('%',#{select},'%') 
         or a.mnum like concat('%',#{select},'%')  
 	</select>
-	
+
 	<select id="getOne" parameterType="Integer" resultType="map">
+<<<<<<< HEAD
 		SELECT A.RCP_NM, 
 			   A.RCP_SEQ,
 			   (SELECT COUNT(*) FROM ATE_LIKE WHERE RCP_SEQ = A.RCP_SEQ) AS LIKE_COUNT,
@@ -40,55 +40,65 @@
 			JOIN ATE B
 			ON A.RCP_SEQ = B.RCP_SEQ
 		WHERE ATE_NUM=#{ATE_NUM}
+=======
+	  SELECT A.RCP_NM, 
+      A.RCP_SEQ,
+      (SELECT COUNT(*) FROM ATE_LIKE WHERE RCP_SEQ = A.RCP_SEQ) AS like_count,
+      (select nickname from member where b.mnum = mnum) AS nickname
+      ,B.*
+      FROM dishdb A
+      JOIN ATE B
+      ON A.RCP_SEQ = B.RCP_SEQ
+      where ate_num=#{ate_num}
+>>>>>>> BackEndDevelop
 	</select>
-	
+
 	<select id="commGet" parameterType="Integer" resultType="map">
 		select * from ate_comm where ate_num = #{ate_num}
 	</select>
-	
+
 	<insert id="commAdd" parameterType="map">
 		insert into ate_comm set 
 		mnum=#{mnum}, ate_num=#{ate_num}, content=#{content}
-		
 		<selectKey resultType="int" keyProperty="ac_num" order="AFTER">
 			SELECT max(ac_num) ac_num from ate_comm
 		</selectKey>
-		
-    </insert>
-	
+
+	</insert>
+
 	<delete id="commDelete" parameterType="map">
 		DELETE FROM ate_comm WHERE ac_num = #{ac_num} and mnum = #{mnum}
 	</delete>
-	
+
 	<update id="commEdit" parameterType="map">
 		UPDATE ate_comm
 		SET content=#{content}, editdate=now()
 		WHERE mnum=#{mnum} and ac_num = #{ac_num}
 	</update>
-	
-	
+
+
 	<update id="editAte" parameterType="map">
 		UPDATE ate
 		set ate_editdate=now(),
 		ate_picture=#{ate_picture}, ate_content=#{ate_content}
 		WHERE ate_num = #{ate_num} and mnum =#{mnum}
 	</update>
-	
+
 	<delete id="delete" parameterType="Integer">
 		DELETE FROM ate WHERE ate_num = #{ate_num} and mnum =#{mnum};
 	</delete>
-	
-	
+
+
 	<update id="upHit" parameterType="Integer">
 		UPDATE ate
 		SET ate_hit = ate_hit + 1
 		WHERE ate_num = #{ate_num}
 	</update>
-	
+
 	<select id="ateLike" parameterType="int" resultType="int">
 		select count(*) from ate_like where ate_num=#{ate_num} and mnum=#{mnum}
 	</select>
-	
+
 	<insert id="goAteLike" parameterType="Integer">		
 		insert into ate_like
 		set 
@@ -96,19 +106,19 @@
 		mnum=#{mnum}, 
 		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num})
 	</insert>
-	
+
 	<delete id="goAteDislike" parameterType="Integer">
 		DELETE FROM ate_like
 		WHERE ate_num=#{ate_num} and mnum=#{mnum} and
 		RCP_SEQ = (select RCP_SEQ from ate where ate_num=#{ate_num})
 		
 	</delete>
-	
+
 	<select id="getAllList" resultType="Ate">
 		SELECT * FROM ATE
 		WHERE mnum = #{mnum}
 	</select>
-	
+
 	<select id="getAteListbyUser" resultType="AteDTO">
 		SELECT A.ate_num,A.mnum,A.RCP_SEQ
 		, A.ate_date
@@ -127,8 +137,6 @@
 		group by ate_num
 		ORDER BY a.ATE_DATE DESC limit #{dto.startRow},#{dto.size} 
 	</select>
-	
-	
-	
-	
+
+
 </mapper>

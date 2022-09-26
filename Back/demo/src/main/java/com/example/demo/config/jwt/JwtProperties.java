@@ -21,14 +21,14 @@ public class JwtProperties {
 
 	private static String SECRETKEY;
 
-	public static final int SECRETKEY_EXPIRATION_TIME = 600000; // 5초; //600000;// 10분
+	public static final int SECRETKEY_EXPIRATION_TIME = 600000; 
 
 	public static final String SECRETKEY_HEADER_STRING = "Authorization";
 
 	private static String REFRESHKEY;
 
 	// 10일 static 1일 86,400,000 (1/1000초)
-	public static final int REFRESHKEY_EXPIRATION_TIME = 864000000; // 10일
+	public static final int REFRESHKEY_EXPIRATION_TIME = 864000000;
 
 	public static final String REFRESHKEY_HEADER_STRING = "RefreshToken";
 

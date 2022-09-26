@@ -44,14 +44,28 @@ public class AteController {
 	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, 
 					@PathVariable int mnum,@RequestParam("file") MultipartFile file) 
 			throws Exception {
+<<<<<<< HEAD
 
+=======
+		
+		try {
+			
+		File fileTest = new File(uploadPath);
+		
+		if(!fileTest.exists()) {
+			
+			fileTest.mkdirs();
+		}
+		
+>>>>>>> BackEndDevelop
 		ate.setRCP_SEQ(RCP_SEQ);
 		ate.setMnum(mnum);
 
 		String savedName = file.getOriginalFilename();
 		savedName = uploadFile(savedName, file.getBytes());
 
-		ate.setAte_picture(ip + "/ate/" + savedName);
+		ate.setAte_picture(ip + "image/ate/" + savedName);
+
 
 		String str = "";
 		int i = ateService.add(ate);
@@ -67,6 +81,11 @@ public class AteController {
 		}
 
 		return str;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	private String uploadFile(String originalName, byte[] fileData) throws Exception {
@@ -82,12 +101,24 @@ public class AteController {
 
 	@GetMapping("/get")
 	public List<Ate> get() {
+		File fileTest = new File(uploadPath);
 
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
+		
 		return ateService.get();
 	}
 
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
+		
+		File fileTest = new File(uploadPath);
+
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
+		
 		Map<String, Object> resultMap = new HashMap<>();
 
 		String str = "";
@@ -114,12 +145,21 @@ public class AteController {
 	public String edit(@ModelAttribute Ate ate, @RequestParam("file") MultipartFile file) 
 			throws Exception {
 
+		System.out.println("진입?");
+		File fileTest = new File(uploadPath);
+		
+		if(!fileTest.exists()) {
+			
+			fileTest.mkdirs();
+		}
+		
 		String str = "";
 
 		String savedName = file.getOriginalFilename();
 		savedName = uploadFile(savedName, file.getBytes());
 
-		ate.setAte_picture(ip + "/ate/" + savedName);
+
+		ate.setAte_picture(ip + "image/ate/" + savedName);
 
 		int i = ateService.editAte(ate);
 
@@ -128,7 +168,7 @@ public class AteController {
 			str = "글 수정되었습니다.";
 			
 		} else {
-			
+
 			str = "글 수정에 실패하였습니다.";
 			
 		}
@@ -143,7 +183,6 @@ public class AteController {
 
 		return ateList;
 	}
-
 
 	@DeleteMapping("/delete/{ate_num}/{mnum}")
 	public String delete(@PathVariable int ate_num, @PathVariable int mnum) {

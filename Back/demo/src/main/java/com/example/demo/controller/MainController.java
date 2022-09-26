@@ -36,9 +36,9 @@ public class MainController {
 	@PostMapping("/recipe/reco/9999")
 	public List<Map<String, Object>> ingAllReco_9999(@ModelAttribute NonMember nonMember){
 		
-		System.out.println("nonMember :::" + nonMember);
+//		System.out.println("nonMember :::" + nonMember);
 		List<Map<String, Object>> result = mainService.ingAllReco_9999(nonMember); 
-		System.out.println("result ::: " + result);
+//		System.out.println("result ::: " + result);
 		
 		return result;
 	}
@@ -54,11 +54,21 @@ public class MainController {
 		Map<String, Object> resultMap = new HashMap<>();
 		
 		int totalCNT = mainService.searchCNT(searchMap);
+<<<<<<< HEAD
 	
 		int onePage = 15;
 		int totalPage = (int) Math.ceil((double)totalCNT/onePage);
 		System.out.println("totalPage ::: " + totalPage); 
 		  
+=======
+//		System.out.println("totalCNT ::: " + totalCNT); //지워
+		//한장당 원하는 개수
+		int onePage = 15; //수정 가능
+		int totalPage = (int) Math.ceil((double)totalCNT/onePage);
+//		System.out.println("totalPage ::: " + totalPage); //지워
+		
+		//요청 들어온 페이지 (기본은 1)  
+>>>>>>> BackEndDevelop
 		int page = 1;
 		if(!searchMap.get("page").toString().isEmpty()) {
 			page = Integer.parseInt((String) searchMap.get("page")); 
