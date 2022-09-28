@@ -1,0 +1,36 @@
+li,
+ul {
+  float: left;
+  font-size: 10pt;
+  border-bottom: 1px solid silver;
+  vertical-align: baseline;
+}
+.rmfwkrtjd {
+  text-align: center;
+  border: groove 10px;
+  width: 900px;
+  margin: auto;
+}
+
+.Table {
+  text-align: center;
+  vertical-align: middle;
+  width: 800px;
+}
+
+.th1 {
+  vertical-align: middle;
+}
+
+.board_text {
+  width: 700px;
+  height: 100px;
+}
+
+.rankings {
+  text-align: center;
+}
+
+.info {
+  position: fixed;
+}

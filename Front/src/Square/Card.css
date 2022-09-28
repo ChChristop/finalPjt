@@ -1,0 +1,58 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 50px;
+  border: 1px (0, 0, 0, 0.8);
+
+}
+.quickflip {
+cursor: pointer;
+position: relative;
+width: 300px;
+height: 300px;
+}
+.qf-card {
+opacity: 0.8;
+position: absolute;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+background: rgb(255, 255, 255);
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+}
+.qf-card.qf-front {
+position: relative;
+background: rgb(248, 246, 246);
+}
+.Image{
+  float: center;
+}
+.Muktoo{
+float:left;
+text-decoration-line: none;
+}
+
+.comment{
+float:left
+}
+.click1{
+text-decoration-line: none;
+float:left;
+}
+.click2{
+text-decoration-line: none;
+float:right;
+}
+.btncomment{
+background-color: white;
+border: none;
+}
+.border_card{
+border: 1px solid black;
+margin: 10px;
+justify-content: center;
+align-items: center;
+}
+
