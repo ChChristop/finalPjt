@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class PrincipalDetails implements UserDetails {
 
 	private AdminDTO adminDTO;
@@ -23,13 +23,11 @@ public class PrincipalDetails implements UserDetails {
 	private boolean check = false;
 
 	public PrincipalDetails(AdminDTO adminDTO) {
-		log.info("PrincipalDetails 객체 생성");
 		this.adminDTO = adminDTO;
 		this.check = true;
 	}
 
 	public PrincipalDetails(MemberDTO memberDTO) {
-		log.info("PrincipalDetails 객체 생성");
 		this.memberDTO = memberDTO;
 		this.check = false;
 	}
@@ -47,18 +45,16 @@ public class PrincipalDetails implements UserDetails {
 
 		Collection<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
-		//관리자 권한 설정
+		// 관리자 권한 설정
 		if (check) {
-
 			adminDTO.getRole().stream().forEach(role -> {
 				authorities.add(new SimpleGrantedAuthority(role));
 			});
 			;
-
 			return authorities;
-		//회원 권한 설정
-		} else {	
-			
+			// 회원 권한 설정
+		} else {
+
 			authorities.add(new SimpleGrantedAuthority(memberDTO.getRole()));
 
 			return authorities;
@@ -68,12 +64,12 @@ public class PrincipalDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return (check)?adminDTO.getAdminPW():memberDTO.getMemberPW();
+		return (check) ? adminDTO.getAdminPW() : memberDTO.getMemberPW();
 	}
 
 	@Override
 	public String getUsername() {
-		return (check)?adminDTO.getAdminID():memberDTO.getMemberID();
+		return (check) ? adminDTO.getAdminID() : memberDTO.getMemberID();
 	}
 
 	@Override

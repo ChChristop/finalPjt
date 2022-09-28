@@ -1,10 +1,164 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-        
-        
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
 <mapper namespace="com.example.demo.dao.MemberDAO">
-    <select id="getMemberList" resultType="MemberVO">
-   		  SELECT MNUM, MEMBERID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE FROM MEMBER ORDER BY ${basis} ${align} LIMIT #{page},#{size}
-    </select>
+	
+	<!-- 레거시 코드-->
+	<select id="getMemberList" resultType="MemberVO">
+		
+		SELECT M.MNUM, MEMBERID, NICKNAME, PHONENUMBER, DATE, LASTACCESSDATE, ROLE
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+   		  
+		<where>
+			<if test= 'type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		GROUP BY M.MNUM
+				
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+	
+	<!-- 회원 리스트 조회-->
+	<select id="getMemberList2" resultType="Map">
+		
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, M.lastAccessDate, M.role
+
+		,count(A.ate_num) AS ateCount
+		
+		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		
+		,(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+        
+		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
+        
+        ,(SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+
+   		  
+		<where>
+			<if test= 'type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test= 'type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			<if test= 'type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</if>
+			
+		</where>
+		
+		GROUP BY M.MNUM
+				
+		ORDER BY ${basis} ${alignByString} LIMIT #{startRow},#{size}
+		
+	</select>
+
+
+	<!-- 조건에 따른 카운트 리턴-->
+	<select id="countMemberAllList" resultType="int">
+		
+		SELECT COUNT(*) FROM MEMBER
+		
+		<where>
+		<choose>
+			<when test='type == "i"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "n"'>
+				NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+			<when test='type == "in"'>
+				MEMBERID like CONCAT('%',#{searchThings},'%') 
+				OR NICKNAME like CONCAT('%',#{searchThings},'%')
+			</when>
+		</choose>
+		</where>
+
+	</select>
+	
+		<!-- 회원 식별자로 회원 정보 조회, ate 갯수 포함-->		
+	<select id="findMemberbyMnum" resultType="map">
+		
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
+
+		M.lastAccessDate, M.role, M.memberPW, count(A.ate_num) AS ateCount, COUNT(R.INAME) AS refreCount,
+		
+		(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+        
+        (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
+        
+        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+			LEFT OUTER JOIN refrigerator R ON M.MNUM = R.MNUM
+		
+		WHERE M.MNUM = #{mnum}
+        
+        group by A.ATE_NUM;
+
+	</select>
+	
+	<!-- 회원 아이디로 회원 정보 조회, ate 갯수 포함-->		
+	<select id="findMemberbyMemberID" resultType="map">
+		
+		SELECT M.mnum, M.memberID, M.nickname, M.phoneNumber, M.date, 
+
+		M.lastAccessDate, M.role, M.memberPW, count(A.ate_num) AS ateCount, COUNT(R.INAME) AS refreCount,
+		
+		(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point,
+        
+        (SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment,
+        
+        (SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+			LEFT OUTER JOIN refrigerator R ON M.MNUM = R.MNUM
+		
+		WHERE M.MEMBERID = #{memberID}
+        
+        group by A.ATE_NUM;
+
+	</select>
+	
+	
+		<select id="topUser" resultType="Map">
+		
+		SELECT M.mnum, M.nickname, M.date, M.role
+
+		,count(A.ate_num) AS ateCount
+		
+		,(SELECT COUNT(REFRENUM) FROM REFRIGERATOR R WHERE M.MNUM=R.MNUM) AS refreCount
+		
+		,(SELECT COALESCE(SUM(U.POINT),0) FROM USERPOINT U WHERE M.MNUM = U.MNUM) AS point
+        
+		,(SELECT COUNT(*) FROM DISH_COMM C WHERE M.MNUM = C.MNUM) AS comment
+        
+        ,(SELECT COUNT(*) FROM DISH_like l WHERE M.MNUM = l.MNUM) AS likeCount 
+		
+		FROM MEMBER M LEFT OUTER JOIN ATE A ON M.MNUM = A.MNUM
+		
+        group by M.mnum
+        
+		ORDER BY point desc, ateCount desc, refreCount desc, comment desc, likeCount desc limit 0,50;
+		
+		</select>
+
 </mapper>

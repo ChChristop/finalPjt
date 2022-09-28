@@ -1,5 +1,7 @@
 package com.example.demo.config.auth;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,15 +13,15 @@ import com.example.demo.dao.AdminDAO;
 import com.example.demo.dao.MemberDAO;
 import com.example.demo.dto.AdminDTO;
 import com.example.demo.dto.MemberDTO;
+import com.example.demo.service.function.ObjectMapperToDTO;
 import com.example.demo.vo.AdminVO;
-import com.example.demo.vo.MemberVO;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 
 //UsernamePasswordAuthenticationFilter 필터 후에 적용 됨
 public class PrincipalDetailsService implements UserDetailsService{
@@ -32,14 +34,12 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		log.info("PrincipalDetailsService : 진입");
-		
 		boolean check = AdminCheck.check;
 		
 		if(check) {
 		
 		//DB 접속
-		Optional<AdminVO> result = adminDAO.findAdminIdByID(username);
+		Optional<AdminVO> result = adminDAO.findAdminIdByIDForJWT(username);
 		
 		if(result.isEmpty()) {
 			throw new UsernameNotFoundException("Check ID");
@@ -59,32 +59,40 @@ public class PrincipalDetailsService implements UserDetailsService{
 				.role(admin.getRoleList())
 				.build();
 		
+		
+		log.info("[PrincipalDetails(adminDTO)] [진입] [{}]", adminDTO.getAdminID());
+		
 		return new PrincipalDetails(adminDTO);
 		
 		}else {
-			
-			Optional<MemberVO> result = memberDAO.findMemberbyMemberID(username);
-			
-			if(result.isEmpty()) {
-				throw new UsernameNotFoundException("Check ID");
+
+			MemberDTO memberDTO = null;
+	
+			try {
+				
+				List<Map<String,Object>> result = memberDAO.findMemberbyMemberID(username);
+				
+				ObjectMapperToDTO objectMapperToDTO = new ObjectMapperToDTO(result,memberDTO,MemberDTO.class);
+				
+				memberDTO = (MemberDTO) objectMapperToDTO.changeObjectMapperToDTO();
+				
+						
+				
+				if(memberDTO.getMemberID() == null) {
+					throw new UsernameNotFoundException("Check ID");
+				}
+				
+				log.info("[PrincipalDetails(memberDTO)] [진입] [{}]", memberDTO.getMemberID());
+				
+				return new PrincipalDetails(memberDTO);
+				
+			}catch(Exception e) {
+						
+				return null;
 			}
-			
-			MemberVO member = result.get();
-
-			MemberDTO memberDTO = MemberDTO.builder()
-					.mnum(member.getMnum())
-					.memberID(member.getMemberID())
-					.nickname(member.getNickname())
-					.phoneNumber(member.getPhoneNumber())
-					.memberPW(member.getMemberPW())
-					.role("ROLE_"+member.getRole())
-					.date(member.getDate())
-					.lastAccessDate(member.getLastAccessDate())
-					.modDate(member.getModDate())
-					.build();
-
-			return new PrincipalDetails(memberDTO);
 		}
-		
 	}
-}
+	}
+	
+		
+

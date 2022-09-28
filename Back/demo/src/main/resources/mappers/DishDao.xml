@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.demo.dao.DishDao">
+
+	<select id="getNum" parameterType="map" resultType="int">
+			select max(convert(RCP_SEQ, SIGNED))+1 RCP_SEQ from dishDB ORDER BY RCP_SEQ
+	</select> 
+	<insert id="addInfo" parameterType="map">
+		insert into dish set
+		anum=#{anum}, RCP_SEQ=#{dnum}
+	</insert>
+
+	<insert id="commAdd" parameterType="map" >
+	
+		insert into dish_comm set 
+		mnum=#{mnum}, RCP_SEQ=#{RCP_SEQ}, content=#{content}
+		
+		<selectKey resultType="int" keyProperty="dc_num" order="AFTER">
+			SELECT max(dc_num) dc_num from dish_comm
+		</selectKey>
+		
+    </insert>
+      
+	<insert id="add" parameterType="map" useGeneratedKeys="true"
+		keyProperty="dnum" >
+		insert into dishDB set
+		RCP_PARTS_DTLS = #{RCP_PARTS_DTLS},
+		RCP_PAT2 = #{RCP_PAT2},
+		RCP_NM = #{RCP_NM},
+		RCP_WAY2 = #{RCP_WAY2},
+		RCP_SEQ = #{RCP_SEQ},
+		HASH_TAG = #{HASH_TAG},
+		INFO_NA = #{INFO_NA},
+		INFO_WGT = #{INFO_WGT},
+		INFO_PRO = #{INFO_PRO},
+		INFO_FAT = #{INFO_FAT},
+		INFO_CAR = #{INFO_CAR},
+		INFO_ENG = #{INFO_ENG},
+		MANUAL_IMG01 = #{MANUAL_IMG01},
+		MANUAL_IMG02 = #{MANUAL_IMG02},
+		MANUAL_IMG03 = #{MANUAL_IMG03},
+		MANUAL_IMG04 = #{MANUAL_IMG04},
+		MANUAL_IMG05 = #{MANUAL_IMG05},
+		MANUAL_IMG06 = #{MANUAL_IMG06},
+		MANUAL_IMG07 = #{MANUAL_IMG07},
+		MANUAL_IMG08 = #{MANUAL_IMG08},
+		MANUAL_IMG09 = #{MANUAL_IMG09},
+		MANUAL_IMG10 = #{MANUAL_IMG10},
+		MANUAL_IMG11 = #{MANUAL_IMG11},
+		MANUAL_IMG12 = #{MANUAL_IMG12},
+		MANUAL_IMG13 = #{MANUAL_IMG13},
+		MANUAL_IMG14 = #{MANUAL_IMG14},
+		MANUAL_IMG15 = #{MANUAL_IMG15},
+		MANUAL_IMG16 = #{MANUAL_IMG16},
+		MANUAL_IMG17 = #{MANUAL_IMG17},
+		MANUAL_IMG18 = #{MANUAL_IMG18},
+		MANUAL_IMG19 = #{MANUAL_IMG19},
+		MANUAL_IMG20 = #{MANUAL_IMG20},
+		MANUAL01 = #{MANUAL01},
+		MANUAL02 = #{MANUAL02},
+		MANUAL03 = #{MANUAL03},
+		MANUAL04 = #{MANUAL04},
+		MANUAL05 = #{MANUAL05},
+		MANUAL06 = #{MANUAL06},
+		MANUAL07 = #{MANUAL07},
+		MANUAL08 = #{MANUAL08},
+		MANUAL09 = #{MANUAL09},
+		MANUAL10 = #{MANUAL10},
+		MANUAL11 = #{MANUAL11},
+		MANUAL12 = #{MANUAL12},
+		MANUAL13 = #{MANUAL13},
+		MANUAL14 = #{MANUAL14},
+		MANUAL15 = #{MANUAL15},
+		MANUAL16 = #{MANUAL16},
+		MANUAL17 = #{MANUAL17},
+		MANUAL18 = #{MANUAL18},
+		MANUAL19 = #{MANUAL19},
+		MANUAL20 = #{MANUAL20},
+		ATT_FILE_NO_MAIN = #{ATT_FILE_NO_MAIN},
+		ATT_FILE_NO_MK = #{ATT_FILE_NO_MK}
+	</insert>
+	
+	
+
+	<select id="getOne" parameterType="Integer" resultType="map">
+	SELECT
+		d.anum,
+		a.adminID,
+		d.url,
+		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
+		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
+		d.date,
+		d.hit,
+		d.editdate,
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ
+		right join admin a
+        on a.anum = d.anum
+		where db.RCP_SEQ = #{RCP_SEQ}
+		group by db.rcp_seq
+	</select>
+	
+	<select id="commGet" parameterType="Integer" resultType="map">
+		select d.*,m.nickname from dish_comm d left join member m on d.mnum = m.mnum where RCP_SEQ = #{RCP_SEQ};
+	</select>
+	
+	<select id="search" parameterType="map" resultType="map">
+		SELECT
+		d.anum,
+		d.url,
+		d.dish_like,
+		d.ate,
+		d.date,
+		d.hit,
+		d.editdate,
+		db.rcp_SEQ,
+		db.rcp_NM,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ
+		<if test='select.equals("0")'>
+		where db.rcp_nm like concat('%',#{searchI},'%')
+		</if>
+		<if test='select.equals("1")'>
+		where d.anum like concat('%',#{searchI},'%')
+		</if>
+		<if test='select.equals("2")'>
+		where db.rcp_nm like concat('%',#{searchI},'%') or d.anum like concat('%',#{searchI},'%')
+		</if>
+		
+	</select>
+	 
+	<select id="get" parameterType="Integer" resultType="map">
+		SELECT
+		d.anum,
+		d.url,
+		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
+		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
+		d.date,
+		d.hit,
+		d.editdate,
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ order by db.RCP_SEQ*1 DESC limit 0,20
+	</select>
+
+	<select id="dishLike" parameterType="int" resultType="int">
+		SELECT 
+		count(*)
+		from dish_like l right join dish d 
+		on l.RCP_SEQ = d.RCP_SEQ
+        where d.RCP_SEQ= #{RCP_SEQ} and l.mnum =#{mnum}
+	</select>
+	
+	<update id="editInfo" parameterType="map">
+		update dish set
+			anum=#{anum},
+			editdate=now(),
+			url=#{dish1.url}
+			where rCP_SEQ=#{rCP_SEQ}
+	</update>
+	
+	<update id="edit" parameterType="map">
+		UPDATE dishDB
+		SET 
+		RCP_PARTS_DTLS = #{RCP_PARTS_DTLS},
+		RCP_PAT2 = #{RCP_PAT2},
+		RCP_NM = #{RCP_NM},
+		RCP_WAY2 = #{RCP_WAY2},
+		HASH_TAG = #{HASH_TAG},
+		INFO_NA = #{INFO_NA},
+		INFO_WGT = #{INFO_WGT},
+		INFO_PRO = #{INFO_PRO},
+		INFO_FAT = #{INFO_FAT},
+		INFO_CAR = #{INFO_CAR},
+		INFO_ENG = #{INFO_ENG},
+		<if test="MANUAL_IMG01!=null">
+		MANUAL_IMG01 = #{MANUAL_IMG01},
+		</if>
+		<if test="MANUAL_IMG02!=null">
+		MANUAL_IMG02 = #{MANUAL_IMG02},
+		</if>
+		<if test="MANUAL_IMG03!=null">
+		MANUAL_IMG03 = #{MANUAL_IMG03},
+		</if>
+		<if test="MANUAL_IMG04!=null">
+		MANUAL_IMG04 = #{MANUAL_IMG04},
+		</if>
+		<if test="MANUAL_IMG05!=null">
+		MANUAL_IMG05 = #{MANUAL_IMG05},
+		</if>
+		<if test="MANUAL_IMG06!=null">
+		MANUAL_IMG06 = #{MANUAL_IMG06},
+		</if>
+		MANUAL01 = #{MANUAL01},
+		MANUAL02 = #{MANUAL02},
+		MANUAL03 = #{MANUAL03},
+		MANUAL04 = #{MANUAL04},
+		MANUAL05 = #{MANUAL05},
+		MANUAL06 = #{MANUAL06},
+		MANUAL07 = #{MANUAL07},
+		MANUAL08 = #{MANUAL08},
+		MANUAL09 = #{MANUAL09},
+		MANUAL10 = #{MANUAL10},
+		MANUAL11 = #{MANUAL11},
+		MANUAL12 = #{MANUAL12},
+		MANUAL13 = #{MANUAL13},
+		MANUAL14 = #{MANUAL14},
+		MANUAL15 = #{MANUAL15},
+		MANUAL16 = #{MANUAL16},
+		MANUAL17 = #{MANUAL17},
+		MANUAL18 = #{MANUAL18},
+		MANUAL19 = #{MANUAL19},
+		MANUAL20 = #{MANUAL20},
+		ATT_FILE_NO_MAIN = #{ATT_FILE_NO_MAIN},
+		ATT_FILE_NO_MK = #{ATT_FILE_NO_MK}
+		WHERE RCP_SEQ = #{RCP_SEQ}
+	</update>
+	
+	<update id="upHit" parameterType="Integer">
+		UPDATE DISH SET hit = hit+1,RCP_SEQ = #{rcp_seq} where RCP_SEQ = #{rcp_seq}
+	</update>
+	
+	<update id="commEdit" parameterType="map">
+		UPDATE dish_comm
+		SET content=#{content}, editdate=now()
+		WHERE mnum=#{mnum} and dc_num = #{dc_num}
+	</update>
+		
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM dishDB WHERE RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<delete id="deleteDish" parameterType="Integer">
+		DELETE FROM dish WHERE RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<delete id="commDelete" parameterType="map">
+		DELETE FROM dish_comm WHERE dc_num = #{dc_num} and mnum = #{mnum}
+	</delete>
+	
+	<delete id="delPicture" parameterType="Integer">
+		DELETE FROM dish_picture
+		WHERE dnum = #{dnum}
+	</delete>
+	
+	<insert id="goDishLike" parameterType="Integer">
+		insert into dish_like
+		set RCP_SEQ=#{RCP_SEQ}, mnum=#{mnum} 
+	</insert>
+	
+	<delete id="goDishDislike" parameterType="Integer">
+		DELETE FROM dish_like
+		WHERE RCP_SEQ=#{RCP_SEQ} and mnum=#{mnum} 		
+	</delete>
+	<delete id="deleIng" parameterType="Integer">
+		delete from dish_ing where RCP_SEQ = #{RCP_SEQ}
+	</delete>
+	
+	<select id="topDish" resultType="map">
+		SELECT D.ANUM, D.RCP_SEQ, D.DATE, D.HIT
+		
+		,B.RCP_NM, B.ATT_FILE_NO_MAIN
+		
+		,COUNT(C.MNUM) AS commCount
+
+	    ,(SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) AS DISH_LIKE
+	    
+	    ,(SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) AS ATE
+	     
+		,((SELECT COUNT(*) FROM ATE A WHERE A.RCP_SEQ = D.RCP_SEQ) * 20 
+	    + COUNT(C.MNUM) * 5 + (SELECT COUNT(*) FROM DISH_LIKE L WHERE L.RCP_SEQ = D.RCP_SEQ) * 1) as rank_dish
+	
+		FROM DISH D LEFT OUTER JOIN dish_comm C ON D.RCP_SEQ = C.RCP_SEQ
+        
+					LEFT OUTER JOIN DISHDB B ON D.RCP_SEQ = B.RCP_SEQ
+	   
+	    group by D.RCP_SEQ
+	   
+	   order by rank_dish DESC LIMIT 0,50;
+	
+	</select>
+	
+	
+	
+</mapper>

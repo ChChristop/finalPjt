@@ -2,6 +2,8 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.nimbusds.openid.connect.sdk.assurance.evidences.attachment.HashAlgorithm;
 
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminDTO {
-
+		
 	private Long anum;
 	
 	private String adminID;
@@ -34,9 +36,16 @@ public class AdminDTO {
 	
 	private LocalDateTime modDate;
 
+	private int dishCount;
 	
-	//게시물 리스트
-//	private List<게시물> 게시물;
+	public Set<String> setRole(String roles){
+		
+		Set<String> roleSet = Stream.of(roles.split(",")).collect(Collectors.toSet());;
+
+		this.role = roleSet;
+		
+		return roleSet;
+	}
 	
 	
 }

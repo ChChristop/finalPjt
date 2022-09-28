@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.MainDao">
+	
+	<select id="auto" parameterType="Integer" resultType="map">
+		select iname, count(*) c from dish_ing group by iname order by c desc
+	</select>
+	
+	<select id="ingAllReco" parameterType="Integer" resultType="map">
+	select db.RCP_NM, 
+	re.iname, 
+	db.RCP_SEQ, 
+	db.ATT_FILE_NO_MAIN from dishDB db 
+	right join 
+	(select d.RCP_SEQ, d.iname from  dish_ing d right join refrigerator r on
+	d.iname = r.iname where r.mnum = #{mnum} order by r.`expirationDate`, r.iname) re 
+	on db.RCP_SEQ = re.RCP_SEQ
+	</select>
+	
+	<select id ="mainSearch" parameterType="map" resultType="map">
+	SELECT * 
+		FROM (
+			SELECT @ROWNUM:=@ROWNUM+1 as RN, Z.*
+				FROM (
+				(select * from dishDB where RCP_NM regexp #{search}
+				union distinct
+				select * from dishDB where RCP_SEQ in 
+				(select RCP_SEQ from dish_ing where iname regexp #{search})))Z where (@ROWNUM:=0) =0
+					) B
+			WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="searchCNT" parameterType="map" resultType="integer">
+		select count(*) from           
+		(select * from dishDB where RCP_NM regexp #{search}
+		union distinct
+		select * from dishDB where RCP_SEQ in 
+		(select RCP_SEQ from dish_ing where iname regexp #{search}))Z
+	</select>
+	
+	
+	<select id="ingAllReco_9999" parameterType="map" resultType="map">
+	select * from (select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10) ing1
+	union distinct
+	select * from (select * from dish_ing where iname like concat('%',#{ing2},'%') limit 0,10) ing2
+	union distinct
+	select * from (select * from dish_ing where iname like concat('%',#{ing3},'%') limit 0,10) ing3
+	union distinct
+	select * from (select * from dish_ing where iname like concat('%',#{ing4},'%') limit 0,10) ing4
+	union distinct
+	select * from (select * from dish_ing where iname like concat('%',#{ing5},'%') limit 0,10) ing5
+	</select>  
+	
+	<select id="getIngs" parameterType="Integer" resultType="map"> 
+		select distinct(iname) from refrigerator where mnum =#{mnum} order by `expirationDate`
+	</select>
+	
+	<select id="getList" parameterType="map" resultType="map">
+		select db.*, 
+		(select iname from dish_ing where iname = #{iname} group by iname) as iname
+    	from dishDB db where RCP_SEQ in 
+    	(select RCP_SEQ from dish_ing ing where iname = #{iname}) limit 0,5
+		
+	</select>
+	
+	
+	
+	<!-- 포이치 구문 사용하자!
+	<select id="ingAllReco_9999" parameterType="map" resultType="map">
+	select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10 
+	</select> 
+	-->
+	
+	
+	<select id="recipeAuto" parameterType="String" resultType="map">
+		SELECT
+		d.anum,
+		d.url,
+		d.dish_like,
+		d.ate,
+		d.date,
+		d.t_time,
+		d.m_ingredient,
+		d.t_weather,
+		d.hit,
+		d.editdate,
+		db.rcp_seq,
+		db.rcp_nm,
+		db.rcp_parts_dtls,
+		db.rcp_pat2,
+		db.rcp_way2,
+		db.hash_tag,
+		db.info_na,
+		db.info_wgt,
+		db.info_pro,
+		db.info_fat,
+		db.info_car,
+		db.info_eng,
+		db.manual_img01,
+		db.manual_img02,
+		db.manual_img03,
+		db.manual_img04,
+		db.manual_img05,
+		db.manual_img06,
+		db.manual_img07,
+		db.manual_img08,
+		db.manual_img09,
+		db.manual_img10,
+		db.manual_img11,
+		db.manual_img12,
+		db.manual_img13,
+		db.manual_img14,
+		db.manual_img15,
+		db.manual_img16,
+		db.manual_img17,
+		db.manual_img18,
+		db.manual_img19,
+		db.manual_img20,
+		db.manual01,
+		db.manual02,
+		db.manual03,
+		db.manual04,
+		db.manual05,
+		db.manual06,
+		db.manual07,
+		db.manual08,
+		db.manual09,
+		db.manual10,
+		db.manual11,
+		db.manual12,
+		db.manual13,
+		db.manual14,
+		db.manual15,
+		db.manual16,
+		db.manual17,
+		db.manual18,
+		db.manual19,
+		db.manual20,
+		db.att_file_no_main,
+		db.att_file_no_mk
+		from dish d  
+ 		right join dishDB db
+		on db.RCP_SEQ = d.RCP_SEQ
+		where db.RCP_SEQ in (select RCP_SEQ from dish_ing where iname like concat('%',#{iname},'%'))
+	</select>
+	
+</mapper>

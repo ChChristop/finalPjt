@@ -1,8 +1,10 @@
 package com.example.demo.service.adminService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,10 @@ import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.vo.AdminVO;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Log4j2
+@Slf4j
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
@@ -28,33 +30,41 @@ public class AdminServiceImpl implements AdminService {
 
 	// 조회 메서드
 	@Override
-	public PageResultDTO<AdminVO, AdminDTO> getAmindList(PageRequestDTO pageRequestDTO) {
-
-		log.info("관리자 리스트 찾는 중 : ");
+	public PageResultDTO<Map<String,Object>, AdminDTO> getAdminList(PageRequestDTO pageRequestDTO) {
 
 		// 기준
-		String basis = "";
-
 		if (pageRequestDTO.getBasis() == "pk") {
 
-			basis = "anum";
+			pageRequestDTO.setBasis("anum"); 
+		}
+		
+		pageRequestDTO.setterChange();
+		
+		try {
+			
+			List<Map<String,Object>> result = adminDAO.getAdminList(pageRequestDTO);
+			
+			Function<Map<String,Object>, AdminDTO> fn = (map) -> mapToDto(map);
+				
+			
+			
+			// totalpage 조건 없음
+			int count = adminDAO.countAdminAllList(pageRequestDTO);
+			
+			log.info("[AdminServiceImpl] [getAdminList] [성공]");
+			
+			return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+		
+		}catch(Exception e) {
+
+			log.warn("[AdminServiceImpl] [getAdminList] [실패]");
+			
+			e.printStackTrace();
+			
+			return null;
 		}
 
-		// 정렬
-		String align = pageRequestDTO.isAlign() ? "asc" : "desc";
-
-		int page = (pageRequestDTO.getPage() - 1) * 10;
-
-		// 조회 메서드
-		List<AdminVO> result = adminDAO.getAdminList(basis, align, page, pageRequestDTO.getSize());
-
-		// dto->vo 변환 함수 함수
-		Function<AdminVO, AdminDTO> fn = (admin) -> voTOdto(admin);
-
-		// totalpage 조건 없음
-		int count = adminDAO.countAdminAllList();
-
-		return new PageResultDTO<>(result, fn, pageRequestDTO, count);
+	
 	}
 
 	// 등록 메서드
@@ -64,19 +74,33 @@ public class AdminServiceImpl implements AdminService {
 		adminDTO.setAdminPW(passwordEncoder.encode(adminDTO.getAdminPW()));
 
 		AdminVO admin = dtoTOvo(adminDTO);
+		
+		long result;
 
-		log.info("관리자 추가 중 : " + adminDTO);
-
-		adminDAO.addAdmin(admin);
-
-		return (long) admin.getAnum();
+		try {
+			
+		long anum = adminDAO.addAdmin(admin);
+		
+		result = (anum==1)?admin.getAnum():0;
+		
+		log.info("[AdminServiceImpl] [register] [성공]");
+		
+		return result;
+		
+		}catch(Exception e) {
+			
+			result = 0;
+			
+			log.info("[AdminServiceImpl] [register] [실패] ");
+			
+			return result;
+		}
 	}
 	
 	@Override
 	public AdminDTO findAdmin(String adminID) {
-		log.info("관리자 조회 확인 : " + adminID);
-
-		Optional<AdminVO> result = adminDAO.findAdminIdByID(adminID);
+		
+		Optional<AdminVO> result = adminDAO.findAdminIdByIDForJWT(adminID);
 
 		AdminDTO adminDTO;
 
@@ -86,10 +110,14 @@ public class AdminServiceImpl implements AdminService {
 
 			adminDTO = voTOdto(admin);
 
+			log.info("[AdminServiceImpl] [findAdmin] [성공]");
+			
 			return adminDTO;
 
 		} else {
-
+			
+			log.info("[AdminServiceImpl] [findAdmin] [실패]");
+			
 			return null;
 		}
 	}
@@ -97,9 +125,8 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public AdminDTO findAdmin(long anum) {
-		log.info("관리자 조회 확인 : " + anum);
 
-		Optional<AdminVO> result = adminDAO.findAdminIdByAnum(anum);
+		Optional<AdminVO> result = adminDAO.findAdminIdByAnumForJWt(anum);
 
 		AdminDTO adminDTO;
 
@@ -109,9 +136,14 @@ public class AdminServiceImpl implements AdminService {
 
 			adminDTO = voTOdto(admin);
 
+			log.info("[AdminServiceImpl] [findAdmin] [성공]");
+			
 			return adminDTO;
 
 		} else {
+			
+			log.info("[AdminServiceImpl] [findAdmin] [실패]");
+			
 			return null;
 		}
 	}
@@ -120,22 +152,29 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public boolean CheckadminID(String adminId) {
 
-		log.info("관리자 아이디 중복 확인 : " + adminId);
-
 		Optional<String> result = adminDAO.CheckByAdminId(adminId);
-
+		
 		return (result.isPresent()) ? true : false;
 	}
 
 	// 관리자 삭제 메서드
 	@Override
 	public long remove(long anum) {
-
-		log.info("관리자 삭제 중 :" + anum);
-
-		Long result = adminDAO.removeAdminByAnum(anum);
-
-		return (result == 1) ? anum : null;
+		Long result;
+		
+		try {result = adminDAO.removeAdminByAnum(anum);}catch(Exception e) {result = 0L;}
+		
+		if(result == 1) {
+			
+			log.info("[AdminServiceImpl] [remove] [성공]");
+			return anum;
+			
+		}else {
+			
+			result = 0L;
+			log.info("[AdminServiceImpl] [remove] [실패]");
+			return result;
+		}
 	}
 
 	// 관리자 수정 메서드
@@ -146,14 +185,28 @@ public class AdminServiceImpl implements AdminService {
 		adminDTO.setAdminPW(passwordEncoder.encode(adminDTO.getAdminPW()));
 
 		AdminVO admin = dtoTOvo(adminDTO);
-
-		log.info("관리자 수정 중 : " + adminDTO);
-
-		adminDAO.updateAdminByAnum(admin);
 		
+		long result;;
+		
+		try {
+			
+		result = adminDAO.updateAdminByAnum(admin);
 		adminDAO.updateModDateByAnum(adminDTO.getAnum());
 
-		return (long) admin.getAnum();
+		}catch(Exception e) {result = 0L;}
+		
+		if(result>0) {
+			
+			log.info("[AdminServiceImpl] [update] [성공]");
+			return admin.getAnum();
+			
+		}else {
+			
+			log.info("[AdminServiceImpl] [update] [실패]");
+			return 0L;
+		}
+		
+	
 	}
 
 }

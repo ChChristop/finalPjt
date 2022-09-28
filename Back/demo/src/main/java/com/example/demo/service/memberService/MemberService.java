@@ -1,9 +1,15 @@
 package com.example.demo.service.memberService;
 
+import java.util.List;
+import java.util.Map;
+
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.pagelib.PageRequestDTO;
 import com.example.demo.pagelib.PageResultDTO;
 import com.example.demo.vo.MemberVO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public interface MemberService {
 	
@@ -20,7 +26,13 @@ public interface MemberService {
 	
 	Long update(MemberDTO memberDTO);
 	
-	PageResultDTO<MemberVO, MemberDTO> getAmindList(PageRequestDTO pageRequestDTO);
+	PageResultDTO<MemberVO, MemberDTO> getMemberList(PageRequestDTO pageRequestDTO);
+	
+	PageResultDTO<Map<String,Object>, MemberDTO>  getMemberList2(PageRequestDTO pageRequestDTO);
+	
+	List<Map<String, Object>> topUser();
+	
+	boolean changePW(MemberDTO memberDTO);
 	
 	default MemberVO dtoTOvo(MemberDTO memberDTO) {
 		
@@ -37,7 +49,7 @@ public interface MemberService {
 		
 	}
 	
-	//테이블 조인 되면 더 늘어나야함
+
 	default MemberDTO voTOdto(MemberVO member) {
 
 		MemberDTO memberDTO = MemberDTO.builder()
@@ -52,6 +64,18 @@ public interface MemberService {
 				.build();
 		
 				return memberDTO;
+	}
+	
+	default MemberDTO mapTOdto(Map<String,Object> member) {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		
+		MemberDTO memberDTO = objectMapper.convertValue(member, MemberDTO.class);
+		
+
+		return memberDTO;
 	}
 
 

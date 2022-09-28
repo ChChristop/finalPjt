@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.dao.DishCommDAO">
+
+	<select id="dishCommListbyMnum" resultType="DishCommDTO">
+	
+	SELECT C.*, D.RCP_NM, D.ATT_FILE_NO_MAIN 
+	
+	FROM DISH_COMM C LEFT OUTER JOIN DISHDB D ON C.RCP_SEQ = D.RCP_SEQ
+	
+	WHERE C.MNUM = #{mnum}
+	
+	ORDER BY DATE DESC limit #{dto.startRow},#{dto.size};
+	
+	</select>
+
+	
+
+</mapper>
