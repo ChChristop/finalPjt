@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.example.demo.config.auth.AdminCheck;
 import com.example.demo.config.auth.PrincipalDetails;
 import com.example.demo.config.jwt.JwtProperties;
 import com.example.demo.config.socialLogin.AccessTokenRequestDTO;
@@ -70,7 +71,7 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 		} catch (UnsupportedEncodingException e) {
 
 		}
-
+		
 		
 		//구글에 인가코드 발송
 		HttpHeaders headers = new HttpHeaders();
@@ -201,7 +202,9 @@ public class GoogleLoginServiceImpl implements GoogleLoginService {
 
 		// DB에 아이디가 있는지 확인 중
 		Optional<MemberVO> member = memberDAO.findMemberbyMemberIDForJWT(id);
-
+		
+		AdminCheck.check(false);
+		
 		// DB에 일치하는 아이디가 없으면 빈 객체 리턴
 		if (!(member.isPresent())) {
 			

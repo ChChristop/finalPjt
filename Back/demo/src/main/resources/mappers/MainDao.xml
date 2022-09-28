@@ -60,7 +60,7 @@
 		select db.*, 
 		(select iname from dish_ing where iname = #{iname} group by iname) as iname
     	from dishDB db where RCP_SEQ in 
-    	(select RCP_SEQ from dish_ing ing where iname = #{iname}) limit 0,1
+    	(select RCP_SEQ from dish_ing ing where iname = #{iname}) limit 0,5
 		
 	</select>
 	

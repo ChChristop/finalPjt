@@ -128,11 +128,12 @@ public class MemberServiceImpl implements MemberService {
 			refrigeratorDAO.deleteIngredientByMnumr(mnum);
 			result = memberDAO.removeMemberbyMnum(mnum);
 
-			log.info("[MemberServiceImpl] [remove 성공] [{}]", mnum);
+			log.info("[MemberServiceImpl] [remove 성공] [{}]", mnum);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 			return result;
 
 		} catch (Exception e) {
 			log.warn("[MemberServiceImpl] [remove 실패] [{}] ", mnum);
+			e.printStackTrace();
 			return result;
 		}
 

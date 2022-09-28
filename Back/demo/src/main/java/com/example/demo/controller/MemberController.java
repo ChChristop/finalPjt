@@ -92,7 +92,7 @@ public class MemberController {
 
 		// 정상적으로 삭제됐으면 anum 리턴, 아니면 0
 		Long result = memberService.remove(mnum);
-
+		
 		if (result > 0) {
 			log.info("[api/member/delete/{mnum}] [removeMember 성공] [{}]", mnum);
 			return new ResponseEntity<>(true, HttpStatus.OK);

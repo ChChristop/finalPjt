@@ -75,18 +75,12 @@ public class ElasticSearch {
 		
 		int nowHour = LocalDateTime.now().getHour();
 		
-		if (9 <= nowHour && nowHour < 11) {
+		if (0 <= nowHour && nowHour < 2) {
 			return search2();
 		}
 		
-		String datePattern = "";
+		String datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now());
 		
-		if(nowHour < 9) {
-			datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now().minusDays(1));
-		}
-		
-		datePattern = DateTimeFormatter.ofPattern("yyyy.MM.dd").format(LocalDateTime.now());
-
 		String[] indexName = new String[1]; 
 		indexName[0] = "springboot-keyword-";
 		indexName[0] += datePattern;

@@ -56,7 +56,7 @@
 	<logger name="org.springframework.security" level="info" additivity="false">
 		<appender-ref ref="CONSOLE" />
 	</logger>
-	<logger name="com.example.demo" level="debug" additivity="false">
+	<logger name="com.example.demo" level="info" additivity="false">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="INFO_LOG" />
 		<!--<appender-ref ref="LOGSTASH" />-->
@@ -64,7 +64,9 @@
 
 
 	<!-- root는 전역으로 INFO 레벨 이상인 로그만 남기고 있다.-->
-	<root level="off"></root>
+	<root level="">
+			<appender-ref ref="CONSOLE" />
+	</root>
 
 
 </configuration>

@@ -221,7 +221,6 @@ public class AllPermitURI {
 		
 		return new ResponseEntity<List<String>>(result,HttpStatus.OK);
 		
-		
 	}
 
 }

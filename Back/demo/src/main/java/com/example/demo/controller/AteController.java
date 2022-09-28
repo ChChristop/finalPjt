@@ -37,6 +37,9 @@ public class AteController {
 
 	@Value("${AteuploadPath}")
 	String uploadPath;
+	
+	@Value("${spring.servlet.multipart.location}")
+	String uploadPath1;
 
 	String ip = Constants.IP_PORT;
 
@@ -48,11 +51,16 @@ public class AteController {
 		try {
 			
 		File fileTest = new File(uploadPath);
-		
+		File fileTest1 = new File(uploadPath);
 		if(!fileTest.exists()) {
 			
 			fileTest.mkdirs();
+		}	
+		if(!fileTest1.exists()) {
+			
+			fileTest1.mkdirs();
 		}
+		
 		
 		ate.setRCP_SEQ(RCP_SEQ);
 		ate.setMnum(mnum);
@@ -109,23 +117,24 @@ public class AteController {
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
 		
-		File fileTest = new File(uploadPath);
+	      File fileTest = new File(uploadPath);
 
-		if (!fileTest.exists()) {
-			fileTest.mkdirs();
-		}
+	      if (!fileTest.exists()) {
+	         fileTest.mkdirs();
+	      }
+	      
+	      Map<String, Object> resultMap = new HashMap<>();
+
+	      String str = "";
+
+	      ateService.upHit(ate_num);
+
+	      if(mnum != 9999) {
+	         if (ateService.ateLike(mnum, ate_num) == 1) {
+	            str = "liked";
+	         }
+	      }
 		
-		Map<String, Object> resultMap = new HashMap<>();
-
-		String str = "";
-
-		ateService.upHit(ate_num);
-
-		if (ateService.ateLike(mnum, ate_num) == 1) {
-
-			str = "liked";
-		}
-
 		Map<String, Object> result = ateService.getOne(ate_num);
 		List<DishComm> commList = ateService.commGet(ate_num);
 

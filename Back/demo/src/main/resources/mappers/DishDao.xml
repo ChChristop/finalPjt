@@ -87,6 +87,7 @@
 	<select id="getOne" parameterType="Integer" resultType="map">
 	SELECT
 		d.anum,
+		a.adminID,
 		d.url,
 		(select count(*) from dish_like where RCP_SEQ = db.RCP_SEQ) as dish_like,
 		(select count(*) from ate where RCP_SEQ = db.RCP_SEQ) as ate,
@@ -150,12 +151,14 @@
 		from dish d  
  		right join dishDB db
 		on db.RCP_SEQ = d.RCP_SEQ
+		right join admin a
+        on a.anum = d.anum
 		where db.RCP_SEQ = #{RCP_SEQ}
 		group by db.rcp_seq
 	</select>
 	
 	<select id="commGet" parameterType="Integer" resultType="map">
-		select * from dish_comm where RCP_SEQ = #{RCP_SEQ};
+		select d.*,m.nickname from dish_comm d left join member m on d.mnum = m.mnum where RCP_SEQ = #{RCP_SEQ};
 	</select>
 	
 	<select id="search" parameterType="map" resultType="map">
