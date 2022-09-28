@@ -38,18 +38,16 @@ public class DishController {
 	@Value("${DishDBuploadPath}")
 	String dbUploadPath;
 
-
 	String ip = Constants.IP_PORT;
 
 	@GetMapping("/get")
 	public List<Map<String, Object>> get() {
-		
+
 		File fileTest = new File(dbUploadPath);
 
 		if (!fileTest.exists()) {
 			fileTest.mkdirs();
 		}
-
 
 		// DB에서 받아온 모양
 		List<Map<String, Object>> DBlist = dishService.get();
@@ -74,7 +72,6 @@ public class DishController {
 
 			if (resultMap.get("rcp_parts_dtls") != null) {
 
-
 				ingSTR = resultMap.get("rcp_parts_dtls").toString();
 
 			} else {
@@ -82,7 +79,7 @@ public class DishController {
 				ingSTR = "재료없음";
 
 			}
-      
+
 			ingSTR = ingSTR.replace("재료", "");
 			ingSTR = ingSTR.replaceAll("\n", ", ");
 
@@ -116,7 +113,6 @@ public class DishController {
 
 				}
 
-
 				recipe.add(i, manualStr);
 			}
 
@@ -125,7 +121,6 @@ public class DishController {
 			List<String> imgList = new ArrayList<>();
 
 			for (int i = 0; i < 20; i++) {
-
 
 				String imgId = "manual_img";
 				String imgIdNum = "";
@@ -226,10 +221,8 @@ public class DishController {
 		return str;
 	}
 
-
 	@GetMapping("/search")
 	public List<Map<String, Object>> search(@RequestParam String select, @RequestParam String searchI) {
-
 
 		log.info("[/api/dish/search] [검색어] [{}]", searchI);
 
@@ -315,13 +308,11 @@ public class DishController {
 
 		if (i > 0) {
 
-
 			str = dish.getRCP_SEQ() + "이 등록되었습니다.";
 
 		} else {
 
 			str = "글 등록에 실패하였습니다.";
-
 
 		}
 
@@ -339,11 +330,11 @@ public class DishController {
 			throws Exception {
 
 		File fileTest = new File(dbUploadPath);
-		
+
 		if (!fileTest.exists()) {
 			fileTest.mkdirs();
 		}
-		
+
 		if (!fileMain.isEmpty()) {
 			String savedName = fileMain.getOriginalFilename();
 			savedName = uploadFile(savedName, fileMain.getBytes());
@@ -354,7 +345,7 @@ public class DishController {
 		if (!file01.isEmpty()) {
 			String savedName = file01.getOriginalFilename();
 			savedName = uploadFile(savedName, file01.getBytes());
-      
+
 			dish.setMANUAL_IMG01(ip + "image/dishDB/" + savedName);
 
 		}
@@ -363,7 +354,7 @@ public class DishController {
 			String savedName = file02.getOriginalFilename();
 			savedName = uploadFile(savedName, file02.getBytes());
 
-      dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
+			dish.setMANUAL_IMG02(ip + "image/dishDB/" + savedName);
 
 		}
 
@@ -431,9 +422,7 @@ public class DishController {
 		String str = "";
 		if (check == 1) {
 
-
 			str = "liked";
-
 
 		}
 
@@ -450,6 +439,7 @@ public class DishController {
 		map.put("dish_like", resultMap.get("dish_like"));
 		map.put("ate", resultMap.get("ate"));
 		map.put("writer", resultMap.get("anum"));
+		map.put("amdinID", resultMap.get("adminID"));
 
 		if (resultMap.get("editdate") == null) {
 
@@ -458,7 +448,6 @@ public class DishController {
 		} else {
 
 			map.put("date", resultMap.get("editdate"));
-
 
 		}
 
@@ -476,13 +465,12 @@ public class DishController {
 
 		ingSTR = ingSTR.replace("재료", "");
 		ingSTR = ingSTR.replaceAll("\n", ", ");
-    
+
 		map.put("ingredient", ingSTR);
 
 		List<String> recipe = new ArrayList<>();
 
 		for (int i = 0; i < 20; i++) {
-
 
 			String manualId = "manual";
 			String manualIdNum = "";
@@ -554,7 +542,7 @@ public class DishController {
 		result.put("result", map);
 
 		return result;
-		
+
 	}
 
 	private String uploadFile(String originalName, byte[] fileData) throws Exception {
@@ -603,7 +591,6 @@ public class DishController {
 
 			dishService.goDishDislike(RCP_SEQ, mnum);
 			str = "좋아요 해제!";
-
 
 		}
 

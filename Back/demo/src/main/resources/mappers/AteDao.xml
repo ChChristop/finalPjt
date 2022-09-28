@@ -103,8 +103,8 @@
 	</delete>
 
 	<select id="getAllList" resultType="Ate">
-		SELECT * FROM ATE
-		WHERE mnum = #{mnum}
+	  SELECT * FROM ATE
+      WHERE mnum = #{mnum} order by ate_date
 	</select>
 
 	<select id="getAteListbyUser" resultType="AteDTO">
