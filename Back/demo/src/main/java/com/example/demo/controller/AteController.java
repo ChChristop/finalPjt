@@ -37,58 +37,62 @@ public class AteController {
 
 	@Value("${AteuploadPath}")
 	String uploadPath;
-	
+
 	@Value("${spring.servlet.multipart.location}")
 	String uploadPath1;
 
 	String ip = Constants.IP_PORT;
 
 	@PostMapping("/add/{RCP_SEQ}/{mnum}")
-	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, 
-					@PathVariable int mnum,@RequestParam("file") MultipartFile file) 
-			throws Exception {
-		
+	public String add(@ModelAttribute Ate ate, @PathVariable String RCP_SEQ, @PathVariable int mnum,
+			@RequestParam("file") MultipartFile file) throws Exception {
+
 		try {
-			
-		File fileTest = new File(uploadPath);
-		File fileTest1 = new File(uploadPath);
-		if(!fileTest.exists()) {
-			
-			fileTest.mkdirs();
-		}	
-		if(!fileTest1.exists()) {
-			
-			fileTest1.mkdirs();
-		}
-		
-		
-		ate.setRCP_SEQ(RCP_SEQ);
-		ate.setMnum(mnum);
 
-		String savedName = file.getOriginalFilename();
-		savedName = uploadFile(savedName, file.getBytes());
+			File fileTest = new File(uploadPath);
+			File fileTest1 = new File(uploadPath);
+			if (!fileTest.exists()) {
 
-		ate.setAte_picture(ip + "image/ate/" + savedName);
+				fileTest.mkdirs();
+			}
+			if (!fileTest1.exists()) {
 
+				fileTest1.mkdirs();
+			}
 
-		String str = "";
-		int i = ateService.add(ate);
+			ate.setRCP_SEQ(RCP_SEQ);
+			ate.setMnum(mnum);
 
-		if (i > 0) {
-			
-			str = ate.getAte_num() + "이 등록되었습니다.";
-			
-		} else {
-			
-			str = "글 등록에 실패하였습니다. ";
-			
-		}
+			String savedName = file.getOriginalFilename();
 
-		return str;
-		}catch(Exception e) {
+			System.out.println("savedName:" + savedName);
+
+			if (savedName.length() > 20) {
+				savedName = savedName.substring(savedName.length() - 10);
+			}
+
+			savedName = uploadFile(savedName, file.getBytes());
+
+			ate.setAte_picture(ip + "image/ate/" + savedName);
+
+			String str = "";
+			int i = ateService.add(ate);
+
+			if (i > 0) {
+
+				str = ate.getAte_num() + "이 등록되었습니다.";
+
+			} else {
+
+				str = "글 등록에 실패하였습니다. ";
+
+			}
+
+			return str;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
@@ -110,31 +114,31 @@ public class AteController {
 		if (!fileTest.exists()) {
 			fileTest.mkdirs();
 		}
-		
+
 		return ateService.get();
 	}
 
 	@GetMapping("/get/{ate_num}/{mnum}")
 	public Map<String, Object> getOne(@PathVariable int ate_num, @PathVariable int mnum) {
-		
-	      File fileTest = new File(uploadPath);
 
-	      if (!fileTest.exists()) {
-	         fileTest.mkdirs();
-	      }
-	      
-	      Map<String, Object> resultMap = new HashMap<>();
+		File fileTest = new File(uploadPath);
 
-	      String str = "";
+		if (!fileTest.exists()) {
+			fileTest.mkdirs();
+		}
 
-	      ateService.upHit(ate_num);
+		Map<String, Object> resultMap = new HashMap<>();
 
-	      if(mnum != 9999) {
-	         if (ateService.ateLike(mnum, ate_num) == 1) {
-	            str = "liked";
-	         }
-	      }
-		
+		String str = "";
+
+		ateService.upHit(ate_num);
+
+		if (mnum != 9999) {
+			if (ateService.ateLike(mnum, ate_num) == 1) {
+				str = "liked";
+			}
+		}
+
 		Map<String, Object> result = ateService.getOne(ate_num);
 		List<DishComm> commList = ateService.commGet(ate_num);
 
@@ -147,35 +151,33 @@ public class AteController {
 	}
 
 	@PutMapping("/edit/{ate_num}/{mnum}")
-	public String edit(@ModelAttribute Ate ate, @RequestParam("file") MultipartFile file) 
-			throws Exception {
+	public String edit(@ModelAttribute Ate ate, @RequestParam("file") MultipartFile file) throws Exception {
 
 		System.out.println("진입?");
 		File fileTest = new File(uploadPath);
-		
-		if(!fileTest.exists()) {
-			
+
+		if (!fileTest.exists()) {
+
 			fileTest.mkdirs();
 		}
-		
+
 		String str = "";
 
 		String savedName = file.getOriginalFilename();
 		savedName = uploadFile(savedName, file.getBytes());
-
 
 		ate.setAte_picture(ip + "image/ate/" + savedName);
 
 		int i = ateService.editAte(ate);
 
 		if (i > 0) {
-			
+
 			str = "글 수정되었습니다.";
-			
+
 		} else {
 
 			str = "글 수정에 실패하였습니다.";
-			
+
 		}
 
 		return str;
@@ -197,20 +199,20 @@ public class AteController {
 		int i = ateService.delete(ate_num, mnum);
 
 		if (i > 0) {
-			
+
 			str = "글이 삭제되었습니다.";
-			
+
 		} else {
-			
+
 			str = "글 삭제에 실패하였습니다.";
-			
+
 		}
 
 		return str;
 
 	}
 
-	@PostMapping("/like/{ate_num}/{mnum}")
+	@GetMapping("/like/{ate_num}/{mnum}")
 	public String goAteLike(@PathVariable int ate_num, @PathVariable int mnum) {
 
 		String str = "";
@@ -220,7 +222,7 @@ public class AteController {
 			ateService.goAteLike(ate_num, mnum);
 
 			str = "먹음 좋아요 등록!";
-			
+
 		} else if (ateService.ateLike(mnum, ate_num) == 1) {
 
 			ateService.goAteDislike(ate_num, mnum);
@@ -233,8 +235,7 @@ public class AteController {
 	}
 
 	@PostMapping("/comm/add/{mnum}/{ate_num}")
-	public String commAdd(@ModelAttribute DishComm dishComm, @PathVariable int mnum, 
-			@PathVariable int ate_num) {
+	public String commAdd(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ate_num) {
 
 		dishComm.setMnum(mnum);
 		dishComm.setAte_num(ate_num);
@@ -243,11 +244,11 @@ public class AteController {
 		int i = ateService.commAdd(dishComm);
 
 		if (i > 0) {
-			
+
 			str = Integer.toString(dishComm.getAc_num());
-			
+
 		} else {
-			
+
 			str = "댓글 등록에 실패하였습니다.";
 		}
 
@@ -255,8 +256,8 @@ public class AteController {
 	}
 
 	@DeleteMapping("/comm/delete/{mnum}/{ac_num}/{ate_num}")
-	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum,
-							@PathVariable int ac_num, @PathVariable int ate_num) {
+	public String commDelete(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num,
+			@PathVariable int ate_num) {
 
 		dishComm.setMnum(mnum);
 		dishComm.setAc_num(ac_num);
@@ -266,21 +267,20 @@ public class AteController {
 		int i = ateService.commDelete(dishComm);
 
 		if (i > 0) {
-			
+
 			str = "댓글이 삭제되었습니다.";
-			
+
 		} else {
-			
+
 			str = "댓글 삭제에 실패하였습니다.";
-			
+
 		}
 
 		return str;
 	}
 
 	@PutMapping("/comm/edit/{mnum}/{ac_num}")
-	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, 
-			@PathVariable int ac_num) {
+	public String commEdit(@ModelAttribute DishComm dishComm, @PathVariable int mnum, @PathVariable int ac_num) {
 
 		dishComm.setMnum(mnum);
 		dishComm.setAc_num(ac_num);
@@ -289,14 +289,14 @@ public class AteController {
 		int i = ateService.commEdit(dishComm);
 
 		if (i > 0) {
-			
+
 			str = "댓글이 수정되었습니다.";
-			
-		} else {
-			
+
+		} else 
+
 			str = "댓글 수정에 실패하였습니다.";
-			
-		}
+
+		
 
 		return str;
 	}

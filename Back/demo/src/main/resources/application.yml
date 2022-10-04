@@ -5,6 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     hikari:
+      max-lifetime: 180000
       maximum-pool-size: '100'
     url: jdbc:mysql://finalproject-naengjanggo-pamukgo3.cjkgekzw10ee.ap-northeast-2.rds.amazonaws.com:3306/final?useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&&characterEncoding=UTF-8
     password: 'pamukgo123'

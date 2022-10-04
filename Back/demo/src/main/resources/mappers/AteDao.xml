@@ -17,6 +17,7 @@
 	FROM dishdb A
 	JOIN ATE B
 	ON A.RCP_SEQ = B.RCP_SEQ
+	order by B.ate_num desc;
 	</select>
 
 	<select id="search" parameterType="String" resultType="map">
@@ -42,7 +43,7 @@
 	</select>
 
 	<select id="commGet" parameterType="Integer" resultType="map">
-		select * from ate_comm where ate_num = #{ate_num}
+		select a.*,m.nickname from ate_comm a inner join member m on a.mnum = m.mnum where ate_num = #{ate_num}
 	</select>
 
 	<insert id="commAdd" parameterType="map">

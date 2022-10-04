@@ -41,15 +41,15 @@
 	
 	
 	<select id="ingAllReco_9999" parameterType="map" resultType="map">
-	select * from (select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10) ing1
+	select ing1.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%',#{ing1},'%') limit 0,10) ing1 left join dishdb b on ing1.rcp_seq = b.RCP_SEQ
 	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing2},'%') limit 0,10) ing2
+	select ing2.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%',#{ing2},'%') limit 0,10) ing2 left join dishdb b on ing2.rcp_seq = b.RCP_SEQ
 	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing3},'%') limit 0,10) ing3
+	select ing3.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%',#{ing3},'%') limit 0,10) ing3 left join dishdb b on ing3.rcp_seq = b.RCP_SEQ
 	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing4},'%') limit 0,10) ing4
+	select ing4.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%',#{ing4},'%') limit 0,10) ing4 left join dishdb b on ing4.rcp_seq = b.RCP_SEQ
 	union distinct
-	select * from (select * from dish_ing where iname like concat('%',#{ing5},'%') limit 0,10) ing5
+	select ing5.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%',#{ing5},'%') limit 0,10) ing5 left join dishdb b on ing5.rcp_seq = b.RCP_SEQ;
 	</select>  
 	
 	<select id="getIngs" parameterType="Integer" resultType="map"> 
@@ -144,5 +144,17 @@
 		on db.RCP_SEQ = d.RCP_SEQ
 		where db.RCP_SEQ in (select RCP_SEQ from dish_ing where iname like concat('%',#{iname},'%'))
 	</select>
+	
+		<select id="ingAllReco_9999_2" parameterType="map" resultType="map">
+select ing1.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%','돼지고기','%') limit 0,10) ing1 left join dishdb b on ing1.rcp_seq = b.RCP_SEQ
+	union distinct
+	select ing2.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%','닭고기','%') limit 0,10) ing2 left join dishdb b on ing2.rcp_seq = b.RCP_SEQ
+	union distinct
+	select ing3.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%','소고기','%') limit 0,10) ing3 left join dishdb b on ing3.rcp_seq = b.RCP_SEQ
+	union distinct
+	select ing4.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%','생선','%') limit 0,10) ing4 left join dishdb b on ing4.rcp_seq = b.RCP_SEQ
+	union distinct
+	select ing5.*,b.ATT_FILE_NO_MAIN, b.RCP_NM from (select * from dish_ing where iname like concat('%','감자','%') limit 0,10) ing5 left join dishdb b on ing5.rcp_seq = b.RCP_SEQ;
+	</select>  
 	
 </mapper>

@@ -26,4 +26,6 @@ public interface MainDao {
 
 	public int searchCNT(Map<String, Object> searchMap);
 	
+	public List<Map<String, Object>> ingAllReco_9999_2();
+	
 }

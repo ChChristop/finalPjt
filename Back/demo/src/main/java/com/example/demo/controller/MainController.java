@@ -37,7 +37,13 @@ public class MainController {
 	public List<Map<String, Object>> ingAllReco_9999(@ModelAttribute NonMember nonMember){
 		
 //		System.out.println("nonMember :::" + nonMember);
-		List<Map<String, Object>> result = mainService.ingAllReco_9999(nonMember); 
+		List<Map<String, Object>> result = null;
+		
+		if(nonMember.getIng1() != null) {
+			 result = mainService.ingAllReco_9999(nonMember); 
+		}else {
+			result = mainService.ingAllReco_9999_2();
+		}
 //		System.out.println("result ::: " + result);
 		
 		return result;

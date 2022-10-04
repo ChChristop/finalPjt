@@ -66,6 +66,13 @@ public class MainServiceImpl implements MainService {
 		return mainDao.searchCNT(searchMap);
 	}
 
+	@Override
+	public List<Map<String, Object>> ingAllReco_9999_2() {
+	
+		
+		return mainDao.ingAllReco_9999_2();
+	}
+
 
 	
 }

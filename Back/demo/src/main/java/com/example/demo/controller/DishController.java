@@ -576,7 +576,7 @@ public class DishController {
 		return str;
 	}
 
-	@PostMapping("/like/{RCP_SEQ}/{mnum}")
+	@GetMapping("/like/{RCP_SEQ}/{mnum}")
 	public String goDishLike(@PathVariable int RCP_SEQ, @PathVariable int mnum) {
 
 		String str = "";

@@ -22,5 +22,7 @@ public interface MainService {
 	public List<Map<String, Object>> mainSearch(Map<String, Object> searchMap);
 
 	public int searchCNT(Map<String, Object> searchMap);
+	
+	public List<Map<String, Object>> ingAllReco_9999_2();
 
 }
